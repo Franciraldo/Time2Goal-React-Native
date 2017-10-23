@@ -1,0 +1,3 @@
+rootProject.name = 'Time2Goal'
+
+include ':app'
