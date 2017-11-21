@@ -10,11 +10,11 @@ import Conversa from './components/Conversa';
 
 export default props => (
     <Router navigationBarStyle={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
-        <Scene key='formLogin' component={FormLogin} title="Login" hideNavBar={true} initial/>
-        <Scene key='formCadastro' component={FormCadastro} title="Cadastro" hideNavBar={false}/>
-        <Scene key='boasVindas' component={BoasVindas} title="Bem-Vindo" hideNavBar={true}/>
-        <Scene key='principal' component={Principal} title="Principal" hideNavBar={true} />
-        <Scene key='adicionarContato' component={AdicionarContato} title="Adicionar Contato" hideNavBar={false} />
-        <Scene key='conversa' component={Conversa} title="Conversa" hideNavBar={false} />
+        <Scene key='formLogin' component={FormLogin} tabTitle="Login" hideNavBar={true} initial/>
+        <Scene key='formCadastro' component={FormCadastro} tabTitle="Cadastro" hideNavBar={false}/>
+        <Scene key='boasVindas' component={BoasVindas} tabTitle="Bem-Vindo" hideNavBar={true}/>
+        <Scene key='principal' component={Principal} tabTitle="Principal" hideNavBar={true} />
+        <Scene key='adicionarContato' component={AdicionarContato} tabTitle="Adicionar Contato" hideNavBar={false} />
+        <Scene key='conversa' component={Conversa} tabTitle="Conversa" hideNavBar={false} />
     </Router>
 )
