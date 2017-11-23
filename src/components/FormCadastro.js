@@ -36,7 +36,7 @@ class formCadastro extends Component {
         const buttonBg = toogle ? "whitesmoke" : "#e42125";
         const borderBg = toogle ? "whitesmoke":"#e42125";
         const textColor = toogle ? "black":"whitesmoke";
-        console.log(this.props);
+        
         return(
         
         <View style={styles.container}>

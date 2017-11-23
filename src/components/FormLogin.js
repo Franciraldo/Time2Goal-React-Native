@@ -49,8 +49,8 @@ class formLogin  extends Component {
                         <Image source={require('../imgs/logo.png')} />
                     </View>
                     <View style={{flex: 2}}>
-                        <TextInput value={this.props.email} style={{ fontSize: 20, height: 45 }} placeholderTextColor='#fff' placeholder='E-mail' onChangeText={texto => this.props.modificaEmail(texto)}/>
-                        <TextInput secureTextEntry value={this.props.senha} style={{fontSize: 20, height: 45}} placeholderTextColor='#fff' placeholder='Senha'  onChangeText={texto => this.props.modificaSenha(texto)}/>
+                        <TextInput value={this.props.email} style={{ color: '#fff', backgroundColor: 'transparent', fontSize: 20, height: 45 }} placeholderTextColor='#fff' placeholder='E-mail' onChangeText={texto => this.props.modificaEmail(texto)}/>
+                        <TextInput secureTextEntry value={this.props.senha} style={{ color: '#fff', backgroundColor: 'transparent', fontSize: 20, height: 45}} placeholderTextColor='#fff' placeholder='Senha'  onChangeText={texto => this.props.modificaSenha(texto)}/>
                         <Text style={ { backgroundColor: 'transparent', color: '#ff0000', fontSize: 18} }> {this.props.erroLogin}</Text>
                     </View>
                     <View style={{flex: 4}}>

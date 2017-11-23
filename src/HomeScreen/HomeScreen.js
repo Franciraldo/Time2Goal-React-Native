@@ -1,10 +1,11 @@
 import React from "react";
 import { View, StyleSheet, StatusBar } from 'react-native';
 import { TabViewAnimated, SceneMap } from 'react-native-tab-view';
-
+import { Actions } from 'react-native-router-flux';
 import TabBarMenu from '../components/TabBarMenu';
 import Conversas from '../components/Conversas';
 import Contatos from '../components/Contatos';
+import { habilitaInclusaoContato } from '../actions/AppActions'; 
 import { Container, Header, Title, Left, Icon, Right, Button, Body, Content,Text, Card, CardItem } from "native-base";
 export default class HomeScreen extends React.Component {
   
@@ -40,7 +41,12 @@ export default class HomeScreen extends React.Component {
           <Body>
             <Title style={styles.title}>Principal</Title>
           </Body>
-          <Right />
+          <Right>
+            <Button transparent
+              onPress={() => false }  underlayColor="transparent">
+              <Icon style={styles.icon} name="ios-search" />
+            </Button>
+          </Right>
         </Header>
           <TabViewAnimated
             style={styles.container}
