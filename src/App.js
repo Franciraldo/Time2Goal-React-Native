@@ -12,7 +12,7 @@ import ReduxThunk from 'redux-thunk';
 
 
 import Routes from './Routes';
-import reducers from './reducers'
+import reducers from './reducers';
 
 
 
@@ -28,6 +28,7 @@ import reducers from './reducers'
                 messagingSenderId: "708056998479"
             });
         }
+        
         render(){
             return (
                 <Provider store={ createStore(reducers, {}, applyMiddleware(ReduxThunk)) }>

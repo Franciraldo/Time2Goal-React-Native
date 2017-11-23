@@ -4,6 +4,7 @@ import b64 from 'base-64';
 import { MODIFICA_EMAIL,
          MODIFICA_SENHA,
          MODIFICA_NOME,
+         MODIFICA_DESCRICAO,
          CADASTRO_USUARIO_SUCESSO,
          CADASTRO_USUARIO_ERRO,
          LOGIN_USUARIO_SUCESSO,
@@ -26,6 +27,13 @@ export const modificaSenha = (texto) => {
     }
 }
 
+export const modificaDescricao = (texto) => {
+    return {
+        type: MODIFICA_DESCRICAO,
+        payload: texto 
+    }
+}
+
 export const modificaNome = (texto) => {
     return {
         type: MODIFICA_NOME,
@@ -33,8 +41,8 @@ export const modificaNome = (texto) => {
     }
 }
 
-export const cadastraUsuario = ({nome, email, senha}) => {
-    console.log(email.toLowerCase());
+export const cadastraUsuario = ({nome, email, senha, descricao, bool}) => {
+    console.log('props', {nome, email, senha, descricao, bool});
     return (dispatch) => {
 
         dispatch({type: CADASTRO_EM_ANDAMENTO});
@@ -43,7 +51,26 @@ export const cadastraUsuario = ({nome, email, senha}) => {
                 let emailB64 = b64.encode(email);
                 firebase.database().ref(`/contatos/ ${emailB64}` )
                 .push({nome})
-                .then(value => cadastraUsuarioSucesso(dispatch))
+                .then(value => { 
+                    let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
+                    .push().set({
+                        nome: nome,
+                        email: email,
+                        descricao: descricao,
+                        mentoring: false,
+                        cpf: '',
+                        titularCartao: '',
+                        numeroCartao: '',
+                        validade: '',
+                        cvv: '',
+                        dataNascimento: '',
+                        cep: '',
+                        endereco: '',
+                        pais: '',
+                        premium: bool
+                    })
+                    cadastraUsuarioSucesso(dispatch)
+                })
                 .catch(erro => cadastraUsuarioErro(erro, dispatch));
             }) 
             .catch(erro => cadastraUsuarioErro(erro, dispatch));
@@ -55,7 +82,7 @@ const cadastraUsuarioSucesso = (dispatch) => {
             type: CADASTRO_USUARIO_SUCESSO
         }
     ); 
-    Actions.boasVindas();
+    Actions.formLogin();
 }
 
 const cadastraUsuarioErro = (erro, dispatch) => {

@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import { View, TextInput, Text, Button, StyleSheet, Image, ActivityIndicator, TouchableHighlight } from 'react-native';
+import { View, TextInput, Text, Button, StyleSheet, Image, ActivityIndicator, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { modificaEmail, modificaSenha, modificaNome, cadastraUsuario } from '../actions/AutenticacaoActions';
+import { modificaEmail, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario } from '../actions/AutenticacaoActions';
 
 class formCadastro extends Component { 
+    state = {
+        toogle: false
+    }
     _cadastraUsuario() {
-        const { nome, email, senha } = this.props;
-        this.props.cadastraUsuario({nome, email, senha});
+        const { nome, email, senha, descricao } = this.props;
+        const bool = this.state.toogle;
+        console.log({nome, email, senha, descricao, bool});
+        this.props.cadastraUsuario({nome, email, senha, descricao, bool});
     }
     renderBtnCadastro(){
         if (this.props.loading_cadastro) {
@@ -21,7 +26,17 @@ class formCadastro extends Component {
             </TouchableHighlight>
         );
     }
+    _onPress() {
+        const newState = !this.state.toogle;
+        this.setState({ toogle: newState })
+    }
     render() {
+        const {toogle} = this.state;
+        const textValue = toogle ? "ON": "OFF";
+        const buttonBg = toogle ? "whitesmoke" : "#e42125";
+        const borderBg = toogle ? "whitesmoke":"#e42125";
+        const textColor = toogle ? "black":"whitesmoke";
+        console.log(this.props);
         return(
         
         <View style={styles.container}>
@@ -41,12 +56,33 @@ class formCadastro extends Component {
                 <TextInput 
                     secureTextEntry
                     value={this.props.senha} 
-                    style={styles.form} 
+                    style={styles.form}
                     placeholder='Senha'
                     placeholderTextColor='#fff' 
                     onChangeText={ texto => this.props.modificaSenha(texto)}/>
+                    
 
                     <Text style={{backgroundColor: 'transparent', color: '#ff0000', fontSize: 18}}>{ this.props.erroCadastro }</Text>
+            </View>
+            <View style={{ flex: 1}}>
+                <TextInput
+                        multiline={true}
+                        value={this.props.descricao}
+                        numberOfLines={4}
+                        style={styles.form}
+                        placeholderTextColor='#fff'
+                        placeholder='Descrição'
+                        onChangeText={texto => this.props.modificaDescricao(texto)} />
+            </View>
+            <View style={{ marginTop: 10, flexDirection: 'row'}}>
+                    <Text style={{marginTop: 10, marginBottom: 30, backgroundColor: "transparent", fontSize: 16, color: '#fff', fontWeight: 'bold', marginRight: 15}}>Habilitar conta Premium </Text>
+                    <TouchableOpacity onPress={() => this._onPress()} style={{ width: 75, height: 35,
+                    borderWidth: 1,
+                    borderColor: borderBg , borderRadius: 18, 
+                    padding: 10, justifyContent: 'center',
+                    alignItems:'center', backgroundColor: buttonBg}} >
+                            <Text style={{backgroundColor: "transparent", fontSize: 16, color: textColor, fontWeight: 'bold'}}>{textValue}</Text>
+                    </TouchableOpacity>
             </View>
             <View style={styles.containerBtn}>
                 {this.renderBtnCadastro()}
@@ -61,12 +97,13 @@ const mapStateToProps = state => (
         nome: state.AuthenticacaoReducer.nome,
         email: state.AuthenticacaoReducer.email,
         senha: state.AuthenticacaoReducer.senha,
+        descricao: state.AuthenticacaoReducer.descricao,
         erroCadastro: state.AuthenticacaoReducer.erroCadastro,
         loading_cadastro: state.AuthenticacaoReducer.loading_cadastro
     }
 );
 
-export default connect(mapStateToProps, {modificaEmail, modificaSenha, modificaNome, cadastraUsuario})(formCadastro);
+export default connect(mapStateToProps, {modificaEmail, modificaSenha, modificaDescricao, modificaNome, cadastraUsuario})(formCadastro);
 
 const styles = StyleSheet.create({
         container: {
@@ -79,11 +116,13 @@ const styles = StyleSheet.create({
             flex: 1
         },
         containerForm: {
-            flex: 4,
-            justifyContent: 'center',
+            flex: 3,
+            justifyContent: 'center'
         },
         form: {
             fontSize: 20,
-            height: 45
-        }
+            height: 45,
+            marginTop: 20,
+            color: '#fff'
+        },
 });

@@ -11,7 +11,11 @@ const TabBarMenu = props => (
     <View style={styles.container}>
         <StatusBar height="50" backgroundColor="#fc5b07"/>
         
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+         
+        <TabBar {...props} style={ styles.tabBar}/>
+    </View>
+);
+/*<View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={ styles.conteinerTitulo}>
                 <Text style={styles.titulo}> Principal </Text>
             </View> 
@@ -30,10 +34,7 @@ const TabBarMenu = props => (
                     </TouchableHighlight>
                 </View>
             </View>
-        </View> 
-        <TabBar {...props} style={ styles.tabBar}/>
-    </View>
-);
+        </View>*/
 
 const styles = StyleSheet.create({
     conteinerTitulo: {
