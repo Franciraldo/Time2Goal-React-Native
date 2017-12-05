@@ -8,6 +8,7 @@ import BoasVindas from './components/BoasVindas';
 import Principal from './components/Principal';
 import AdicionarContato from './components/AdicionarContato';
 import Conversa from './components/Conversa';
+import CameraView from './components/CameraView';
 
 export default props => (
     <Router navigationBarStyle={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
@@ -17,5 +18,6 @@ export default props => (
         <Scene key='principal' component={HomeScreen} tabTitle="Principal" hideNavBar={true} />
         <Scene key='adicionarContato' component={AdicionarContato} tabTitle="Adicionar Contato" hideNavBar={false} />
         <Scene key='conversa' component={Conversa} tabTitle="Conversa" hideNavBar={false} />
+        <Scene key='camera' component={CameraView} tabTitle="Cam" hideNavBar={true} />
     </Router>
 )

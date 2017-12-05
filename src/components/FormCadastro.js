@@ -14,6 +14,9 @@ class formCadastro extends Component {
         console.log({nome, email, senha, descricao, bool});
         this.props.cadastraUsuario({nome, email, senha, descricao, bool});
     }
+    _uploadImage() {
+        Actions.camera()
+    }
     renderBtnCadastro(){
         if (this.props.loading_cadastro) {
             return (
@@ -41,6 +44,12 @@ class formCadastro extends Component {
         
         <View style={styles.container}>
             <View style={styles.containerForm}>
+                <TouchableHighlight style={styles.uploadBtn} onPress={() => this._uploadImage()}>
+                    <Image
+                    style={styles.uploadImage}
+                    source={require('../imgs/anonymous.jpg')}
+                    />
+                </TouchableHighlight>
                 <TextInput 
                     value={this.props.nome}
                     style={styles.form}
@@ -111,6 +120,15 @@ const styles = StyleSheet.create({
             padding: 10,
             backgroundColor: '#2b2a29'
 
+        },
+        uploadImage: {
+            width: 90,
+            height: 90  
+        },
+        uploadBtn: {
+            marginTop: 90,
+            justifyContent: 'center',
+            alignItems:'center',
         },
         containerBtn: {
             flex: 1
