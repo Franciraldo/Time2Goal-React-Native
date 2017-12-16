@@ -1,4 +1,5 @@
-import firebase from 'firebase';
+import RNFetchBlob from 'react-native-fetch-blob'
+import firebase from 'firebase'
 import { Actions } from 'react-native-router-flux'; 
 import b64 from 'base-64';
 import { MODIFICA_EMAIL,
@@ -10,8 +11,28 @@ import { MODIFICA_EMAIL,
          LOGIN_USUARIO_SUCESSO,
          LOGIN_USUARIO_ERRO,
          LOGIN_EM_ANDAMENTO,
-         CADASTRO_EM_ANDAMENTO
+         MODIFICA_IMG,
+         CADASTRO_EM_ANDAMENTO,
+         MODIFICAR_BOOL,
+         MODIFICAR_PAIS,
+         MODIFICAR_CPF,
+         MODIFICAR_DATA_NASCIMENTO,
+         MODIFICAR_CEP,
+         MODIFICAR_ENDERECO,
+         MODIFICAR_TITULAR_CARD,
+         MODIFICAR_NUMERO_CARD,
+         MODIFICAR_VALIDADE_DATA,
+         MODIFICAR_CVV,
+         MODIFICAR_SCREEN_REQUEST
         } from './types';
+import { Platform } from 'react-native';
+
+const fs = RNFetchBlob.fs
+const Blob = RNFetchBlob.polyfill.Blob
+const testImageName = `image-from-react-native-${Platform.OS}-${new Date()}.png`
+
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+window.Blob = Blob
 
 export const modificaEmail = (texto) => {
     return {
@@ -41,11 +62,88 @@ export const modificaNome = (texto) => {
     }
 }
 
-export const cadastraUsuario = ({nome, email, senha, descricao, bool}) => {
-    console.log('props', {nome, email, senha, descricao, bool});
-    return (dispatch) => {
+export const modificarIMG = (data) => {
+    return {
+        type: MODIFICA_IMG,
+        payload: data
+    }
+}
 
+export const modificarBool = (bool) => {
+    return {
+        type: MODIFICAR_BOOL,
+        payload: bool
+    }
+}
+export const modificaCPF = (cpf) => {
+    return {
+        type: MODIFICAR_CPF,
+        payload: cpf
+    }
+}
+export const modificaDataNascimento = (dataNascimento) => {
+    return {
+        type: MODIFICAR_DATA_NASCIMENTO,
+        payload: dataNascimento
+    }
+}
+export const modificaCEP = (cep) => {
+    return {
+        type: MODIFICAR_CEP,
+        payload: cep
+    }
+}
+export const modificaEndereco = (endereco) => {
+    return {
+        type: MODIFICAR_ENDERECO,
+        payload: endereco
+    }
+}
+export const modificaTitularCard = (titularCartao) => {
+    return {
+        type: MODIFICAR_TITULAR_CARD,
+        payload: titularCartao
+    }
+}
+export const modificaNumeroCard = (numeroCartao) => {
+    return {
+        type: MODIFICAR_NUMERO_CARD,
+        payload: numeroCartao
+    }
+}
+export const modificaValidadeData = (validadeData) => {
+    return {
+        type: MODIFICAR_VALIDADE_DATA,
+        payload: validadeData
+    }
+}
+export const modificaCVV = (cvv) => {
+    return {
+        type: MODIFICAR_CVV,
+        payload: cvv
+    }
+}
+export const modificaScreenRequest = (screen_request) => {
+    return {
+        type: MODIFICAR_SCREEN_REQUEST,
+        payload: screen_request
+    }
+}
+
+export const modificaNacionalidade = (pais) => {
+    return {
+        type: MODIFICAR_PAIS,
+        payload: pais
+    }
+}
+
+export const cadastraUsuario = ({nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais}) => {
+    //console.log('props', {nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais});
+    return (dispatch) => {
+        console.log('cadastroMetod:',{nome, email, senha, descricao, bool});
+        
         dispatch({type: CADASTRO_EM_ANDAMENTO});
+        
         firebase.auth().createUserWithEmailAndPassword(email, senha)
             .then(user => {
                 let emailB64 = b64.encode(email);

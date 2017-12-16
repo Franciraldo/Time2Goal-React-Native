@@ -7,16 +7,40 @@ import { MODIFICA_EMAIL,
          LOGIN_USUARIO_ERRO,
          LOGIN_EM_ANDAMENTO,
          LOGIN_USUARIO_SUCESSO,
-         CADASTRO_EM_ANDAMENTO
+         CADASTRO_EM_ANDAMENTO,
+         MODIFICA_IMG,
+         MODIFICAR_BOOL,
+         MODIFICAR_CPF,
+         MODIFICAR_PAIS,
+         MODIFICAR_DATA_NASCIMENTO,
+         MODIFICAR_CEP,
+         MODIFICAR_ENDERECO,
+         MODIFICAR_TITULAR_CARD,
+         MODIFICAR_NUMERO_CARD,
+         MODIFICAR_VALIDADE_DATA,
+         MODIFICAR_CVV,
+         MODIFICAR_SCREEN_REQUEST,
    } from '../actions/types';
 
 const INITIAL_STATE = { 
     nome: '',
     email: '',
     senha: '',
+    img: '',
     descricao: '',
     erroCadastro: '',
     erroLogin: '',
+    bool: false,
+    cpf: '',
+    dataNascimento: '',
+    pais: 'Brasil',
+    cep: '',
+    endereco: '',
+    titularCard: '',
+    numeroCard: '',
+    validadeCard: '',
+    cvv: '',
+    screen_request: '',
     loading_login: false,
     loading_cadastro: false
 }
@@ -24,6 +48,28 @@ export default (state = INITIAL_STATE, action) => {
     switch(action.type) {
         case MODIFICA_EMAIL:
             return { ...state, email: action.payload }
+        case MODIFICA_IMG:
+            return { ...state, img: action.payload }  
+        case MODIFICAR_BOOL:
+            return { ...state, bool: action.payload }  
+        case MODIFICAR_PAIS:
+            return { ...state, pais: action.payload }    
+        case MODIFICAR_CPF:
+            return { ...state, cpf: action.payload }
+        case MODIFICAR_DATA_NASCIMENTO:
+            return { ...state, dataNascimento: action.payload }
+        case MODIFICAR_CEP:
+            return { ...state, cep: action.payload }    
+        case MODIFICAR_ENDERECO:
+            return { ...state, endereco: action.payload }
+        case MODIFICAR_TITULAR_CARD:
+            return { ...state, titularCard: action.payload } 
+        case MODIFICAR_NUMERO_CARD:
+            return { ...state, numeroCard: action.payload }            
+        case MODIFICAR_VALIDADE_DATA:
+            return { ...state, validadeCard: action.payload }
+        case MODIFICAR_CVV:
+            return { ...state, cvv: action.payload }    
         case MODIFICA_SENHA:
             return { ...state, senha: action.payload }
         case MODIFICA_NOME:
@@ -41,7 +87,9 @@ export default (state = INITIAL_STATE, action) => {
         case LOGIN_USUARIO_SUCESSO:
             return { ...state, ...INITIAL_STATE}
         case CADASTRO_EM_ANDAMENTO: 
-            return { ...state, loading_cadastro : true }   
+            return { ...state, loading_cadastro : true }  
+        case MODIFICAR_SCREEN_REQUEST:
+            return { ...state, screen_request: action.payload } 
         default:
             return { }
         break;         

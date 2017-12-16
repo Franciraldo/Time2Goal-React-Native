@@ -5,12 +5,15 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
-  View
+  View,
+  RefreshControl
 } from 'react-native';
-
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { modificarIMG } from '../actions/AutenticacaoActions';
 import Camera from 'react-native-camera';
 
-export default class CameraView extends Component {
+class CameraView extends Component {
   render() {
       
     return (
@@ -20,6 +23,7 @@ export default class CameraView extends Component {
             this.camera = cam;
           }}
           style={styles.preview}
+          captureTarget={Camera.constants.CaptureTarget.disk}
           aspect={Camera.constants.Aspect.fill}>
           <Text style={styles.capture} onPress={this.takePicture.bind(this)}>[CAPTURE]</Text>
         </Camera>
@@ -28,11 +32,27 @@ export default class CameraView extends Component {
   }
 
   takePicture() {
-    this.camera.capture()
-      .then((data) => console.log(data))
+    const options = {};
+    
+    this.camera.capture({metadata: options})
+      .then((data) => {
+        //console.log(data)
+        this.props.modificarIMG(data.path)
+        Actions.pop()
+        
+        
+      })
       .catch(err => console.error(err));
   }
 }
+
+const mapStateToProps = state => (
+  {
+      imgData: state.AuthenticacaoReducer.img
+  }
+);
+
+export default connect(mapStateToProps, {modificarIMG})(CameraView);
 
 const styles = StyleSheet.create({
   container: {

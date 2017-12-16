@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, Button, StyleSheet, Image, TouchableHighlight,  ActivityIndicator} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { modificaEmail, modificaSenha, autenticarUsuario } from '../actions/AutenticacaoActions';
+import { modificaEmail, modificaSenha, autenticarUsuario, modificarIMG } from '../actions/AutenticacaoActions';
 
+const background = require('../imgs/background.png');
+const logo = require('../imgs/logo.png');
 class formLogin  extends Component {
+
     _autenticarUsuario() {
         const {email, senha} = this.props;
         this.props.autenticarUsuario({email, senha});
@@ -43,10 +46,10 @@ class formLogin  extends Component {
     }
     render() {
         return (
-            <Image style={{flex: 1, width: null}} source={require('../imgs/background.png')}>
+            <Image style={{flex: 1, width: null}} source={background}>
                 <View style={{flex: 1, padding: 10}}>
                     <View style={{flex:2, justifyContent: 'center', alignItems: 'center'}}>
-                        <Image source={require('../imgs/logo.png')} />
+                        <Image source={logo} />
                     </View>
                     <View style={{flex: 2}}>
                         <TextInput value={this.props.email} style={{ color: '#fff', backgroundColor: 'transparent', fontSize: 20, height: 45 }} placeholderTextColor='#fff' placeholder='E-mail' onChangeText={texto => this.props.modificaEmail(texto)}/>
@@ -67,8 +70,9 @@ const mapStateToProps = state => (
         email: state.AuthenticacaoReducer.email,
         senha: state.AuthenticacaoReducer.senha,
         erroLogin: state.AuthenticacaoReducer.erroLogin,
+        img: state.AuthenticacaoReducer.img,
         loading_login: state.AuthenticacaoReducer.loading_login
     }
 );
 
-export default connect(mapStateToProps, { modificaEmail, modificaSenha, autenticarUsuario })(formLogin);
+export default connect(mapStateToProps, { modificaEmail, modificarIMG, modificaSenha, autenticarUsuario })(formLogin);

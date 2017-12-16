@@ -16,4 +16,15 @@ export const MODIFICA_MENSAGEM = 'modifica_mensagem';
 export const LISTA_CONVERSA_USUARIO = 'lista_conversa_usuario';
 export const ENVIA_MENSAGEM_SUCESSO = 'envia_mensagem_sucesso';
 export const LISTA_CONVERSAS_USUARIO = 'lista_conversas_usuario';
-
+export const MODIFICA_IMG = 'modifica_img';
+export const MODIFICAR_BOOL = 'bool';
+export const MODIFICAR_CPF = 'modificar_cpf';
+export const MODIFICAR_DATA_NASCIMENTO = 'modificar_data_nascimento';
+export const MODIFICAR_CEP = 'modificar_cep';
+export const MODIFICAR_ENDERECO = 'modificar_endereco';
+export const MODIFICAR_TITULAR_CARD = 'modificar_titular_card';
+export const MODIFICAR_NUMERO_CARD = 'modificar_numero_card';
+export const MODIFICAR_VALIDADE_DATA = 'modificar_validade_data';
+export const MODIFICAR_CVV = 'modificar_cvv';
+export const MODIFICAR_SCREEN_REQUEST = 'modificar_screen_request';
+export const MODIFICAR_PAIS = 'modificar_pais';
