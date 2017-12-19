@@ -29,7 +29,7 @@ import { Platform } from 'react-native';
 
 const fs = RNFetchBlob.fs
 const Blob = RNFetchBlob.polyfill.Blob
-const testImageName = `image-from-react-native-${Platform.OS}-${new Date()}.png`
+const testImageName = `time2goal-${Platform.OS}-${new Date()}.png`
 
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
@@ -137,50 +137,114 @@ export const modificaNacionalidade = (pais) => {
     }
 }
 
-export const cadastraUsuario = ({nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais}) => {
+export const cadastraUsuario = ({nome, email, senha, descricao, img}) => {
     //console.log('props', {nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais});
     return (dispatch) => {
-        console.log('cadastroMetod:',{nome, email, senha, descricao, bool});
-        
+        console.log('cadastroMetod:',{nome, email, senha, descricao, img});
+        var emailB64 = b64.encode(email);
         dispatch({type: CADASTRO_EM_ANDAMENTO});
         
         firebase.auth().createUserWithEmailAndPassword(email, senha)
             .then(user => {
-                let emailB64 = b64.encode(email);
-                firebase.database().ref(`/contatos/ ${emailB64}` )
-                .push({nome})
-                .then(value => { 
-                    let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
-                    .push().set({
-                        nome: nome,
-                        email: email,
-                        descricao: descricao,
-                        mentoring: false,
-                        cpf: '',
-                        titularCartao: '',
-                        numeroCartao: '',
-                        validade: '',
-                        cvv: '',
-                        dataNascimento: '',
-                        cep: '',
-                        endereco: '',
-                        pais: '',
-                        premium: bool
+                console.log('User: ',user)
+                if(img !== undefined){
+            
+                        firebase.auth()
+                        .signInWithEmailAndPassword(email, senha)
+                        .catch((err) => {
+                            console.log('firebase sigin failed', err)
+                        })
+            
+                        firebase.auth().onAuthStateChanged((user) => {
+                            let rnfbURI = RNFetchBlob.wrap(img)
+                            // create Blob from file path
+                            Blob
+                                .build(rnfbURI, { type : 'image/png;'})
+                                .then((blob) => {
+                                // upload image using Firebase SDK
+                                firebase.storage()
+                                    .ref('images-users') // rn-firebase-upload
+                                    .child(testImageName)
+                                    .put(blob, { contentType : 'image/png' })
+                                    .then((snapshot) => {
+                                    console.log('snapshot', snapshot)
+                                    
+                                firebase.storage()
+                                    .ref('images-users/' + testImageName)
+                                    .getDownloadURL().then((url) => {
+                                                console.log('url: ', url)
+                                            let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
+                                            .push().set({
+                                                nome: nome !== undefined ? nome : '',
+                                                email: email,
+                                                descricao: descricao !== undefined ? descricao : '',
+                                                img: url !== undefined ? url : '',
+                                                mentoring: false,
+                                                cpf: '',
+                                                titularCartao: '',
+                                                numeroCartao: '',
+                                                validade: '',
+                                                cvv: '',
+                                                dataNascimento: '',
+                                                cep: '',
+                                                endereco: '',
+                                                pais: '',
+                                                premium: false
+                                            })
+                                            cadastraUsuarioSucesso(dispatch)
+                                                
+                                            }).catch((err) => {
+                                                console.log('display storage filed', err)
+                                            })
+                                            blob.close()
+                                    })
+                                }).catch((err) => {
+                                    console.log('firebase upload storage filed', err)
+                                })
+                        })
+                }else{
+                    firebase.database().ref(`/contatos/ ${emailB64}` )
+                    .push({nome})
+                    .then(value => { 
+                        
+                        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
+                        .push().set({
+                            nome: nome !== undefined ? nome : '',
+                            email: email,
+                            descricao: descricao !== undefined ? descricao : '',
+                            img: img !== undefined ? img : '',
+                            mentoring: false,
+                            cpf: '',
+                            titularCartao: '',
+                            numeroCartao: '',
+                            validade: '',
+                            cvv: '',
+                            dataNascimento: '',
+                            cep: '',
+                            endereco: '',
+                            pais: '',
+                            premium: false
+                        })
+                        cadastraUsuarioSucesso(dispatch)
                     })
-                    cadastraUsuarioSucesso(dispatch)
-                })
-                .catch(erro => cadastraUsuarioErro(erro, dispatch));
+                    .catch(erro => cadastraUsuarioErro(erro, dispatch));
+                    
+                }
             }) 
             .catch(erro => cadastraUsuarioErro(erro, dispatch));
-    }
+        }
 }
+
+
+
 const cadastraUsuarioSucesso = (dispatch) => {
+
     dispatch(
         {
             type: CADASTRO_USUARIO_SUCESSO
         }
     ); 
-    Actions.formLogin();
+    firebase.auth().signOut().then(() => Actions.formLogin())
 }
 
 const cadastraUsuarioErro = (erro, dispatch) => {
@@ -201,6 +265,14 @@ export const autenticarUsuario = ({email, senha}) => {
         firebase.auth().signInWithEmailAndPassword(email, senha)
         .then(value => loginUsuarioSucesso(dispatch))
         .catch(erro => loginUsuarioErro(erro, dispatch));
+    }
+    
+}
+
+export const autenticarFacebook = () => {
+    return (dispatch) => {
+
+        dispatch({type: LOGIN_EM_ANDAMENTO})
     }
     
 }

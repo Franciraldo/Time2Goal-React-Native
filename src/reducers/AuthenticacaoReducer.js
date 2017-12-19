@@ -33,7 +33,7 @@ const INITIAL_STATE = {
     bool: false,
     cpf: '',
     dataNascimento: '',
-    pais: 'Brasil',
+    pais: '',
     cep: '',
     endereco: '',
     titularCard: '',

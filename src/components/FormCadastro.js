@@ -24,9 +24,9 @@ class formCadastro extends Component {
     }
 
     _cadastraUsuario() {
-        const { nome, email, senha, descricao, bool , img} = this.props;
+        const { nome, email, senha, descricao, img} = this.props;
         //console.log({nome, email, senha, descricao, bool});
-        this.props.cadastraUsuario({nome,img, email, senha, descricao, bool});
+        this.props.cadastraUsuario({nome, email, senha, descricao, img});
     }
     _uploadImage() {
         Actions.camera()
@@ -154,6 +154,16 @@ const mapStateToProps = state => (
         descricao: state.AuthenticacaoReducer.descricao,
         bool: state.AuthenticacaoReducer.bool,
         img: state.AuthenticacaoReducer.img,
+        cpf: state.AuthenticacaoReducer.cpf,
+        titularCartao: state.AuthenticacaoReducer.titularCard,
+        numeroCartao: state.AuthenticacaoReducer.numeroCard,
+        validade: state.AuthenticacaoReducer.validadeCard,
+        cvv: state.AuthenticacaoReducer.cvv,
+        dataNascimento: state.AuthenticacaoReducer.dataNascimento,
+        cep: state.AuthenticacaoReducer.cep,
+        endereco: state.AuthenticacaoReducer.endereco,
+        pais: state.AuthenticacaoReducer.pais,
+        premium: state.AuthenticacaoReducer.bool,
         screen_request: state.AuthenticacaoReducer.screen_request,
         erroCadastro: state.AuthenticacaoReducer.erroCadastro,
         loading_cadastro: state.AuthenticacaoReducer.loading_cadastro
