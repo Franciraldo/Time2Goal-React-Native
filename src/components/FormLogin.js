@@ -4,6 +4,7 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { modificaEmail, modificaSenha, autenticarUsuario, modificarIMG } from '../actions/AutenticacaoActions';
 
+
 const background = require('../imgs/background.png');
 const logo = require('../imgs/logo.png');
 class formLogin  extends Component {
@@ -12,6 +13,22 @@ class formLogin  extends Component {
         const {email, senha} = this.props;
         this.props.autenticarUsuario({email, senha});
     }
+    _fbAuth(){
+        LoginManager.logInWithReadPermissions(['public_profile']).then(
+          function(result) {
+            if (result.isCancelled) {
+              alert('Login cancelled');
+            } else {
+              alert('Login success with permissions: '
+                +result.grantedPermissions.toString());
+            }
+          },
+          function(error) {
+            alert('Login fail with error: ' + error);
+          }
+        );
+      }
+
     renderBtnAcessar() {
         if(this.props.loading_login){
             return (
@@ -29,7 +46,7 @@ class formLogin  extends Component {
                     <Text style={{fontSize: 20, color: '#fff', backgroundColor: 'transparent', fontWeight: '500', justifyContent: 'center', alignItems: 'center' }}>OU</Text>
                 </View>
                 
-                <TouchableHighlight style={{ borderWidth: 1, borderColor: '#9da3a2', borderRadius: 18, backgroundColor: '#fefefe', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() =>  false}>
+                <TouchableHighlight style={{ borderWidth: 1, borderColor: '#9da3a2', borderRadius: 18, backgroundColor: '#fefefe', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() =>  this._fbAuth()}>
                     <Text style={{fontSize: 20, color: '#00319c', fontWeight: 'bold'}}>LOGIN FACEBOOK</Text>
                 </TouchableHighlight>
                 

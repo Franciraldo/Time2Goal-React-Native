@@ -2,10 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  
   <key>CFBundleURLTypes</key>
   <array>
     <dict>
-      
       <key>CFBundleURLSchemes</key>
       <array>
         <string>fb1194970320635206</string>
@@ -16,15 +16,6 @@
   <string>1194970320635206</string>
   <key>FacebookDisplayName</key>
   <string>Time2Goal</string>
-  
-  
-  <key>LSApplicationQueriesSchemes</key>
-  <array>
-    <string>fbapi</string>
-    <string>fb-messenger-api</string>
-    <string>fbauth2</string>
-    <string>fbshareextension</string>
-  </array>
   
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
@@ -46,6 +37,20 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+  
+  <key>LSApplicationQueriesSchemes</key>
+  <array>
+    <string>fbapi</string>
+    <string>fb-messenger-api</string>
+    <string>fb-messenger-share-api</string>
+    <string>fbauth2</string>
+    <string>fbshareextension</string>
+    <string>instagram</string>
+    <string>lyft</string>
+    <string>facebook</string>
+    <string>paypal</string>
+  </array>
+  
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -62,7 +67,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>this App lets user take a camera to be stored in the local camera roll.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMainNibFile</key>
 	<string>LaunchScreen</string>
 	<key>NSMicrophoneUsageDescription</key>
