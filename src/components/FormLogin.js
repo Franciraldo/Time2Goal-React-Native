@@ -4,6 +4,8 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { modificaEmail, modificaSenha, autenticarUsuario, modificarIMG } from '../actions/AutenticacaoActions';
 
+import FBSDK, { LoginManager } from 'react-native-fbsdk'
+
 
 const background = require('../imgs/background.png');
 const logo = require('../imgs/logo.png');
