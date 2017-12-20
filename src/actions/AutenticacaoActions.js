@@ -23,9 +23,11 @@ import { MODIFICA_EMAIL,
          MODIFICAR_NUMERO_CARD,
          MODIFICAR_VALIDADE_DATA,
          MODIFICAR_CVV,
+         MODIFICA_FACEBOOK_ID,
          MODIFICAR_SCREEN_REQUEST
         } from './types';
 import { Platform } from 'react-native';
+import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk'
 
 const fs = RNFetchBlob.fs
 const Blob = RNFetchBlob.polyfill.Blob
@@ -44,6 +46,13 @@ export const modificaEmail = (texto) => {
 export const modificaSenha = (texto) => {
     return {
         type: MODIFICA_SENHA,
+        payload: texto
+    }
+}
+
+export const modificaFacebookId = (texto) => {
+    return {
+        type: MODIFICA_FACEBOOK_ID,
         payload: texto
     }
 }
@@ -269,10 +278,42 @@ export const autenticarUsuario = ({email, senha}) => {
     
 }
 
-export const autenticarFacebook = () => {
+
+
+export const autenticarFacebook = (nome, email, id, url) => {
     return (dispatch) => {
 
         dispatch({type: LOGIN_EM_ANDAMENTO})
+
+        console.log('autenticarFacebookMetod', {nome, email, id, url})
+        var emailB64 = b64.encode(email);
+        firebase.database().ref(`/contatos/ ${emailB64}` )
+                    .push({nome})
+                    .then(value => { 
+                        
+                        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
+                        .push().set({
+                            nome: nome !== undefined ? nome : '',
+                            email: email !== undefined ? email : '',
+                            descricao: '',
+                            img: url !== undefined ? url : '',
+                            mentoring: false,
+                            cpf: '',
+                            titularCartao: '',
+                            numeroCartao: '',
+                            validade: '',
+                            cvv: '',
+                            dataNascimento: '',
+                            cep: '',
+                            endereco: '',
+                            pais: '',
+                            premium: false,
+                            facebookid: id !== undefined ? id : ''
+                        })
+                        loginUsuarioSucesso(dispatch)
+                    })
+                    .catch(erro => { console.log('autenticarFacebookMetodERRO', erro), cadastraUsuarioErro(erro, dispatch) });
+
     }
     
 }

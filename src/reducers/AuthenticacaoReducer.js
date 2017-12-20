@@ -20,6 +20,7 @@ import { MODIFICA_EMAIL,
          MODIFICAR_VALIDADE_DATA,
          MODIFICAR_CVV,
          MODIFICAR_SCREEN_REQUEST,
+         MODIFICA_FACEBOOK_ID,
    } from '../actions/types';
 
 const INITIAL_STATE = { 
@@ -40,6 +41,7 @@ const INITIAL_STATE = {
     numeroCard: '',
     validadeCard: '',
     cvv: '',
+    facebookid: '',
     screen_request: '',
     loading_login: false,
     loading_cadastro: false
@@ -51,7 +53,9 @@ export default (state = INITIAL_STATE, action) => {
         case MODIFICA_IMG:
             return { ...state, img: action.payload }  
         case MODIFICAR_BOOL:
-            return { ...state, bool: action.payload }  
+            return { ...state, bool: action.payload } 
+        case MODIFICA_FACEBOOK_ID:
+            return { ...state, facebookid: action.payload }     
         case MODIFICAR_PAIS:
             return { ...state, pais: action.payload }    
         case MODIFICAR_CPF:

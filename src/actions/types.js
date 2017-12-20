@@ -28,3 +28,4 @@ export const MODIFICAR_VALIDADE_DATA = 'modificar_validade_data';
 export const MODIFICAR_CVV = 'modificar_cvv';
 export const MODIFICAR_SCREEN_REQUEST = 'modificar_screen_request';
 export const MODIFICAR_PAIS = 'modificar_pais';
+export const MODIFICA_FACEBOOK_ID = 'modifica_facebook_id';
