@@ -9,7 +9,7 @@ class Conversas extends Component {
 
     componentWillMount() {
         
-        this.props.conversasUsuarioFetch('victormf.df@hotmail.com');
+        this.props.conversasUsuarioFetch(this.props.email);
         if(this.props.conversas !== null){
             console.log('componentWillReceiveProps: ', this.criaFonteDeDados(this.props.conversas))
             this.criaFonteDeDados(this.props.conversas);
