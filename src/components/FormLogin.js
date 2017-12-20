@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, Text, Button, StyleSheet, Image, TouchableHighlight,  ActivityIndicator} from 'react-native';
+import { View, TextInput, Text, Button, StyleSheet, Image, TouchableHighlight,  ActivityIndicator, ImageBackground} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { modificaEmail, modificaSenha, autenticarUsuario, modificarIMG } from '../actions/AutenticacaoActions';
@@ -65,7 +65,7 @@ class formLogin  extends Component {
     }
     render() {
         return (
-            <Image style={{flex: 1, width: null}} source={background}>
+            <ImageBackground style={{flex: 1, width: null}} source={background}>
                 <View style={{flex: 1, padding: 10}}>
                     <View style={{flex:2, justifyContent: 'center', alignItems: 'center'}}>
                         <Image source={logo} />
@@ -79,7 +79,7 @@ class formLogin  extends Component {
                         {this.renderBtnAcessar()}
                     </View>
                 </View>
-            </Image>
+            </ImageBackground>
         ); 
     }
   }
