@@ -9,7 +9,7 @@ import { contatosUsuarioFetch } from '../actions/AppActions';
 class Contatos extends Component {
 
     componentWillMount(){
-        this.props.contatosUsuarioFetch();
+        this.props.contatosUsuarioFetch(this.props.email);
         this.criaFonteDeDados(this.props.contatos);
         //console.log('recuperado via props: ', this.props.contatos);
     }
@@ -51,7 +51,7 @@ const mapStateToProps = state => {
     const contatos = _.map(state.ListaContatosReducer, (val, uid) => {
         return { ...val, uid }
     })
-    return { contatos };
+    return { contatos , email: state.AuthenticacaoReducer.email };
 }
 
 export default connect(mapStateToProps, {contatosUsuarioFetch})(Contatos)

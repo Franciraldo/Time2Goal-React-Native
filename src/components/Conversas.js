@@ -3,11 +3,13 @@ import { View, Text, ListView, FlatList, TouchableHighlight, StyleSheet} from 'r
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux'
 import { conversasUsuarioFetch } from '../actions/AppActions';
+import firebase from 'firebase';
 
 class Conversas extends Component {
 
     componentWillMount() {
-        this.props.conversasUsuarioFetch();
+        
+        this.props.conversasUsuarioFetch('victormf.df@hotmail.com');
         if(this.props.conversas !== null){
             console.log('componentWillReceiveProps: ', this.criaFonteDeDados(this.props.conversas))
             this.criaFonteDeDados(this.props.conversas);
@@ -86,7 +88,8 @@ mapStateToProps = state => {
     //console.log('mapStateToProps: ', conversas);
 
     return ({
-        conversas
+        conversas,
+        email: state.AuthenticacaoReducer.email,
     })
 }
 

@@ -72,11 +72,11 @@ export const habilitaInclusaoContato = () => (
     }
 )
 
-export const contatosUsuarioFetch = () => {
+export const contatosUsuarioFetch = (email) => {
     const { currentUser } = firebase.auth();
     return (dispatch) => {
         
-        let emailUsuarioB64 = b64.encode(currentUser.email);
+        let emailUsuarioB64 = email !== undefined ? b64.encode(email) : b64.encode(currentUser.email) 
         firebase.database().ref(`/usuario_contatos/ ${emailUsuarioB64}` )
             .on("value", snapshot => {   
                 dispatch({ type: LISTA_CONTATO_USUARIO, payload: snapshot.val() });
@@ -147,11 +147,11 @@ export const conversaUsuarioFetch = contatoEmail => {
     } 
 }
 
-export const conversasUsuarioFetch = () => {
+export const conversasUsuarioFetch = (email) => {
     const { currentUser } = firebase.auth();
 
     return dispatch => {
-        let usuarioEmailB64 = b64.encode(currentUser.email);
+        let usuarioEmailB64 = email !== undefined ? b64.encode(email) : b64.encode(currentUser.email);
 
         firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}`)
             .on("value", snapshot => { 

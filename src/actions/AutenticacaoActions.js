@@ -287,10 +287,12 @@ export const autenticarFacebook = (nome, email, id, url) => {
 
         console.log('autenticarFacebookMetod', {nome, email, id, url})
         var emailB64 = b64.encode(email);
-        firebase.database().ref(`/contatos/ ${emailB64}` )
+        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` );
+        usuario.once('value', (snapshot) => {
+            if(snapshot.val() === null){
+                firebase.database().ref(`/contatos/ ${emailB64}` )
                     .push({nome})
                     .then(value => { 
-                        
                         let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
                         .push().set({
                             nome: nome !== undefined ? nome : '',
@@ -314,8 +316,10 @@ export const autenticarFacebook = (nome, email, id, url) => {
                     })
                     .catch(erro => { console.log('autenticarFacebookMetodERRO', erro), cadastraUsuarioErro(erro, dispatch) });
 
-    }
-    
+                }
+                loginUsuarioSucesso(dispatch)
+            })
+        }
 }
 
 const loginUsuarioSucesso = (dispatch) => {
