@@ -43,6 +43,13 @@ export const modificaEmail = (texto) => {
     }
 }
 
+export const setEmail = (texto) => {
+    return {
+        type: MODIFICA_EMAIL,
+        payload: texto
+    }
+}
+
 export const modificaSenha = (texto) => {
     return {
         type: MODIFICA_SENHA,
@@ -272,7 +279,7 @@ export const autenticarUsuario = ({email, senha}) => {
         dispatch({type: LOGIN_EM_ANDAMENTO})
 
         firebase.auth().signInWithEmailAndPassword(email, senha)
-        .then(value => loginUsuarioSucesso(dispatch))
+        .then(value => loginUsuarioSucesso(dispatch, email))
         .catch(erro => loginUsuarioErro(erro, dispatch));
     }
     
@@ -312,23 +319,23 @@ export const autenticarFacebook = (nome, email, id, url) => {
                             premium: false,
                             facebookid: id !== undefined ? id : ''
                         })
-                        loginUsuarioSucesso(dispatch)
+                        loginUsuarioSucesso(dispatch, email)
                     })
                     .catch(erro => { console.log('autenticarFacebookMetodERRO', erro), cadastraUsuarioErro(erro, dispatch) });
 
                 }
-                loginUsuarioSucesso(dispatch)
+                loginUsuarioSucesso(dispatch, email)
             })
         }
 }
 
-const loginUsuarioSucesso = (dispatch) => {
+const loginUsuarioSucesso = (dispatch, email) => {
     dispatch(
         {
             type: LOGIN_USUARIO_SUCESSO,
         }
     );
-
+    modificaEmail
     Actions.principal();
 }
 const loginUsuarioErro = (erro, dispatch) => {

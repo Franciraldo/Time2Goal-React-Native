@@ -3,9 +3,23 @@ import { AppRegistry, Image, StatusBar, View, Text, StyleSheet, TouchableHighlig
 import { Container, Content, List, ListItem, Icon, Button} from "native-base";
 import { Actions } from 'react-native-router-flux'; 
 import firebase from 'firebase';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 const routes = ["Home", "GerenciarAgendaScreen","GerenciarVideosScreen", "Profile"];
+import { setEmail } from '../actions/AutenticacaoActions';
 
-export default class SideBar extends React.Component {
+class SideBar extends React.Component {
+
+  componentWillMount(){
+    console.log('SideBar componentWillMount email: ', this.props.email)
+    this.props.setEmail(this.props.email)  
+    
+}
+
+componentWillReceiveProps(nextProps){
+  console.log('SideBar componentWillReceiveProps email: ', nextProps.email)
+    
+}
 
   state = {
     toogle: true
@@ -58,6 +72,12 @@ export default class SideBar extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 15 }}>  
                     <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("GerenciarVideosScreen")}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Gerenciar Videos</Text>
+                    </TouchableHighlight>      
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 15 }}>  
+                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("GerenciarVideosScreen")}>
+                        <Text style={{fontSize: 20, color: '#fff'}}>Torna-se mentor</Text>
                     </TouchableHighlight>      
               </View>
           </View>
@@ -114,3 +134,15 @@ const styles = StyleSheet.create({
     
   },
 });
+
+const mapStateToProps = state => (
+  {
+      nome: state.AuthenticacaoReducer.nome,
+      email: state.AuthenticacaoReducer.email,
+      img: state.AuthenticacaoReducer.img,
+      facebookid: state.AuthenticacaoReducer.facebookid,
+      bool: state.AuthenticacaoReducer.bool
+  }
+);
+
+export default connect(mapStateToProps, {setEmail})(SideBar)

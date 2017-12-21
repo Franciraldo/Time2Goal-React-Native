@@ -35,6 +35,15 @@ class formLogin  extends Component {
                     <Text style={{fontSize: 20, color: '#fff', backgroundColor: 'transparent', fontWeight: '500', justifyContent: 'center', alignItems: 'center' }}>OU</Text>
                 </View>
                 
+                <TouchableHighlight style={{ borderWidth: 1, borderColor: '#9da3a2', borderRadius: 18, backgroundColor: '#fefefe', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => Actions.formCadastro()}>
+                    <Text style={{fontSize: 20, color: '#00319c', fontWeight: 'bold'}}>CRIAR CONTA</Text>
+                </TouchableHighlight>
+                
+                
+                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15, marginBottom: 15 }}>
+                    <Text style={{fontSize: 20, color: '#fff', backgroundColor: 'transparent', fontWeight: '500', justifyContent: 'center', alignItems: 'center' }}>OU</Text>
+                </View>
+                
                 <View>
                 <LoginButton
                     style={{ padding: 23, justifyContent: 'center', alignItems: 'center' }}
@@ -91,14 +100,6 @@ class formLogin  extends Component {
                     }
                     onLogoutFinished={() => alert("logout.")}/>
                 </View>
-                
-                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15, marginBottom: 15 }}>
-                    <Text style={{fontSize: 20, color: '#fff', backgroundColor: 'transparent', fontWeight: '500', justifyContent: 'center', alignItems: 'center' }}>OU</Text>
-                </View>
-                
-                <TouchableHighlight style={{ borderWidth: 1, borderColor: '#9da3a2', borderRadius: 18, backgroundColor: '#fefefe', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => Actions.formCadastro()}>
-                    <Text style={{fontSize: 20, color: '#00319c', fontWeight: 'bold'}}>CRIAR CONTA</Text>
-                </TouchableHighlight>
             
             </View>
         );

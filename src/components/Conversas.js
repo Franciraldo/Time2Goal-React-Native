@@ -3,15 +3,22 @@ import { View, Text, ListView, FlatList, TouchableHighlight, StyleSheet} from 'r
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux'
 import { conversasUsuarioFetch } from '../actions/AppActions';
-import firebase from 'firebase';
+import { setEmail } from '../actions/AutenticacaoActions';
 
 class Conversas extends Component {
+    componentDidMount(){
+        //console.log('Conversas componentDidMount: ', this.props)
+        //console.log('Conversas componentDidMount email: ', this.props.email)
+        
+    }
 
     componentWillMount() {
-        
-        this.props.conversasUsuarioFetch(this.props.email);
+        //console.log('Conversas componentWillMount: ', this.props)
+        //console.log('Conversas componentWillMount email: ', this.props.email)
+        this.props.setEmail(this.props.email)
+        this.props.conversasUsuarioFetch(this.props.email)
         if(this.props.conversas !== null){
-            console.log('componentWillReceiveProps: ', this.criaFonteDeDados(this.props.conversas))
+            console.log('componentWillMount: ', this.criaFonteDeDados(this.props.conversas))
             this.criaFonteDeDados(this.props.conversas);
         }
         
@@ -19,7 +26,9 @@ class Conversas extends Component {
     }
     componentWillReceiveProps(nextProps) {
         
-        
+        //console.log('Conversas componentWillReceiveProps: ', nextProps)
+        console.log('Conversas componentWillReceiveProps email: ', nextProps.email)
+        //nextProps.conversasUsuarioFetch(nextProps.email);
         if(nextProps.conversas !== null){
             console.log('componentWillReceiveProps: ', nextProps.conversas)
             this.criaFonteDeDados(nextProps.conversas);
@@ -83,9 +92,10 @@ const styles = StyleSheet.create({
   });
 
 mapStateToProps = state => {
+    
     const conversas = state.ListaConvetsasReducer;
 
-    //console.log('mapStateToProps: ', conversas);
+    console.log('Conversas mapStateToProps state: ', state);
 
     return ({
         conversas,
@@ -93,4 +103,4 @@ mapStateToProps = state => {
     })
 }
 
-export default connect(mapStateToProps, { conversasUsuarioFetch })(Conversas);
+export default connect(mapStateToProps, { setEmail, conversasUsuarioFetch })(Conversas);

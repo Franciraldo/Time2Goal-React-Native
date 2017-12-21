@@ -4,19 +4,33 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import {Actions} from 'react-native-router-flux';
 import { contatosUsuarioFetch } from '../actions/AppActions';
+import { setEmail } from '../actions/AutenticacaoActions';
 
 
 class Contatos extends Component {
+    componentDidMount(){
+        //console.log('Contatos componentDidMount: ', this.props)
+        //console.log('Contatos componentDidMount email: ', this.props.email)
+        
+    }
 
     componentWillMount(){
-        this.props.contatosUsuarioFetch(this.props.email);
-        this.criaFonteDeDados(this.props.contatos);
+        this.props.setEmail(this.props.email)
+        this.props.contatosUsuarioFetch(this.props.email)
+        if(this.props.contatos !== null){
+            console.log('componentWillMount: ', this.criaFonteDeDados(this.props.contatos))
+            this.criaFonteDeDados(this.props.contatos);
+        }
+        
+        //console.log('Contatos componentWillMount email: ', this.props.email)
         //console.log('recuperado via props: ', this.props.contatos);
     }
 
     componentWillReceiveProps(nextProps){
         //console.log('recuperado via props após update: ', nextProps.contatos);
-        this.criaFonteDeDados(nextProps.contatos);
+        //console.log('Contatos componentWillReceiveProps: ', nextProps)
+        //console.log('Contatos componentWillReceiveProps email: ', nextProps.email)
+        
     }
 
     criaFonteDeDados( contatos ) {
@@ -48,10 +62,11 @@ class Contatos extends Component {
 }
 
 const mapStateToProps = state => {
+    console.log('Contatos mapStateToProps state: ', state);
     const contatos = _.map(state.ListaContatosReducer, (val, uid) => {
         return { ...val, uid }
     })
     return { contatos , email: state.AuthenticacaoReducer.email };
 }
 
-export default connect(mapStateToProps, {contatosUsuarioFetch})(Contatos)
+export default connect(mapStateToProps, {contatosUsuarioFetch, setEmail})(Contatos)

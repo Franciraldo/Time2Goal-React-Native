@@ -5,8 +5,10 @@ import { Actions } from 'react-native-router-flux';
 import TabBarMenu from '../components/TabBarMenu';
 import Conversas from '../components/Conversas';
 import Contatos from '../components/Contatos';
+import Videos from '../components/Videos';
 import { habilitaInclusaoContato } from '../actions/AppActions'; 
 import { Container, Header, Title, Left, Icon, Right, Button, Body, Content,Text, Card, CardItem } from "native-base";
+
 export default class HomeScreen extends React.Component {
   
   
@@ -14,8 +16,11 @@ export default class HomeScreen extends React.Component {
     state = {
       index: 0,
       routes: [
-        { key: '1', title: 'Conversas' },
-        { key: '2', title: 'Mentores' }
+        { key: '1', title: 'Videos' },
+        { key: '2', title: 'Mentores' },
+        { key: '3', title: 'Conversas' }
+        
+        
       ],
     };
   
@@ -24,8 +29,10 @@ export default class HomeScreen extends React.Component {
     _renderHeader = props => <TabBarMenu {...props}/>;
   
     _renderScene = SceneMap({
-      '1': Conversas,
-      '2': Contatos
+      '1': Videos,
+      '2': Contatos,
+      '3': Conversas
+      
     });
   render() {
     return (

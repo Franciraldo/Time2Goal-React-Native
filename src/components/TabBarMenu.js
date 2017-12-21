@@ -9,10 +9,10 @@ import { habilitaInclusaoContato } from '../actions/AppActions';
 
 const TabBarMenu = props => (
     <View style={styles.container}>
-        <StatusBar height="50" backgroundColor="#fc5b07"/>
+        <StatusBar height="50"/>
         
          
-        <TabBar {...props} style={ styles.tabBar}/>
+        <TabBar indicatorStyle={styles.ativo} {...props} style={ styles.tabBar}/>
     </View>
 );
 /*<View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -37,6 +37,9 @@ const TabBarMenu = props => (
         </View>*/
 
 const styles = StyleSheet.create({
+    ativo: {
+        backgroundColor: "#fc5b03",
+    },
     conteinerTitulo: {
       height: 100,
       justifyContent: 'center'
@@ -51,7 +54,6 @@ const styles = StyleSheet.create({
         elevation: 0
     },
     container: {
-        backgroundColor: "#fc5b07",
         elevation: 4,
         marginBottom: 6
     },

@@ -10,17 +10,14 @@ class Videos extends Component {
     render() {
         return (
             <View>
-                Text
+                
             </View>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const contatos = _.map(state.ListaContatosReducer, (val, uid) => {
-        return { ...val, uid }
-    })
-    return { contatos };
+    return {  };
 }
 
-export default connect(mapStateToProps, {contatosUsuarioFetch})(Contatos)
+export default connect(mapStateToProps, {})(Videos)

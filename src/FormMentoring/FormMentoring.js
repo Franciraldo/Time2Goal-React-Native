@@ -24,7 +24,7 @@ export default class FormMentoring extends React.Component {
     );
   }
 }
-Profile.navigationOptions = ({ navigation }) => ({
+FormMentoring.navigationOptions = ({ navigation }) => ({
   header: (
     <Header>
       <Left>
