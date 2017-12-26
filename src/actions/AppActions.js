@@ -10,7 +10,13 @@ import { MODIFICA_ADICIONA_CONTATO_EMAIL,
          MODIFICA_MENSAGEM,
          LISTA_CONVERSA_USUARIO,
          ENVIA_MENSAGEM_SUCESSO,
-         LISTA_CONVERSAS_USUARIO } from './types';
+         LISTA_CONVERSAS_USUARIO,
+         USER_SIDEBAR,
+         USER_PROFILE,
+         USER_FORM_MENTORING,
+         USER_HOME,
+         USER_CONTATOS,
+         USER_CONVERSAS } from './types';
 
 export const modificaAdicionaContatoEmail = (texto) => {
     return {
@@ -159,3 +165,20 @@ export const conversasUsuarioFetch = (email) => {
             })
     }
 }
+
+export const getUsuario = (email) => {
+    const { currentUser } = firebase.auth();
+
+    return dispatch => {
+        let emailB64 = email !== undefined ? b64.encode(email) : b64.encode(currentUser.email);
+
+        firebase.database().ref(`/usuarios/ ${emailB64}`)
+            .on("value", snapshot => { 
+                dispatch({ type: USER_SIDEBAR , payload: _.first(_.values(snapshot.val())) })
+                dispatch({ type: USER_PROFILE , payload: _.first(_.values(snapshot.val())) })
+                dispatch({ type: USER_FORM_MENTORING , payload: _.first(_.values(snapshot.val())) })
+                dispatch({ type: USER_HOME , payload: _.first(_.values(snapshot.val())) })
+            })
+    }
+}
+

@@ -446,7 +446,7 @@ Profile.navigationOptions = ({ navigation }) => ({
   header: (
         <Header style={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
           <Left>
-            <Button transparent onPress={() => navigation.navigate("DrawerOpen", this.props.email)}>
+            <Button transparent onPress={() => navigation.navigate("DrawerOpen")}>
               <Icon name="menu"  style={{backgroundColor: 'transparent', color: '#fff'}}/>
             </Button>
           </Left>
@@ -458,29 +458,19 @@ Profile.navigationOptions = ({ navigation }) => ({
   )
 });
 
-const mapStateToProps = state => (
-  {
-    nome: state.AuthenticacaoReducer.nome,
-    email: state.AuthenticacaoReducer.email,
-    senha: state.AuthenticacaoReducer.senha,
-    descricao: state.AuthenticacaoReducer.descricao,
-    bool: state.AuthenticacaoReducer.bool,
-    img: state.AuthenticacaoReducer.img,
-    cpf: state.AuthenticacaoReducer.cpf,
-    titularCartao: state.AuthenticacaoReducer.titularCard,
-    numeroCartao: state.AuthenticacaoReducer.numeroCard,
-    validade: state.AuthenticacaoReducer.validadeCard,
-    cvv: state.AuthenticacaoReducer.cvv,
-    dataNascimento: state.AuthenticacaoReducer.dataNascimento,
-    cep: state.AuthenticacaoReducer.cep,
-    endereco: state.AuthenticacaoReducer.endereco,
-    pais: state.AuthenticacaoReducer.pais,
-    premium: state.AuthenticacaoReducer.bool,
-    screen_request: state.AuthenticacaoReducer.screen_request,
-    erroCadastro: state.AuthenticacaoReducer.erroCadastro,
-    loading_cadastro: state.AuthenticacaoReducer.loading_cadastro
-  }
-);
+const mapStateToProps = state => {
+
+    const usuario = state.ProfileReducer;
+  
+    console.log('mapStateToProps Profile', usuario)
+  
+      //console.log('Conversas mapStateToProps state: ', state);
+  
+      return ({
+        usuario,
+        email: state.AuthenticacaoReducer.email,
+      })
+    }
 
 const styles = StyleSheet.create({
   container: {

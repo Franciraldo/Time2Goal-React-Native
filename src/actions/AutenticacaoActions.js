@@ -37,6 +37,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 
 export const modificaEmail = (texto) => {
+    console.log('modificaEmail', texto)
     return {
         type: MODIFICA_EMAIL,
         payload: texto.toLowerCase()
@@ -335,7 +336,6 @@ const loginUsuarioSucesso = (dispatch, email) => {
             type: LOGIN_USUARIO_SUCESSO,
         }
     );
-    modificaEmail
     Actions.principal();
 }
 const loginUsuarioErro = (erro, dispatch) => {

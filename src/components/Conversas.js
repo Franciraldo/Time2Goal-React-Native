@@ -3,7 +3,6 @@ import { View, Text, ListView, FlatList, TouchableHighlight, StyleSheet} from 'r
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux'
 import { conversasUsuarioFetch } from '../actions/AppActions';
-import { setEmail } from '../actions/AutenticacaoActions';
 
 class Conversas extends Component {
     componentDidMount(){
@@ -15,8 +14,7 @@ class Conversas extends Component {
     componentWillMount() {
         //console.log('Conversas componentWillMount: ', this.props)
         //console.log('Conversas componentWillMount email: ', this.props.email)
-        this.props.setEmail(this.props.email)
-        this.props.conversasUsuarioFetch(this.props.email)
+        this.props.conversasUsuarioFetch(this.props.usuario.email)
         if(this.props.conversas !== null){
             console.log('componentWillMount: ', this.criaFonteDeDados(this.props.conversas))
             this.criaFonteDeDados(this.props.conversas);
@@ -94,13 +92,15 @@ const styles = StyleSheet.create({
 mapStateToProps = state => {
     
     const conversas = state.ListaConvetsasReducer;
+    const usuario = state.HomeReducer
 
     //console.log('Conversas mapStateToProps state: ', state);
 
     return ({
         conversas,
+        usuario,
         email: state.AuthenticacaoReducer.email,
     })
 }
 
-export default connect(mapStateToProps, { setEmail, conversasUsuarioFetch })(Conversas);
+export default connect(mapStateToProps, { conversasUsuarioFetch })(Conversas);

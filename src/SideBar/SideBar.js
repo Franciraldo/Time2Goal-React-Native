@@ -6,19 +6,26 @@ import firebase from 'firebase';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 const routes = ["Home", "GerenciarAgendaScreen","GerenciarVideosScreen", "Profile"];
-import { setEmail } from '../actions/AutenticacaoActions';
+import { getUsuario } from '../actions/AppActions';
 
 class SideBar extends React.Component {
 
+  componentDidMount(){
+    console.log('SideBar componentDidMount: ', this.props)
+  }
+
   componentWillMount(){
-    console.log('SideBar componentWillMount email: ', this.props.email)
-    this.props.setEmail(this.props.email)  
+    this.props.getUsuario(this.props.email)
+    console.log('SideBar componentWillMount: ', this.props)
     
 }
 
 componentWillReceiveProps(nextProps){
-  console.log('SideBar componentWillReceiveProps email: ', nextProps.email)
+  console.log('SideBar componentWillReceiveProps: ', nextProps)
     
+}
+_uploadImage() {
+  Actions.camera()
 }
 
   state = {
@@ -29,13 +36,32 @@ componentWillReceiveProps(nextProps){
     this.setState({ toogle: newState })
   }
 
+  renderImage(){
+    
+    if (this.props.usuario.img !== undefined) {
+        return (
+            <Image
+            style={styles.uploadImage}
+            source={{ uri: this.props.usuario.img}}
+            />
+        );
+    }else{
+        return (
+            <Image
+            style={styles.uploadImage}
+            source={require('../imgs/anonymous.jpg')}
+            />
+        );
+    }  
+  }
+
   render() {
     
-    const {toogle} = this.state;
-    const textValue = toogle ? "ON": "OFF";
-    const buttonBg = toogle ? "whitesmoke" : "#e42125";
-    const borderBg = toogle ? "whitesmoke":"#e42125";
-    const textColor = toogle ? "black":"whitesmoke";
+    const { premium } = this.props.usuario;
+    const textValue = premium ? "ON": "OFF";
+    const buttonBg = premium ? "whitesmoke" : "#e42125";
+    const borderBg = premium ? "whitesmoke":"#e42125";
+    const textColor = premium ? "black":"whitesmoke";
 
     return (
       <Container style={styles.container}>
@@ -43,7 +69,7 @@ componentWillReceiveProps(nextProps){
           <View style={{ flexDirection: 'row', marginTop: 15 }}>  
                 <Button
                   transparent
-                  onPress={() => this.props.navigation.navigate("Home")}>
+                  onPress={() => { this.props.navigation.navigate("Home")}}>
                   <Icon style={styles.icon} name="menu" />
                 </Button>
 
@@ -51,12 +77,14 @@ componentWillReceiveProps(nextProps){
                     <Text style={styles.title}>Menu</Text>
                 </View>
           </View>
-          <View style={{ flex: 2, flexDirection: 'row', marginTop: 15 }}>  
-                <View>
-                    <Text style={styles.NomeUser}>Nome do Usuario</Text>
-                </View>
+          <View style={styles.containerImage}>
+            {this.renderImage()}
           </View>
-          <View style={{ flex: 5, marginTop: 50, marginBottom: 50 }}>
+          <View style={styles.containerDadosUser}>  
+              <Text style={styles.NomeUser}>{this.props.usuario.nome}</Text>       
+          </View>
+
+          <View style={{ flex: 5, marginTop: 20, marginLeft: 10, marginBottom: 50 }}>
               <View style={{ flexDirection: 'row', marginTop: 15 }}>  
                     <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("Profile")}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Alterar perfil</Text>
@@ -76,7 +104,7 @@ componentWillReceiveProps(nextProps){
               </View>
 
               <View style={{ flexDirection: 'row', marginTop: 15 }}>  
-                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("GerenciarVideosScreen")}>
+                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("FormMentoring")}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Torna-se mentor</Text>
                     </TouchableHighlight>      
               </View>
@@ -84,7 +112,7 @@ componentWillReceiveProps(nextProps){
           
 
 
-          <View style={{ flex: 1,  marginTop: 10, flexDirection: 'row'}}>
+          <View style={{ flex: 1,  marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
                     <Text style={{marginTop: 10, marginBottom: 30, backgroundColor: "transparent", fontSize: 16, color: '#fff', fontWeight: 'bold', marginRight: 15}}>Habilitar conta Premium </Text>
                     <TouchableOpacity onPress={() => this._onPress()} style={{ width: 55, height: 25,
                     borderWidth: 1, marginTop: 10,
@@ -96,7 +124,7 @@ componentWillReceiveProps(nextProps){
                     
             </View>
 
-            <View style={{ flex: 1,  marginTop: 10, flexDirection: 'row'}}>
+            <View style={{ flex: 1,  marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
               <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => firebase.auth().signOut().then(() => Actions.formLogin())}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Logout</Text>
                     </TouchableHighlight>
@@ -112,6 +140,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#2b2a29'
   },
+  containerImage: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  containerDadosUser: {
+      flexDirection: 'row',
+      marginTop: 15,
+      justifyContent: 'center',
+      alignItems: 'center', 
+  },
+  uploadImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    marginTop: 25,  
+},
   header: {
     backgroundColor: '#fc5b0b'
   },
@@ -135,14 +180,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => (
-  {
-      nome: state.AuthenticacaoReducer.nome,
-      email: state.AuthenticacaoReducer.email,
-      img: state.AuthenticacaoReducer.img,
-      facebookid: state.AuthenticacaoReducer.facebookid,
-      bool: state.AuthenticacaoReducer.bool
-  }
-);
+const mapStateToProps = state => {
 
-export default connect(mapStateToProps, {setEmail})(SideBar)
+  const usuario = state.SideBarReducer;
+
+  console.log('mapStateToProps SideBar', usuario)
+
+    //console.log('Conversas mapStateToProps state: ', state);
+
+    return ({
+      usuario,
+      email: state.AuthenticacaoReducer.email,
+    })
+  }
+
+export default connect(mapStateToProps, {getUsuario})(SideBar)
