@@ -36,6 +36,16 @@ const TabBarMenu = props => (
             </View>
         </View>*/
 
+        const mapStateToProps = state => (
+            {
+              nome: state.AuthenticacaoReducer.nome,
+              email: state.AuthenticacaoReducer.email,
+              descricao: state.AuthenticacaoReducer.descricao,
+              bool: state.AuthenticacaoReducer.bool,
+              img: state.AuthenticacaoReducer.img
+            }
+          );        
+
 const styles = StyleSheet.create({
     ativo: {
         backgroundColor: "#fc5b03",
@@ -59,4 +69,4 @@ const styles = StyleSheet.create({
     },
   });
 
-  export default connect(null, {habilitaInclusaoContato})(TabBarMenu);
+  export default connect(mapStateToProps, {habilitaInclusaoContato})(TabBarMenu);

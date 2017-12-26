@@ -27,7 +27,7 @@ class Conversas extends Component {
     componentWillReceiveProps(nextProps) {
         
         //console.log('Conversas componentWillReceiveProps: ', nextProps)
-        console.log('Conversas componentWillReceiveProps email: ', nextProps.email)
+        //console.log('Conversas componentWillReceiveProps: ', nextProps)
         //nextProps.conversasUsuarioFetch(nextProps.email);
         if(nextProps.conversas !== null){
             console.log('componentWillReceiveProps: ', nextProps.conversas)
@@ -95,7 +95,7 @@ mapStateToProps = state => {
     
     const conversas = state.ListaConvetsasReducer;
 
-    console.log('Conversas mapStateToProps state: ', state);
+    //console.log('Conversas mapStateToProps state: ', state);
 
     return ({
         conversas,

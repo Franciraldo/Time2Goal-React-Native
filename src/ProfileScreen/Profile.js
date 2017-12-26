@@ -8,9 +8,19 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { modificaEmail, modificarBool, modificaScreenRequest, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV } from '../actions/AutenticacaoActions';
 import formComplement from '../components/FormComplement'
+import { setEmail } from '../actions/AutenticacaoActions';
 
 
 class Profile extends React.Component {
+    componentWillMount(){
+        console.log('Profile componentWillMount props: ', this.props)  
+        
+    }
+    
+    componentWillReceiveProps(nextProps){
+      console.log('Profile componentWillReceiveProps props: ', nextProps)
+        
+    }
   componentDidMount() {
     //alert("No Users Found", "Oops, Looks like you are not signed in");
   }
@@ -436,7 +446,7 @@ Profile.navigationOptions = ({ navigation }) => ({
   header: (
         <Header style={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
           <Left>
-            <Button transparent onPress={() => navigation.navigate("DrawerOpen")}>
+            <Button transparent onPress={() => navigation.navigate("DrawerOpen", this.props.email)}>
               <Icon name="menu"  style={{backgroundColor: 'transparent', color: '#fff'}}/>
             </Button>
           </Left>
@@ -518,4 +528,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, {modificaEmail, modificarBool, modificaScreenRequest, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV})(Profile)
+export default connect(mapStateToProps, {setEmail, modificaEmail, modificarBool, modificaScreenRequest, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV})(Profile)

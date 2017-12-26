@@ -22,14 +22,14 @@ class Contatos extends Component {
             this.criaFonteDeDados(this.props.contatos);
         }
         
-        //console.log('Contatos componentWillMount email: ', this.props.email)
+        //console.log('Contatos componentWillMount: ', this.props)
         //console.log('recuperado via props: ', this.props.contatos);
     }
 
     componentWillReceiveProps(nextProps){
         //console.log('recuperado via props após update: ', nextProps.contatos);
         //console.log('Contatos componentWillReceiveProps: ', nextProps)
-        //console.log('Contatos componentWillReceiveProps email: ', nextProps.email)
+        //console.log('Contatos componentWillReceiveProps: ', nextProps)
         
     }
 
@@ -62,7 +62,7 @@ class Contatos extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log('Contatos mapStateToProps state: ', state);
+    //console.log('Contatos mapStateToProps state: ', state);
     const contatos = _.map(state.ListaContatosReducer, (val, uid) => {
         return { ...val, uid }
     })
