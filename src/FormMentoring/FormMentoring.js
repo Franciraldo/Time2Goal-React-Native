@@ -6,8 +6,8 @@ import { StackNavigator } from "react-navigation";
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-//import {  } from '../actions/AutenticacaoActions';
-
+import { modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria } from '../actions/FormMentoringActions';
+import { modificaScreenRequest } from '../actions/AutenticacaoActions';
 
 class FormMentoring extends React.Component {
   componentDidMount() {
@@ -21,16 +21,23 @@ class FormMentoring extends React.Component {
             </TouchableHighlight>
         )
 }
-_uploadImage() {
-  Actions.camera()
+_uploadImage1() {
+  this.props.modificaScreenRequest('form_mentoring_screen_img1')
+  this.props.navigation.navigate('CameraView')
 }
 
+_uploadImage2() {
+    this.props.modificaScreenRequest('form_mentoring_screen_img2')
+    this.props.navigation.navigate('CameraView')
+  }
+
+
   renderImage1(){
-    if (this.props.img !== undefined) {
+    if (this.props.img1 !== undefined) {
         return (
             <Image
             style={styles.uploadImage}
-            source={{ uri: this.props.img}}
+            source={{ uri: this.props.img1}}
             />
         );
     }else{
@@ -43,11 +50,12 @@ _uploadImage() {
     }
 }
 renderImage2(){
-  if (this.props.img !== undefined) {
+    console.log('FormMentoring img2:', this.props.img2)
+  if (this.props.img2 !== undefined) {
       return (
           <Image
           style={styles.uploadImage}
-          source={{ uri: this.props.img}}
+          source={{ uri: this.props.img2}}
           />
       );
   }else{
@@ -76,7 +84,7 @@ renderImage2(){
                         style={styles.form}
                         placeholderTextColor='#fff'
                         placeholder='Descrição'
-                        onChangeText={ texto => false } />
+                        onChangeText={ texto => this.props.modificaDescrricaoProfissional(texto) } />
             
             
             <View style={styles.conteinerText}>
@@ -86,17 +94,17 @@ renderImage2(){
             </View>    
 
             <TextInput 
-                    value={this.props.titularCard} 
+                    value={this.props.agencia} 
                     style={styles.form}
                     placeholder='Agência'
                     placeholderTextColor='#fff' 
-                    onChangeText={ texto => false}/>
+                    onChangeText={ texto => this.props.modificaAgencia(texto)}/>
                 <TextInput 
-                    value={this.props.numeroCard} 
+                    value={this.props.conta} 
                     style={styles.form}
                     placeholder='Conta'
                     placeholderTextColor='#fff' 
-                    onChangeText={ texto => false}/>
+                    onChangeText={ texto => this.props.modificaConta(texto)}/>
 
                 <View style={styles.conteinerText}>
                     <Text style={styles.text}>
@@ -104,7 +112,7 @@ renderImage2(){
                     </Text>
                 </View>
 
-                <Picker  selectedValue={ this.props.pais } onValueChange={ pais => false}>
+                <Picker  selectedValue={ this.props.banco } onValueChange={ banco => this.props.modificaBanco(banco)}>
                     <Picker.Item color='#fff'label='Banco do Brasil' value='BB'/>
                     <Picker.Item color='#fff'label='BRB' value='BRB'/>
                     <Picker.Item color='#fff'label='Caixa economica' value='Caixa economica'/>
@@ -118,9 +126,10 @@ renderImage2(){
                     </Text>
                 </View>    
                 
-                {this.renderImage2()}
+                {this.renderImage1()}
+                
 
-                <TouchableHighlight style={styles.btn} onPress={() => false}>
+                <TouchableHighlight style={styles.btn} onPress={() => this._uploadImage1()}>
                   <Text style={{fontSize: 20, color: '#ffffff', fontWeight: 'bold'}}>CAPTURAR IMAGEM</Text>
                 </TouchableHighlight>
 
@@ -130,9 +139,9 @@ renderImage2(){
                     </Text>
                 </View>    
                 
-                {this.renderImage1()}
+                {this.renderImage2()}
 
-                <TouchableHighlight style={styles.btn} onPress={() => false}>
+                <TouchableHighlight style={styles.btn} onPress={() => this._uploadImage2()}>
                   <Text style={{fontSize: 20, color: '#ffffff', fontWeight: 'bold'}}>CAPTURAR IMAGEM</Text>
                 </TouchableHighlight>
 
@@ -142,7 +151,7 @@ renderImage2(){
                     </Text>
                 </View>
                 
-                <Picker  selectedValue={ this.props.pais } onValueChange={ pais => false}>
+                <Picker  selectedValue={ this.props.idioma } onValueChange={ idioma => this.props.modificaIdioma(idioma)}>
                     <Picker.Item color='#fff'label='Inglês' value='Inglês'/>
                     <Picker.Item color='#fff'label='Português' value='Português'/>
                     <Picker.Item color='#fff'label='Francês' value='Francês'/>
@@ -154,10 +163,13 @@ renderImage2(){
                     </Text>
                 </View>
                 
-                <Picker  selectedValue={ this.props.pais } onValueChange={ pais => false}>
-                    <Picker.Item color='#fff'label='Técnico' value='Técnico'/>
+                <Picker  selectedValue={ this.props.categoria_mentoria } onValueChange={ categoria_mentoria => this.props.modificaCategoriaMentoria(categoria_mentoria)}>
+                    <Picker.Item color='#fff'label='Coach esportivo' value='Coach esportivo'/>
                     <Picker.Item color='#fff'label='Fisioterapia' value='Fisioterapia'/>
-                    <Picker.Item color='#fff'label='Jogador Profissional' value='Jogador Profissional'/>
+                    <Picker.Item color='#fff'label='Nutrição' value='Nutrição'/>
+                    <Picker.Item color='#fff'label='Preparação física' value='Preparação física'/>
+                    <Picker.Item color='#fff'label='Psicologia do esporte' value='Psicologia do esporte'/>
+                    <Picker.Item color='#fff'label='Técnica esportiva' value='Técnica esportiva'/>
                 </Picker>
 
                 {this.renderButton()}
@@ -184,25 +196,14 @@ FormMentoring.navigationOptions = ({ navigation }) => ({
 
 const mapStateToProps = state => (
   {
-    nome: state.AuthenticacaoReducer.nome,
-    email: state.AuthenticacaoReducer.email,
-    senha: state.AuthenticacaoReducer.senha,
-    descricao: state.AuthenticacaoReducer.descricao,
-    bool: state.AuthenticacaoReducer.bool,
-    img: state.AuthenticacaoReducer.img,
-    cpf: state.AuthenticacaoReducer.cpf,
-    titularCartao: state.AuthenticacaoReducer.titularCard,
-    numeroCartao: state.AuthenticacaoReducer.numeroCard,
-    validade: state.AuthenticacaoReducer.validadeCard,
-    cvv: state.AuthenticacaoReducer.cvv,
-    dataNascimento: state.AuthenticacaoReducer.dataNascimento,
-    cep: state.AuthenticacaoReducer.cep,
-    endereco: state.AuthenticacaoReducer.endereco,
-    pais: state.AuthenticacaoReducer.pais,
-    premium: state.AuthenticacaoReducer.bool,
-    screen_request: state.AuthenticacaoReducer.screen_request,
-    erroCadastro: state.AuthenticacaoReducer.erroCadastro,
-    loading_cadastro: state.AuthenticacaoReducer.loading_cadastro
+    descricao_profissional: state.FormMentoringReducer.descricao_profissional,
+    agencia: state.FormMentoringReducer.agencia,
+    conta: state.FormMentoringReducer.conta,
+    banco: state.FormMentoringReducer.banco,
+    img1: state.FormMentoringReducer.img1,
+    img2: state.FormMentoringReducer.img2,
+    idioma: state.FormMentoringReducer.idioma,
+    categoria_mentoria: state.FormMentoringReducer.categoria_mentoria,
   }
 );
 
@@ -273,4 +274,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, {})(FormMentoring)
+export default connect(mapStateToProps, {modificaScreenRequest, modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria})(FormMentoring)

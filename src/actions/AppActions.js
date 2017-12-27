@@ -71,6 +71,7 @@ const adicionaContatoSucesso = (dispatch) => (
     })
 );
 
+
 export const habilitaInclusaoContato = () => (
     {
         type: ADICIONAR_CONTATO_SUCESSO,

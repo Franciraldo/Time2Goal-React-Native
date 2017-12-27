@@ -8,7 +8,7 @@ import { contatosUsuarioFetch } from '../actions/AppActions';
 
 class Contatos extends Component {
     componentDidMount(){
-        console.log('Contatos componentDidMount: ', this.props)
+        //console.log('Contatos componentDidMount: ', this.props)
         //console.log('Contatos componentDidMount email: ', this.props.email)
         
     }
@@ -26,7 +26,7 @@ class Contatos extends Component {
 
     componentWillReceiveProps(nextProps){
         //console.log('recuperado via props após update: ', nextProps.contatos);
-        console.log('Contatos componentWillReceiveProps: ', nextProps)
+        //console.log('Contatos componentWillReceiveProps: ', nextProps)
         //console.log('Contatos componentWillReceiveProps: ', nextProps)
         
     }

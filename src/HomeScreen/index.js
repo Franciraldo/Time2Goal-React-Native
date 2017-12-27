@@ -11,7 +11,7 @@ const HomeScreenRouter = DrawerNavigator(
     Home: { screen: HomeScreen },
     GerenciarAgenda: { screen: GerenciarAgendaScreen },
     GerenciarVideosScreen: {screen: GerenciarVideosScreen },
-    FormMentoring: {screen: FormMentoring},
+    FormMentoring: {screen: FormMentoring}, 
     Profile: { screen: Profile }
   },
   {

@@ -35,3 +35,12 @@ export const USER_FORM_MENTORING = 'user_form_mentoring';
 export const USER_HOME = 'user_home';
 export const USER_CONVERSAS = 'user_conversas';
 export const USER_CONTATOS = 'user_contatos';
+export const MODIFICAR_DESCRICAO_PROFISSIONAL = 'modificar_descricao_profissional';
+export const MODIFICAR_AGENCIA = 'modificar_agencia';
+export const MODIFICAR_CONTA = 'modificar_conta';
+export const MODIFICAR_BANCO = 'modificar_banco';
+export const MODIFICAR_IMG1 = 'modificar_img1';
+export const MODIFICAR_IMG2 = 'modificar_img2';
+export const MODIFICAR_IDIOMA = 'modificar_idioma';
+export const MODIFICAR_CATEGORIA_MENTORIA = 'modificar_categoria_mentoria';
+

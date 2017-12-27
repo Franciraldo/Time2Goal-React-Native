@@ -11,17 +11,17 @@ import { getUsuario } from '../actions/AppActions';
 class SideBar extends React.Component {
 
   componentDidMount(){
-    console.log('SideBar componentDidMount: ', this.props)
+    //console.log('SideBar componentDidMount: ', this.props)
   }
 
   componentWillMount(){
     this.props.getUsuario(this.props.email)
-    console.log('SideBar componentWillMount: ', this.props)
+    //console.log('SideBar componentWillMount: ', this.props)
     
 }
 
 componentWillReceiveProps(nextProps){
-  console.log('SideBar componentWillReceiveProps: ', nextProps)
+  //console.log('SideBar componentWillReceiveProps: ', nextProps)
     
 }
 _uploadImage() {
@@ -184,9 +184,8 @@ const mapStateToProps = state => {
 
   const usuario = state.SideBarReducer;
 
-  console.log('mapStateToProps SideBar', usuario)
-
-    //console.log('Conversas mapStateToProps state: ', state);
+  //console.log('mapStateToProps SideBar', usuario)
+ //console.log('Conversas mapStateToProps state: ', state);
 
     return ({
       usuario,
