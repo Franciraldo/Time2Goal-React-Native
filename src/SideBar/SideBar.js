@@ -6,7 +6,7 @@ import firebase from 'firebase';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 const routes = ["Home", "GerenciarAgendaScreen","GerenciarVideosScreen", "Profile"];
-import { getUsuario } from '../actions/AppActions';
+import { getUsuario, signOut } from '../actions/AppActions';
 
 class SideBar extends React.Component {
 
@@ -15,7 +15,7 @@ class SideBar extends React.Component {
   }
 
   componentWillMount(){
-    this.props.getUsuario()
+    this.props.getUsuario(this.props.email)
     console.log('SideBar componentWillMount: ', this.props)
     
 }
@@ -57,7 +57,7 @@ _uploadImage() {
 
   render() {
     
-    const { premium } = this.props.usuario;
+    const premium = this.props.usuario.premium !== null ? this.props.usuario.premium : false  
     const textValue = premium ? "ON": "OFF";
     const buttonBg = premium ? "whitesmoke" : "#e42125";
     const borderBg = premium ? "whitesmoke":"#e42125";
@@ -125,13 +125,7 @@ _uploadImage() {
             </View>
 
             <View style={{ flex: 1,  marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
-              <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => {
-                if(this.props.usuario.id !== ''){
-                  firebase.auth().signOut().then(() => Actions.formLogin())
-                } else {
-                  Actions.formLogin()
-                }
-              }}>
+              <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() =>  this.props.signOut()}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Logout</Text>
                     </TouchableHighlight>
             </View>
@@ -199,4 +193,4 @@ const mapStateToProps = state => {
     })
   }
 
-export default connect(mapStateToProps, {getUsuario})(SideBar)
+export default connect(mapStateToProps, {getUsuario, signOut})(SideBar)

@@ -269,8 +269,10 @@ export const autenticarUsuario = ({email, senha}) => {
 }
 
 const salvarDatavaseDados = (dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64) => {
+    
     firebase.database().ref(`/contatos/ ${emailB64}` )
             .push({nome})
+            
     let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
     .push().set({
         nome: nome !== undefined ? nome : '',
@@ -327,7 +329,7 @@ export const autenticarFacebook = (nome, email, id, url) => {
             var emailB64 = b64.encode(email);
         
             let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
-            usuario.on('value', (snapshot) => {
+            usuario.once('value', (snapshot) => {
                 console.log('USUARIO: ', snapshot.val())
                 if(snapshot.val() !== null){
                     console.log('existe usuario')

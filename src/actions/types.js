@@ -43,4 +43,5 @@ export const MODIFICAR_IMG1 = 'modificar_img1';
 export const MODIFICAR_IMG2 = 'modificar_img2';
 export const MODIFICAR_IDIOMA = 'modificar_idioma';
 export const MODIFICAR_CATEGORIA_MENTORIA = 'modificar_categoria_mentoria';
+export const LOGOUT = 'logout';
 
