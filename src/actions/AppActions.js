@@ -30,7 +30,7 @@ export const adicionaContato = (email) => {
     return dispatch => {
         let emailB64 = b64.encode(email);
         firebase.database().ref(`/contatos/ ${emailB64}` )
-        .once('value')
+        .on('value')
         .then(snapshot => { 
             
             if(snapshot.val()){
@@ -167,19 +167,25 @@ export const conversasUsuarioFetch = (email) => {
     }
 }
 
-export const getUsuario = (email) => {
+export const getUsuario = ( ) => {
     const { currentUser } = firebase.auth();
 
     return dispatch => {
-        let emailB64 = email !== undefined ? b64.encode(email) : b64.encode(currentUser.email);
+        let emailB64 = b64.encode(currentUser.email);
 
-        firebase.database().ref(`/usuarios/ ${emailB64}`)
-            .on("value", snapshot => { 
+        console.log('getUsuario email: ', emailB64)
+        firebase.auth().onAuthStateChanged((user) => {
+            firebase.database().ref(`/usuarios/ ${emailB64}`)
+            .on("value").then( snapshot => { 
+               
                 dispatch({ type: USER_SIDEBAR , payload: _.first(_.values(snapshot.val())) })
                 dispatch({ type: USER_PROFILE , payload: _.first(_.values(snapshot.val())) })
                 dispatch({ type: USER_FORM_MENTORING , payload: _.first(_.values(snapshot.val())) })
                 dispatch({ type: USER_HOME , payload: _.first(_.values(snapshot.val())) })
+
+                console.log('getUsuario snapshot: ',  snapshot)
             })
+        })
     }
 }
 

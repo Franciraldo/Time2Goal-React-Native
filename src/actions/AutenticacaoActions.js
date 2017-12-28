@@ -24,10 +24,16 @@ import { MODIFICA_EMAIL,
          MODIFICAR_VALIDADE_DATA,
          MODIFICAR_CVV,
          MODIFICA_FACEBOOK_ID,
-         MODIFICAR_SCREEN_REQUEST
+         MODIFICAR_SCREEN_REQUEST,
+         USER_SIDEBAR,
+         USER_PROFILE,
+         USER_FORM_MENTORING,
+         USER_HOME
+
         } from './types';
 import { Platform } from 'react-native';
 import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk'
+import _ from 'lodash';
 
 const fs = RNFetchBlob.fs
 const Blob = RNFetchBlob.polyfill.Blob
@@ -220,31 +226,7 @@ export const cadastraUsuario = ({nome, email, senha, descricao, img}) => {
                                 })
                         })
                 }else{
-                    firebase.database().ref(`/contatos/ ${emailB64}` )
-                    .push({nome})
-                    .then(value => { 
-                        
-                        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
-                        .push().set({
-                            nome: nome !== undefined ? nome : '',
-                            email: email,
-                            descricao: descricao !== undefined ? descricao : '',
-                            img: img !== undefined ? img : '',
-                            mentoring: false,
-                            cpf: '',
-                            titularCartao: '',
-                            numeroCartao: '',
-                            validade: '',
-                            cvv: '',
-                            dataNascimento: '',
-                            cep: '',
-                            endereco: '',
-                            pais: '',
-                            premium: false
-                        })
-                        cadastraUsuarioSucesso(dispatch)
-                    })
-                    .catch(erro => cadastraUsuarioErro(erro, dispatch));
+                    
                     
                 }
             }) 
@@ -280,57 +262,89 @@ export const autenticarUsuario = ({email, senha}) => {
         dispatch({type: LOGIN_EM_ANDAMENTO})
 
         firebase.auth().signInWithEmailAndPassword(email, senha)
-        .then(value => loginUsuarioSucesso(dispatch, email))
+        .then(value => loginUsuarioSucesso(dispatch))
         .catch(erro => loginUsuarioErro(erro, dispatch));
     }
     
 }
 
+const salvarDatavaseDados = (dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64) => {
+    firebase.database().ref(`/contatos/ ${emailB64}` )
+            .push({nome})
+    let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
+    .push().set({
+        nome: nome !== undefined ? nome : '',
+        email: email,
+        descricao: descricao !== undefined ? descricao : '',
+        img: img !== undefined ? img : '',
+        mentoring: mentoring !== undefined ? mentoring : false,
+        cpf: cpf !== undefined ? cpf : '',
+        titularCartao: titularCartao !== undefined ? titularCartao : '',
+        numeroCartao: numeroCartao !== undefined ? numeroCartao : '',
+        validade: validade !== undefined ? validade : '',
+        cvv: cvv !== undefined ? cvv : '',
+        dataNascimento: dataNascimento !== undefined ? dataNascimento : '',
+        cep: cep !== undefined ? cep : '',
+        endereco: endereco !== undefined ? endereco : '',
+        pais: pais !== undefined ? pais : '',
+        premium: premium !== undefined ? premium : false,
+        facebookid: id !== undefined ? id : ''
+    })
+    loginUsuarioSucesso(dispatch)
 
+    
+      
+        
+}
+
+const criarUsuarioFireBase = (dispatch, nome, email, url, id, emailB64) => { 
+    console.log('criarUsuarioFireBase')
+    firebase.auth().createUserWithEmailAndPassword(email, emailB64)
+            .then(user => {
+                console.log('criado usuario no firebaseAuth')
+                firebase.auth().signInWithEmailAndPassword(email, emailB64)
+                .then(value =>{
+                    console.log('Autentico FIREBASE: ', value)
+
+                    firebase.auth().onAuthStateChanged((user) => {
+                        console.log('onAuthStateChanged: ', user)
+                        salvarDatavaseDados(dispatch, nome, email, '', url, false, '', '', '', '', '', '', '', '', '', false, id, emailB64)  
+                    })
+                })
+                .catch(erro => loginUsuarioErro(erro, dispatch)); 
+            }) 
+            .catch(erro => { 
+                            console.log('NÃO fois possivel criar usuario no firebaseAuth', erro)
+                        });
+}
 
 export const autenticarFacebook = (nome, email, id, url) => {
     return (dispatch) => {
 
-        dispatch({type: LOGIN_EM_ANDAMENTO})
+            dispatch({type: LOGIN_EM_ANDAMENTO})
 
-        console.log('autenticarFacebookMetod', {nome, email, id, url})
-        var emailB64 = b64.encode(email);
-        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` );
-        usuario.once('value', (snapshot) => {
-            if(snapshot.val() === null){
-                firebase.database().ref(`/contatos/ ${emailB64}` )
-                    .push({nome})
-                    .then(value => { 
-                        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
-                        .push().set({
-                            nome: nome !== undefined ? nome : '',
-                            email: email !== undefined ? email : '',
-                            descricao: '',
-                            img: url !== undefined ? url : '',
-                            mentoring: false,
-                            cpf: '',
-                            titularCartao: '',
-                            numeroCartao: '',
-                            validade: '',
-                            cvv: '',
-                            dataNascimento: '',
-                            cep: '',
-                            endereco: '',
-                            pais: '',
-                            premium: false,
-                            facebookid: id !== undefined ? id : ''
-                        })
-                        loginUsuarioSucesso(dispatch, email)
-                    })
-                    .catch(erro => { console.log('autenticarFacebookMetodERRO', erro), cadastraUsuarioErro(erro, dispatch) });
+            console.log('autenticarFacebookMetod', {nome, email, id, url})
+            var emailB64 = b64.encode(email);
+        
+            let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
+            usuario.on('value', (snapshot) => {
+                console.log('USUARIO: ', snapshot.val())
+                if(snapshot.val() !== null){
+                    console.log('existe usuario')
+        
+                    firebase.auth().signInWithEmailAndPassword(email, emailB64)
+                    .then(value => loginUsuarioSucesso(dispatch))
+                    .catch(erro => loginUsuarioErro(erro, dispatch));
 
-                }
-                loginUsuarioSucesso(dispatch, email)
+                } else {
+                    console.log('NÃO existe usuario')
+                    criarUsuarioFireBase(dispatch, nome, email, url, id, emailB64)
+                }   
             })
         }
 }
 
-const loginUsuarioSucesso = (dispatch, email) => {
+const loginUsuarioSucesso = (dispatch) => {
     dispatch(
         {
             type: LOGIN_USUARIO_SUCESSO,

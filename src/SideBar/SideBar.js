@@ -11,17 +11,17 @@ import { getUsuario } from '../actions/AppActions';
 class SideBar extends React.Component {
 
   componentDidMount(){
-    //console.log('SideBar componentDidMount: ', this.props)
+    console.log('SideBar componentDidMount: ', this.props)
   }
 
   componentWillMount(){
-    this.props.getUsuario(this.props.email)
-    //console.log('SideBar componentWillMount: ', this.props)
+    this.props.getUsuario()
+    console.log('SideBar componentWillMount: ', this.props)
     
 }
 
 componentWillReceiveProps(nextProps){
-  //console.log('SideBar componentWillReceiveProps: ', nextProps)
+  console.log('SideBar componentWillReceiveProps: ', nextProps)
     
 }
 _uploadImage() {
@@ -125,7 +125,13 @@ _uploadImage() {
             </View>
 
             <View style={{ flex: 1,  marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
-              <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => firebase.auth().signOut().then(() => Actions.formLogin())}>
+              <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => {
+                if(this.props.usuario.id !== ''){
+                  firebase.auth().signOut().then(() => Actions.formLogin())
+                } else {
+                  Actions.formLogin()
+                }
+              }}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Logout</Text>
                     </TouchableHighlight>
             </View>

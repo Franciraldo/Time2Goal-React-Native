@@ -16,7 +16,7 @@ class Conversas extends Component {
         //console.log('Conversas componentWillMount email: ', this.props.email)
         this.props.conversasUsuarioFetch(this.props.usuario.email)
         if(this.props.conversas !== null){
-            console.log('componentWillMount: ', this.criaFonteDeDados(this.props.conversas))
+            //console.log('componentWillMount: ', this.criaFonteDeDados(this.props.conversas))
             this.criaFonteDeDados(this.props.conversas);
         }
         

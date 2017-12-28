@@ -16,7 +16,7 @@ class Contatos extends Component {
     componentWillMount(){
         this.props.contatosUsuarioFetch(this.props.usuario.email)
         if(this.props.contatos !== null){
-            console.log('componentWillMount: ', this.criaFonteDeDados(this.props.contatos))
+            //console.log('componentWillMount: ', this.criaFonteDeDados(this.props.contatos))
             this.criaFonteDeDados(this.props.contatos);
         }
         
