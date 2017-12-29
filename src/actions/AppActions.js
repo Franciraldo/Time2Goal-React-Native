@@ -167,26 +167,6 @@ export const conversasUsuarioFetch = (email) => {
     }
 }
 
-export const getUsuario = (email) => {
-    return dispatch => {
-        let emailB64 = b64.encode(email);
-
-        console.log('getUsuario email: ', emailB64)
-        firebase.auth().onAuthStateChanged((user) => {
-            firebase.database().ref(`/usuarios/ ${emailB64}`)
-            .on("value", snapshot => { 
-               
-                dispatch({ type: USER_SIDEBAR , payload: _.first(_.values(snapshot.val())) })
-                dispatch({ type: USER_PROFILE , payload: _.first(_.values(snapshot.val())) })
-                dispatch({ type: USER_FORM_MENTORING , payload: _.first(_.values(snapshot.val())) })
-                dispatch({ type: USER_HOME , payload: _.first(_.values(snapshot.val())) })
-
-                console.log('getUsuario snapshot: ',  snapshot)
-            })
-        })
-    }
-}
-
 export const signOut = ( ) => {
     return dispatch => {
 
@@ -208,15 +188,16 @@ export const signOut = ( ) => {
             premium: false,
             facebookid: ''
         }
-
-        dispatch({ type: USER_SIDEBAR , payload: usuario })
-        dispatch({ type: USER_PROFILE , payload: usuario })
-        dispatch({ type: USER_FORM_MENTORING , payload: usuario })
-        dispatch({ type: USER_HOME , payload: usuario })
-
         
         firebase.auth().onAuthStateChanged((user) => {
-            firebase.auth().signOut().then(() => Actions.formLogin())
+            firebase.auth().signOut().then(() =>{
+                dispatch({ type: USER_SIDEBAR , payload: usuario })
+                dispatch({ type: USER_PROFILE , payload: usuario })
+                dispatch({ type: USER_FORM_MENTORING , payload: usuario })
+                dispatch({ type: USER_HOME , payload: usuario })
+                
+                Actions.formLogin()
+            })
         })
     }
 }

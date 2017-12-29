@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, Button, Picker, StyleSheet, ScrollView, TouchableHighlight } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { modificarBool, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV} from '../actions/AutenticacaoActions';
+import { cadastraUsuario, modificarBool, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV} from '../actions/AutenticacaoActions';
 
 
 class formComplement extends Component { 
@@ -24,13 +24,7 @@ class formComplement extends Component {
         const { nome, email, senha, descricao, img, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais } = this.props;
         const bool = true
         console.log({nome, email, senha, descricao, img, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais});
-        switch(this.props.screen_request){
-            case 'formCadastro' :
-                this.props.cadastraUsuario({nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais});
-            break;
-            case 'formUpdate':
-            break;
-        }
+        this.props.cadastraUsuario({nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais});
         
     }
     renderButton(){
@@ -376,6 +370,12 @@ class formComplement extends Component {
 
 const mapStateToProps = state => (
     {
+        nome: state.AuthenticacaoReducer.nome,
+        email: state.AuthenticacaoReducer.email,
+        senha: state.AuthenticacaoReducer.senha,
+        descricao: state.AuthenticacaoReducer.descricao,
+        bool: state.AuthenticacaoReducer.bool,
+        img: state.AuthenticacaoReducer.img,
         cpf: state.AuthenticacaoReducer.cpf,
         dataNascimento: state.AuthenticacaoReducer.dataNascimento,
         cep: state.AuthenticacaoReducer.cep,
@@ -390,7 +390,7 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps, {modificarBool, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV})(formComplement);
+export default connect(mapStateToProps, { cadastraUsuario, modificarBool, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV})(formComplement);
 
 const styles = StyleSheet.create({
         container: {

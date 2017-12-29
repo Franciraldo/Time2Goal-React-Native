@@ -6,7 +6,7 @@ import firebase from 'firebase';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 const routes = ["Home", "GerenciarAgendaScreen","GerenciarVideosScreen", "Profile"];
-import { getUsuario, signOut } from '../actions/AppActions';
+import { signOut } from '../actions/AppActions';
 
 class SideBar extends React.Component {
 
@@ -15,7 +15,6 @@ class SideBar extends React.Component {
   }
 
   componentWillMount(){
-    this.props.getUsuario(this.props.email)
     console.log('SideBar componentWillMount: ', this.props)
     
 }
@@ -193,4 +192,4 @@ const mapStateToProps = state => {
     })
   }
 
-export default connect(mapStateToProps, {getUsuario, signOut})(SideBar)
+export default connect(mapStateToProps, {signOut})(SideBar)

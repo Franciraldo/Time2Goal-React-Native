@@ -8,15 +8,50 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria } from '../actions/FormMentoringActions';
 import { modificaScreenRequest } from '../actions/AutenticacaoActions';
+import { enviarFormMentoring } from '../actions/FormMentoringActions';
+
+
 
 class FormMentoring extends React.Component {
-  componentDidMount() {
-    //alert("No Users Found", "Oops, Looks like you are not signed in");
+  
+    componentDidMount(){
+        console.log('FormMentoring componentDidMount: ', this.props)
+      }
+
+      componentWillMount(){
+        console.log('FormMentoring componentWillMount: ', this.props)
+        
+    }
+
+    componentWillReceiveProps(nextProps){
+      console.log('FormMentoring componentWillReceiveProps: ', nextProps)
+      
+        
+    }
+
+  _cadastraUsuario() {
+      const { descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria } = this.props;
+      const nome = this.props.usuario.nome
+      const email = this.props.usuario.email
+
+      console.log('enviarDados Mentoring', { nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria }) 
+      if(nome != undefined && email != undefined, descricao_profissional != undefined, agencia != undefined, conta != undefined, banco != undefined, img1 != undefined, img2 != undefined, idioma != undefined, categoria_mentoria != undefined ){
+        this.props.enviarFormMentoring(nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, this.props.navigation)
+       
+      }else{
+          alert('Por favor preencha todos os campos antes de enviar o formulario')
+      }
+      
   }
 
-  renderButton(){    
+  renderButton(){   
+    if(this.props.enviando_dados){
+        return (
+            <ActivityIndicator size='large'/>
+        );    
+    } 
         return(
-            <TouchableHighlight style={{ marginTop: 20, borderWidth: 1, borderColor: '#532e1c', borderRadius: 18, backgroundColor: '#fc5b07', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => this._cadastraUsuario()}>
+            <TouchableHighlight style={{ marginTop: 20, borderWidth: 1, borderColor: '#532e1c', borderRadius: 18, backgroundColor: '#fc5b07', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() =>  this._cadastraUsuario()}>
                 <Text style={{fontSize: 20, color: '#ffffff', fontWeight: 'bold'}}>ENVIAR</Text>
             </TouchableHighlight>
         )
@@ -50,7 +85,7 @@ _uploadImage2() {
     }
 }
 renderImage2(){
-    console.log('FormMentoring img2:', this.props.img2)
+    //console.log('FormMentoring img2:', this.props.img2)
   if (this.props.img2 !== undefined) {
       return (
           <Image
@@ -194,18 +229,26 @@ FormMentoring.navigationOptions = ({ navigation }) => ({
   )
 });
 
-const mapStateToProps = state => (
-  {
-    descricao_profissional: state.FormMentoringReducer.descricao_profissional,
-    agencia: state.FormMentoringReducer.agencia,
-    conta: state.FormMentoringReducer.conta,
-    banco: state.FormMentoringReducer.banco,
-    img1: state.FormMentoringReducer.img1,
-    img2: state.FormMentoringReducer.img2,
-    idioma: state.FormMentoringReducer.idioma,
-    categoria_mentoria: state.FormMentoringReducer.categoria_mentoria,
-  }
-);
+const mapStateToProps = state => {
+    const usuario = state.FormMentoringReducer;
+
+  //console.log('mapStateToProps SideBar', usuario)
+ //console.log('Conversas mapStateToProps state: ', state);
+
+    return ({
+        usuario,
+        descricao_profissional: state.FormMentoringReducer.descricao_profissional,
+        agencia: state.FormMentoringReducer.agencia,
+        conta: state.FormMentoringReducer.conta,
+        banco: state.FormMentoringReducer.banco,
+        img1: state.FormMentoringReducer.img1,
+        img2: state.FormMentoringReducer.img2,
+        idioma: state.FormMentoringReducer.idioma,
+        categoria_mentoria: state.FormMentoringReducer.categoria_mentoria,
+        enviando_dados: state.FormMentoringReducer.enviando_dados
+    })
+    
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -274,4 +317,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, {modificaScreenRequest, modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria})(FormMentoring)
+export default connect(mapStateToProps, { enviarFormMentoring, modificaScreenRequest, modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria})(FormMentoring)

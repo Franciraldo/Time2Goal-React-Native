@@ -1,5 +1,5 @@
 
-import { USER_SIDEBAR } from '../actions/types';
+import { USER_SIDEBAR, USER_SIDEBAR_REFRESH } from '../actions/types';
 
 const INITIAL_STATE = { 
 
@@ -23,7 +23,11 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch(action.type) { 
         case USER_SIDEBAR:
-            return action.payload 
+            return action.payload
+        
+        case USER_SIDEBAR_REFRESH:
+        console.log('USER_SIDEBAR_REFRESH', )
+            return { INITIAL_STATE }     
             
         default:
             return state;    

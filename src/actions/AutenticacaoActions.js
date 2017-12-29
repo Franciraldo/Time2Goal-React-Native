@@ -35,6 +35,7 @@ import { Platform } from 'react-native';
 import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk'
 import _ from 'lodash';
 
+
 const fs = RNFetchBlob.fs
 const Blob = RNFetchBlob.polyfill.Blob
 const testImageName = `time2goal-${Platform.OS}-${new Date()}.png`
@@ -160,80 +161,66 @@ export const modificaNacionalidade = (pais) => {
     }
 }
 
-export const cadastraUsuario = ({nome, email, senha, descricao, img}) => {
+export const cadastraUsuario = ({nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais}) => {
     //console.log('props', {nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais});
     return (dispatch) => {
         console.log('cadastroMetod:',{nome, email, senha, descricao, img});
         var emailB64 = b64.encode(email);
         dispatch({type: CADASTRO_EM_ANDAMENTO});
         
+        
         firebase.auth().createUserWithEmailAndPassword(email, senha)
             .then(user => {
                 console.log('User: ',user)
-                if(img !== undefined){
-            
-                        firebase.auth()
+
+                firebase.auth()
                         .signInWithEmailAndPassword(email, senha)
                         .catch((err) => {
                             console.log('firebase sigin failed', err)
                         })
-            
+
                         firebase.auth().onAuthStateChanged((user) => {
-                            let rnfbURI = RNFetchBlob.wrap(img)
-                            // create Blob from file path
-                            Blob
-                                .build(rnfbURI, { type : 'image/png;'})
-                                .then((blob) => {
-                                // upload image using Firebase SDK
-                                firebase.storage()
-                                    .ref('images-users') // rn-firebase-upload
-                                    .child(testImageName)
-                                    .put(blob, { contentType : 'image/png' })
-                                    .then((snapshot) => {
-                                    console.log('snapshot', snapshot)
-                                    
-                                firebase.storage()
-                                    .ref('images-users/' + testImageName)
-                                    .getDownloadURL().then((url) => {
-                                                console.log('url: ', url)
-                                            let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
-                                            .push().set({
-                                                nome: nome !== undefined ? nome : '',
-                                                email: email,
-                                                descricao: descricao !== undefined ? descricao : '',
-                                                img: url !== undefined ? url : '',
-                                                mentoring: false,
-                                                cpf: '',
-                                                titularCartao: '',
-                                                numeroCartao: '',
-                                                validade: '',
-                                                cvv: '',
-                                                dataNascimento: '',
-                                                cep: '',
-                                                endereco: '',
-                                                pais: '',
-                                                premium: false
-                                            })
-                                            cadastraUsuarioSucesso(dispatch)
-                                                
+                           
+                            
+
+                            if(img !== undefined){
+                                let rnfbURI = RNFetchBlob.wrap(img)
+                                // create Blob from file path
+                                Blob
+                                    .build(rnfbURI, { type : 'image/png;'})
+                                    .then((blob) => {
+                                    // upload image using Firebase SDK
+                                    firebase.storage()
+                                        .ref('images-users') // rn-firebase-upload
+                                        .child(testImageName)
+                                        .put(blob, { contentType : 'image/png' })
+                                        .then((snapshot) => {
+                                        console.log('snapshot', snapshot)
+                                        
+                                    firebase.storage()
+                                        .ref('images-users/' + testImageName)
+                                        .getDownloadURL().then((url) => {
+                                            console.log('url: ', url)
+                                            salvarDatavaseDados(dispatch, nome, email, descricao, url, false, cpf, titularCard, numeroCard, validadeCard, cvv, dataNascimento, cep, endereco, pais, true, '', emailB64)    
                                             }).catch((err) => {
                                                 console.log('display storage filed', err)
                                             })
                                             blob.close()
+                                        })
+                                    }).catch((err) => {
+                                        console.log('firebase upload storage filed', err)
                                     })
-                                }).catch((err) => {
-                                    console.log('firebase upload storage filed', err)
-                                })
+                            
+                            } else {
+                                salvarDatavaseDados(dispatch, nome, email, descricao, '', false, '', '', '', '', '', '', '', '', '', false, '', emailB64)
+                            }
+                            
+                            //cadastraUsuarioSucesso(dispatch)
                         })
-                }else{
-                    
-                    
-                }
             }) 
             .catch(erro => cadastraUsuarioErro(erro, dispatch));
         }
 }
-
 
 
 const cadastraUsuarioSucesso = (dispatch) => {
@@ -260,9 +247,10 @@ export const autenticarUsuario = ({email, senha}) => {
     return (dispatch) => {
 
         dispatch({type: LOGIN_EM_ANDAMENTO})
+        var emailB64 = b64.encode(email);
 
         firebase.auth().signInWithEmailAndPassword(email, senha)
-        .then(value => loginUsuarioSucesso(dispatch))
+        .then(value => loginUsuarioSucesso(dispatch, emailB64))
         .catch(erro => loginUsuarioErro(erro, dispatch));
     }
     
@@ -272,7 +260,7 @@ const salvarDatavaseDados = (dispatch, nome, email, descricao, img, mentoring, c
     
     firebase.database().ref(`/contatos/ ${emailB64}` )
             .push({nome})
-            
+    console.log('salvarDatavaseDados', {dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64})   
     let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
     .push().set({
         nome: nome !== undefined ? nome : '',
@@ -292,7 +280,7 @@ const salvarDatavaseDados = (dispatch, nome, email, descricao, img, mentoring, c
         premium: premium !== undefined ? premium : false,
         facebookid: id !== undefined ? id : ''
     })
-    loginUsuarioSucesso(dispatch)
+    loginUsuarioSucesso(dispatch, emailB64)
 
     
       
@@ -335,7 +323,7 @@ export const autenticarFacebook = (nome, email, id, url) => {
                     console.log('existe usuario')
         
                     firebase.auth().signInWithEmailAndPassword(email, emailB64)
-                    .then(value => loginUsuarioSucesso(dispatch))
+                    .then(value => loginUsuarioSucesso(dispatch, emailB64))
                     .catch(erro => loginUsuarioErro(erro, dispatch));
 
                 } else {
@@ -346,12 +334,24 @@ export const autenticarFacebook = (nome, email, id, url) => {
         }
 }
 
-const loginUsuarioSucesso = (dispatch) => {
+const loginUsuarioSucesso = (dispatch, emailB64) => {
     dispatch(
         {
             type: LOGIN_USUARIO_SUCESSO,
         }
     );
+
+    firebase.database().ref(`/usuarios/ ${emailB64}`)
+        .on("value", snapshot => { 
+           
+            dispatch({ type: USER_SIDEBAR , payload: _.first(_.values(snapshot.val())) })
+            dispatch({ type: USER_PROFILE , payload: _.first(_.values(snapshot.val())) })
+            dispatch({ type: USER_FORM_MENTORING , payload: _.first(_.values(snapshot.val())) })
+            dispatch({ type: USER_HOME , payload: _.first(_.values(snapshot.val())) })
+
+            console.log('getUsuario snapshot: ',  snapshot)
+        })
+
     Actions.principal();
 }
 const loginUsuarioErro = (erro, dispatch) => {

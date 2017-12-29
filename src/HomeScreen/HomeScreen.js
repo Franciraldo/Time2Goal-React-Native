@@ -9,7 +9,6 @@ import Videos from '../components/Videos';
 import { habilitaInclusaoContato } from '../actions/AppActions'; 
 import { Container, Header, Title, Left, Icon, Right, Button, Body, Content,Text, Card, CardItem } from "native-base";
 import { connect } from 'react-redux';
-import { getUsuario } from '../actions/AppActions';
 class HomeScreen extends React.Component {
   
       componentDidMount(){
@@ -17,7 +16,6 @@ class HomeScreen extends React.Component {
       }
 
       componentWillMount(){
-        this.props.getUsuario(this.props.email)
         console.log('HomeScreen componentWillMount: ', this.props)
         
     }
@@ -106,7 +104,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
 
-  const usuario = state.SideBarReducer;
+  const usuario = state.HomeReducer;
 
   //console.log('mapStateToProps SideBar', usuario)
  //console.log('Conversas mapStateToProps state: ', state);
@@ -117,4 +115,4 @@ const mapStateToProps = state => {
     })
   }
 
-export default connect(mapStateToProps, {getUsuario})(HomeScreen)
+export default connect(mapStateToProps, {})(HomeScreen)

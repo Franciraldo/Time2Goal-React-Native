@@ -44,4 +44,8 @@ export const MODIFICAR_IMG2 = 'modificar_img2';
 export const MODIFICAR_IDIOMA = 'modificar_idioma';
 export const MODIFICAR_CATEGORIA_MENTORIA = 'modificar_categoria_mentoria';
 export const LOGOUT = 'logout';
+export const ENVIANDO_DADOS_FORM_MENTORING_SUCESSO = 'enviando_dados_form_mentoring_sucesso';
+export const ENVIANDO_DADOS_FORM_MENTORING_ERRO = 'enviando_dados_form_mentoring_erro';
+export const ENVIANDO_DADOS = 'enviando_dados';
+export const USER_SIDEBAR_REFRESH = 'user_sidebar_refresh';
 

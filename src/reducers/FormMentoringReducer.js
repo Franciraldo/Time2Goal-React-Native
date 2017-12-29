@@ -7,7 +7,10 @@ import { USER_FORM_MENTORING,
          MODIFICAR_IMG1,
          MODIFICAR_IMG2,
          MODIFICAR_IDIOMA,
-         MODIFICAR_CATEGORIA_MENTORIA
+         MODIFICAR_CATEGORIA_MENTORIA,
+         ENVIANDO_DADOS_FORM_MENTORING_SUCESSO,
+         ENVIANDO_DADOS_FORM_MENTORING_ERRO,
+         ENVIANDO_DADOS
         } from '../actions/types';
 
 const INITIAL_STATE = { 
@@ -20,6 +23,7 @@ const INITIAL_STATE = {
     img2: '',
     idioma: '',
     categoria_mentoria: '',
+    enviando_dados: false
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -49,8 +53,13 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, idioma: action.payload }
           
         case MODIFICAR_CATEGORIA_MENTORIA:
-            return { ...state, categoria_mentoria: action.payload }    
-
+            return { ...state, categoria_mentoria: action.payload }
+        
+        case ENVIANDO_DADOS_FORM_MENTORING_SUCESSO:
+            return { ...state, enviando_dados: false}    
+        
+        case ENVIANDO_DADOS: 
+            return { ...state, enviando_dados: true }     
         default:
             return state;    
     }
