@@ -48,4 +48,7 @@ export const ENVIANDO_DADOS_FORM_MENTORING_SUCESSO = 'enviando_dados_form_mentor
 export const ENVIANDO_DADOS_FORM_MENTORING_ERRO = 'enviando_dados_form_mentoring_erro';
 export const ENVIANDO_DADOS = 'enviando_dados';
 export const USER_SIDEBAR_REFRESH = 'user_sidebar_refresh';
+export const UPDATE_DADOS_EM_ANDAMENTO = 'update_dados_em_andamento';
+export const UPDATE_DADOS_SUCESSO = 'update_dados_sucesso';
+
 

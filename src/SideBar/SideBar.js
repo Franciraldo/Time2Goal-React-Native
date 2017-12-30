@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 const routes = ["Home", "GerenciarAgendaScreen","GerenciarVideosScreen", "Profile"];
 import { signOut } from '../actions/AppActions';
+import { habilitarPremiumSideBar } from '../actions/AutenticacaoActions';
 
 class SideBar extends React.Component {
 
@@ -31,8 +32,12 @@ _uploadImage() {
     toogle: true
   }
   _onPress() {
-    const newState = !this.state.toogle;
-    this.setState({ toogle: newState })
+    const { email, titularCartao, numeroCartao, validade, cvv, premium } = this.props.usuario
+   
+    if( titularCartao != '' && numeroCartao != '' && validade != '' && cvv != ''){
+      this.props.habilitarPremiumSideBar(!premium, email.toString())
+    }
+
   }
 
   renderImage(){
@@ -192,4 +197,4 @@ const mapStateToProps = state => {
     })
   }
 
-export default connect(mapStateToProps, {signOut})(SideBar)
+export default connect(mapStateToProps, {signOut, habilitarPremiumSideBar})(SideBar)

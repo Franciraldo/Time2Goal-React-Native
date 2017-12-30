@@ -4,5 +4,5 @@ import CameraView from '../components/CameraView';
 import { StackNavigator } from "react-navigation";
 export default (DrawNav = StackNavigator({
     FormMentoring: { screen: FormMentoring },
-    CameraView: { screen: CameraView },
+    CameraView: { screen: CameraView , navigationOptions: { header: null }},
 }));

@@ -37,6 +37,7 @@ class FormMentoring extends React.Component {
       console.log('enviarDados Mentoring', { nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria }) 
       if(nome != undefined && email != undefined, descricao_profissional != undefined, agencia != undefined, conta != undefined, banco != undefined, img1 != undefined, img2 != undefined, idioma != undefined, categoria_mentoria != undefined ){
         this.props.enviarFormMentoring(nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, this.props.navigation)
+        
        
       }else{
           alert('Por favor preencha todos os campos antes de enviar o formulario')

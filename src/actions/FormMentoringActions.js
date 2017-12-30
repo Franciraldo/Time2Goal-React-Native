@@ -142,8 +142,7 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
                                                 .ref('img-form-mentoring/' + testImageName)
                                                 .getDownloadURL().then((url) => {
                                                                 console.log('url2: ', url)
-                                                                let mentore = firebase.database().ref(`/mentores/ ${emailB64}` )
-                                                                .push().set({
+                                                                let mentore = firebase.database().ref(`/mentores/ ${emailB64}` ).set({
                                                                         nome: nome,
                                                                         email: email,
                                                                         descricao_profissional: descricao_profissional,
@@ -155,7 +154,9 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
                                                                         idioma: idioma,
                                                                         categoria_mentoria: categoria_mentoria,
                                                                         mentoring: false,
-                                                                })    
+                                                                })  
+                                                                
+                                                                let usuario = firebase.database().ref(`/usuarios/ ${emailB64}`).child('mentoring').set(true)
                                                                 
                                                                 dadosEnviadosComSucesso(dispatch, navigation, email)
                                                                 

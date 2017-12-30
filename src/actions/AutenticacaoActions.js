@@ -28,7 +28,9 @@ import { MODIFICA_EMAIL,
          USER_SIDEBAR,
          USER_PROFILE,
          USER_FORM_MENTORING,
-         USER_HOME
+         USER_HOME,
+         UPDATE_DADOS_EM_ANDAMENTO,
+         UPDATE_DADOS_SUCESSO
 
         } from './types';
 import { Platform } from 'react-native';
@@ -124,24 +126,28 @@ export const modificaEndereco = (endereco) => {
     }
 }
 export const modificaTitularCard = (titularCartao) => {
+    console.log(titularCartao)
     return {
         type: MODIFICAR_TITULAR_CARD,
         payload: titularCartao
     }
 }
 export const modificaNumeroCard = (numeroCartao) => {
+    console.log(numeroCartao)
     return {
         type: MODIFICAR_NUMERO_CARD,
         payload: numeroCartao
     }
 }
 export const modificaValidadeData = (validadeData) => {
+    console.log(validadeData)
     return {
         type: MODIFICAR_VALIDADE_DATA,
         payload: validadeData
     }
 }
 export const modificaCVV = (cvv) => {
+    console.log(cvv)
     return {
         type: MODIFICAR_CVV,
         payload: cvv
@@ -258,11 +264,9 @@ export const autenticarUsuario = ({email, senha}) => {
 
 const salvarDatavaseDados = (dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64) => {
     
-    firebase.database().ref(`/contatos/ ${emailB64}` )
-            .push({nome})
+    firebase.database().ref(`/contatos/ ${emailB64}`).set({nome})
     console.log('salvarDatavaseDados', {dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64})   
-    let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
-    .push().set({
+    let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
         nome: nome !== undefined ? nome : '',
         email: email,
         descricao: descricao !== undefined ? descricao : '',
@@ -308,6 +312,83 @@ const criarUsuarioFireBase = (dispatch, nome, email, url, id, emailB64) => {
                         });
 }
 
+export const UpdateDados = (nome, email, descricao, img, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, navigation) => {
+    return (dispatch) => {
+        dispatch({type: UPDATE_DADOS_EM_ANDAMENTO})
+        var emailB64 = b64.encode(email);
+        console.log('UpdateDados: ', {nome, email, descricao, img, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, navigation})
+            let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
+                nome: nome ,
+                email: email,
+                descricao: descricao,
+                img: img,
+                cpf: cpf,
+                titularCartao: titularCartao,
+                numeroCartao: numeroCartao,
+                validade: validade,
+                cvv: cvv,
+                dataNascimento: dataNascimento,
+                cep: cep,
+                endereco: endereco,
+                pais: pais,
+                premium: premium,
+            })
+            updateDadosSucesso(dispatch, navigation)
+    }
+}
+
+export const habilitarPremiumSideBar = (bool, email) => {
+    return dispatch => {
+        console.log('habilitarPremiumSideBar', {bool, email})
+        var emailB64 = b64.encode(email);
+        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).child('premium').set(bool)
+    }
+}
+
+export const UpdateImg = (img, email) => {
+    return dispatch => {
+        var emailB64 = b64.encode(email);
+        let rnfbURI = RNFetchBlob.wrap(img)
+            // create Blob from file path
+            Blob
+                .build(rnfbURI, { type : 'image/png;'})
+                .then((blob) => {
+                // upload image using Firebase SDK
+                firebase.storage()
+                    .ref('images-users') // rn-firebase-upload
+                    .child(testImageName)
+                    .put(blob, { contentType : 'image/png' })
+                    .then((snapshot) => {
+                    console.log('snapshot', snapshot)
+                    
+                firebase.storage()
+                    .ref('images-users/' + testImageName)
+                    .getDownloadURL().then((url) => {
+                        console.log('url: ', url)
+                        
+                        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
+                            img: url,
+                        })
+                        updateDadosSucesso(dispatch, navigation)
+
+                        }).catch((err) => {
+                            console.log('display storage filed', err)
+                        })
+                        blob.close()
+                    })
+                }).catch((err) => {
+                    console.log('firebase upload storage filed', err)
+                })
+
+        }
+    }
+
+
+const updateDadosSucesso = (dispatch, navigation) => {
+    dispatch({ type: UPDATE_DADOS_SUCESSO})
+    navigation.navigate("Home")
+}
+
 export const autenticarFacebook = (nome, email, id, url) => {
     return (dispatch) => {
 
@@ -344,11 +425,11 @@ const loginUsuarioSucesso = (dispatch, emailB64) => {
     firebase.database().ref(`/usuarios/ ${emailB64}`)
         .on("value", snapshot => { 
            
-            dispatch({ type: USER_SIDEBAR , payload: _.first(_.values(snapshot.val())) })
-            dispatch({ type: USER_PROFILE , payload: _.first(_.values(snapshot.val())) })
-            dispatch({ type: USER_FORM_MENTORING , payload: _.first(_.values(snapshot.val())) })
-            dispatch({ type: USER_HOME , payload: _.first(_.values(snapshot.val())) })
-
+            dispatch({ type: USER_SIDEBAR , payload: snapshot.val() })
+            dispatch({ type: USER_PROFILE , payload: snapshot.val() })
+            dispatch({ type: USER_FORM_MENTORING , payload: snapshot.val() })
+            dispatch({ type: USER_HOME , payload: snapshot.val() })
+            UPDATE_DADOS_SUCESSO
             console.log('getUsuario snapshot: ',  snapshot)
         })
 

@@ -1,5 +1,5 @@
 
-import { USER_PROFILE } from '../actions/types';
+import { USER_PROFILE, UPDATE_DADOS_EM_ANDAMENTO, UPDATE_DADOS_SUCESSO } from '../actions/types';
 
 const INITIAL_STATE = { 
 
@@ -17,14 +17,18 @@ const INITIAL_STATE = {
     cep: '',
     endereco: '',
     pais: '',
-    premium: ''
+    premium: '',
+    update_dados: false
 }
 
 export default (state = INITIAL_STATE, action) => {
     switch(action.type) { 
         case USER_PROFILE:
-            return action.payload 
-            
+            return action.payload
+        case UPDATE_DADOS_EM_ANDAMENTO: 
+            return { ...state, update_dados: true } 
+        case UPDATE_DADOS_SUCESSO: 
+            return { ...state, update_dados: false } 
         default:
             return state;    
     }

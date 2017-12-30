@@ -6,14 +6,29 @@ import { StackNavigator } from "react-navigation";
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { modificaEmail, modificarBool, modificaScreenRequest, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV } from '../actions/AutenticacaoActions';
+import { UpdateDados, UpdateImg, modificaEmail, modificarBool, modificarIMG, modificaScreenRequest, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV } from '../actions/AutenticacaoActions';
 import formComplement from '../components/FormComplement'
-import { setEmail } from '../actions/AutenticacaoActions';
+
 
 
 class Profile extends React.Component {
     componentWillMount(){
-        console.log('Profile componentWillMount props: ', this.props)  
+        console.log('Profile componentWillMount props: ', this.props)
+        this.props.modificaEmail(this.props.usuario.email)  
+        this.props.modificarBool(this.props.usuario.premium)
+        this.props.modificaNome(this.props.usuario.nome)
+        this.props.modificaDescricao(this.props.usuario.descricao)
+        this.props.modificaNacionalidade(this.props.usuario.dataNascimento)
+        this.props.modificaCPF(this.props.usuario.cpf)
+        this.props.modificaDataNascimento(this.props.usuario.dataNascimento)
+        this.props.modificaCEP(this.props.usuario.cep)
+        this.props.modificaEndereco(this.props.usuario.endereco)
+        this.props.modificaTitularCard(this.props.usuario.titularCartao)
+        this.props.modificaNumeroCard(this.props.usuario.numeroCartao)
+        this.props.modificaValidadeData(this.props.usuario.validade)
+        this.props.modificaCVV(this.props.usuario.cvv)
+        this.props.modificarIMG(this.props.usuario.img)
+        this.props.modificaScreenRequest('formUpdate')
         
     }
     
@@ -25,28 +40,35 @@ class Profile extends React.Component {
     //alert("No Users Found", "Oops, Looks like you are not signed in");
   }
 
-  renderButton(){    
+  renderButton(){   
+    if(this.props.update_dados){
+        return (
+            <ActivityIndicator size='large'/>
+        );    
+    } 
         return(
-            <TouchableHighlight style={{ marginTop: 20, borderWidth: 1, borderColor: '#532e1c', borderRadius: 18, backgroundColor: '#fc5b07', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => this._cadastraUsuario()}>
+            <TouchableHighlight style={{ marginTop: 20, borderWidth: 1, borderColor: '#532e1c', borderRadius: 18, backgroundColor: '#fc5b07', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => this._updateDados()}>
                 <Text style={{fontSize: 20, color: '#ffffff', fontWeight: 'bold'}}>Salvar</Text>
             </TouchableHighlight>
         )
+}
+_updateDados(){
+    const { nome, email, descricao, img, cpf, dataNascimento, cep, endereco, titularCard,numeroCard, validadeCard, cvv, pais, bool, navigation } = this.props;
+    if(img.toString() === this.props.usuario.img.toString()){
+        this.props.UpdateDados(nome, email, descricao, this.props.usuario.img.toString(), cpf, titularCard, numeroCard, validadeCard, cvv, dataNascimento, cep, endereco, pais, bool, navigation)
+    }else{
+        this.props.UpdateDados(nome, email, descricao, '', cpf, titularCard, numeroCard, validadeCard, cvv, dataNascimento, cep, endereco, pais, bool, navigation)
+        UpdateImg(img, email)
+    }
+    
+    //this.props.UpdateDados(nome, email, descricao, img, this.props.usuario.mentoring, cpf, titularCard, numeroCard, validadeCard, cvv, dataNascimento, cep, endereco, pais, bool, this.props.navigation, )
 }
 _uploadImage() {
   Actions.camera()
 }
 _onPress() {
-  if(this.props.email !== undefined && this.props.senha !== undefined){
-      console.log('form Cadastro init bool: ', this.props.bool)
       this.props.modificarBool(!this.props.bool)
-      console.log('form Cadastro bool: ', this.props.bool)
-      this.props.modificaScreenRequest('formCadastro')
-      Actions.formComplement()
-  }else{
-      alert('Por Favor, informe o email e a senha antes de selecionar este botão.')
-  }
-         
-  
+      
 }
 
   renderImage(){
@@ -66,6 +88,24 @@ _onPress() {
         );
     }
 }
+
+/*
+<TextInput 
+                            secureTextEntry
+                            value={this.props.senha} 
+                            style={styles.form}
+                            placeholder='Senha'
+                            placeholderTextColor='#fff' 
+                            onChangeText={ texto => this.props.modificaSenha(texto)}/>
+
+                            <TextInput 
+                            value={this.props.email}
+                            style={styles.form}
+                            placeholder='E-mail' 
+                            placeholderTextColor='#fff' 
+                            onChangeText={ texto => this.props.modificaEmail(texto)}/>
+
+*/
 
   render() {
 
@@ -89,44 +129,30 @@ _onPress() {
                             placeholder='Nome'
                             placeholderTextColor='#fff'
                             onChangeText={ texto => this.props.modificaNome(texto)}/>
-                        <TextInput 
-                            value={this.props.email}
-                            style={styles.form}
-                            placeholder='E-mail' 
-                            placeholderTextColor='#fff' 
-                            onChangeText={ texto => this.props.modificaEmail(texto)}/>
-                        <TextInput 
-                            secureTextEntry
-                            value={this.props.senha} 
-                            style={styles.form}
-                            placeholder='Senha'
-                            placeholderTextColor='#fff' 
-                            onChangeText={ texto => this.props.modificaSenha(texto)}/>
-                            
+                        
+            <Text style={{backgroundColor: 'transparent', color: '#ff0000', fontSize: 18}}>{ this.props.erroCadastro }</Text>
 
-                            <Text style={{backgroundColor: 'transparent', color: '#ff0000', fontSize: 18}}>{ this.props.erroCadastro }</Text>
-
-                            <View style={{ flex: 1}}>
-                                <TextInput
-                                        multiline={true}
-                                        value={this.props.descricao}
-                                        numberOfLines={4}
-                                        style={styles.form}
-                                        placeholderTextColor='#fff'
-                                        placeholder='Descrição'
-                                        onChangeText={texto => this.props.modificaDescricao(texto)} />
-                            </View>
-                            <View style={{ marginTop: 10, flexDirection: 'row'}}>
-                                    <Text style={{marginTop: 10, marginBottom: 30, backgroundColor: "transparent", fontSize: 16, color: '#fff', fontWeight: 'bold', marginRight: 15}}>Habilitar conta Premium </Text>
-                                    <TouchableOpacity onPress={() => this._onPress()} style={{ width: 75, height: 35,
-                                    borderWidth: 1,
-                                    borderColor: borderBg , borderRadius: 18, 
-                                    padding: 10, justifyContent: 'center',
-                                    alignItems:'center', backgroundColor: buttonBg}} >
-                                            <Text style={{backgroundColor: "transparent", fontSize: 16, color: textColor, fontWeight: 'bold'}}>{textValue}</Text>
-                                    </TouchableOpacity>
-                                    
-                            </View>
+            <View style={{ flex: 1}}>
+                <TextInput
+                        multiline={true}
+                        value={this.props.descricao}
+                        numberOfLines={4}
+                        style={styles.form}
+                        placeholderTextColor='#fff'
+                        placeholder='Descrição'
+                        onChangeText={texto => this.props.modificaDescricao(texto)} />
+            </View>
+            <View style={{ marginTop: 10, flexDirection: 'row'}}>
+                    <Text style={{marginTop: 10, marginBottom: 30, backgroundColor: "transparent", fontSize: 16, color: '#fff', fontWeight: 'bold', marginRight: 15}}>Habilitar conta Premium </Text>
+                    <TouchableOpacity onPress={() => this._onPress()} style={{ width: 75, height: 35,
+                    borderWidth: 1,
+                    borderColor: borderBg , borderRadius: 18, 
+                    padding: 10, justifyContent: 'center',
+                    alignItems:'center', backgroundColor: buttonBg}} >
+                            <Text style={{backgroundColor: "transparent", fontSize: 16, color: textColor, fontWeight: 'bold'}}>{textValue}</Text>
+                    </TouchableOpacity>
+                    
+            </View>
                 <View style={styles.conteinerText}>
                     <Text style={styles.text}>
                         Dados Pessoais:
@@ -468,7 +494,24 @@ const mapStateToProps = state => {
   
       return ({
         usuario,
+        nome: state.AuthenticacaoReducer.nome,
         email: state.AuthenticacaoReducer.email,
+        senha: state.AuthenticacaoReducer.senha,
+        descricao: state.AuthenticacaoReducer.descricao,
+        bool: state.AuthenticacaoReducer.bool,
+        img: state.AuthenticacaoReducer.img,
+        cpf: state.AuthenticacaoReducer.cpf,
+        dataNascimento: state.AuthenticacaoReducer.dataNascimento,
+        cep: state.AuthenticacaoReducer.cep,
+        endereco: state.AuthenticacaoReducer.endereco,
+        titularCard: state.AuthenticacaoReducer.titularCard,
+        numeroCard: state.AuthenticacaoReducer.numeroCard,
+        validadeCard: state.AuthenticacaoReducer.validadeCard,
+        screen_request: state.AuthenticacaoReducer.screen_request,
+        cvv: state.AuthenticacaoReducer.cvv,
+        bool: state.AuthenticacaoReducer.bool,
+        pais: state.AuthenticacaoReducer.pais,
+        update_dados: state.ProfileReducer.update_dados
       })
     }
 
@@ -518,4 +561,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, {setEmail, modificaEmail, modificarBool, modificaScreenRequest, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV})(Profile)
+export default connect(mapStateToProps, {UpdateDados, UpdateImg, modificaEmail, modificarBool, modificarIMG, modificaScreenRequest, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario, modificaNacionalidade, modificaCPF, modificaDataNascimento, modificaCEP, modificaEndereco, modificaTitularCard, modificaNumeroCard, modificaValidadeData, modificaCVV})(Profile)

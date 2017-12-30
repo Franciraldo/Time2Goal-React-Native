@@ -21,6 +21,7 @@ class CameraView extends Component {
   }
 
   componentWillMount(){
+      
       console.log('CameraView componentWillMount: ', this.props)
   }
 
