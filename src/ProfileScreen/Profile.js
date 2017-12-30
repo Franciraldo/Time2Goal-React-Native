@@ -477,7 +477,7 @@ Profile.navigationOptions = ({ navigation }) => ({
             </Button>
           </Left>
           <Body>
-            <Title style={{backgroundColor: 'transparent', color: '#fff'}}>Profile</Title>
+            <Title style={{backgroundColor: 'transparent', color: '#fff'}}>Cadastro</Title>
           </Body>
           <Right />
         </Header>

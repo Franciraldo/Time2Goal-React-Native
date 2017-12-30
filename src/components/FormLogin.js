@@ -12,7 +12,12 @@ class formLogin  extends Component {
 
     _autenticarUsuario() {
         const {email, senha} = this.props;
-        this.props.autenticarUsuario({email, senha});
+        if (email != undefined && senha != undefined){
+            this.props.autenticarUsuario(email, senha, this.props.navigation);
+        }else{
+            alert('Por favor insira Senha e Email')
+        }
+        
     }
     _fbAuth(){
         
@@ -73,7 +78,7 @@ class formLogin  extends Component {
                                     this.props.modificarIMG(result.picture.data.url)
                                     this.props.modificaFacebookId(result.id)
 
-                                    this.props.autenticarFacebook(this.props.nome, this.props.email, this.props.facebookid, this.props.img )
+                                    this.props.autenticarFacebook(this.props.nome, this.props.email, this.props.facebookid, this.props.img, this.props.navigation )
                                     //alert('Success fetching data: ' + result.toString());
                                 }
                                 }
