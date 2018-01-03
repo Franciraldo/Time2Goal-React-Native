@@ -12,9 +12,11 @@ import {  MODIFICAR_DESCRICAO_PROFISSIONAL,
           MODIFICAR_CATEGORIA_MENTORIA,
           ENVIANDO_DADOS_FORM_MENTORING_SUCESSO,
           ENVIANDO_DADOS,
-          USER_SIDEBAR_REFRESH
+          USER_SIDEBAR_REFRESH,
+          MODIFICAR_TITULO_POPUP
           } from './types';
 import { Platform } from 'react-native';
+
 
 
 const fs = RNFetchBlob.fs
@@ -24,6 +26,13 @@ const testImageName = `time2goal-${Platform.OS}-${new Date()}.png`
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 
+export const modificarTitlePopup = (title) => {
+        console.log('title: ', title)
+        return {
+                type: MODIFICAR_TITULO_POPUP,
+                payload: title
+            }
+}
 export const modificaDescrricaoProfissional = (texto) => {
         return {
             type: MODIFICAR_DESCRICAO_PROFISSIONAL,

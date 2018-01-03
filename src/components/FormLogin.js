@@ -15,7 +15,7 @@ class formLogin  extends Component {
         if (email != undefined && senha != undefined){
             this.props.autenticarUsuario(email, senha, this.props.navigation);
         }else{
-            alert('Por favor insira Senha e Email')
+            alert('Por favor insira Senha e Usuário')
         }
         
     }
@@ -30,28 +30,28 @@ class formLogin  extends Component {
             );    
         }
         return (
-            <View>
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
                 
-                <TouchableHighlight style={{ borderWidth: 1, borderColor: '#9da3a2', borderRadius: 18, backgroundColor: '#fefefe', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => this._autenticarUsuario()}>
-                    <Text style={{fontSize: 20, color: '#00319c', fontWeight: 'bold'}}>ENTRAR</Text>
+                <TouchableHighlight style={styles.btn} onPress={() => this._autenticarUsuario()}>
+                    <Text style={styles.btnText}>ENTRAR</Text>
                 </TouchableHighlight>
 
-                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15, marginBottom: 15 }}>
-                    <Text style={{fontSize: 20, color: '#fff', backgroundColor: 'transparent', fontWeight: '500', justifyContent: 'center', alignItems: 'center' }}>OU</Text>
+                <View style={{marginTop: 15, marginBottom: 15 }}>
+                    <Text style={styles.textOu}>ou</Text>
                 </View>
                 
-                <TouchableHighlight style={{ borderWidth: 1, borderColor: '#9da3a2', borderRadius: 18, backgroundColor: '#fefefe', padding: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => Actions.formCadastro()}>
-                    <Text style={{fontSize: 20, color: '#00319c', fontWeight: 'bold'}}>CRIAR CONTA</Text>
+                <TouchableHighlight style={styles.btn} onPress={() => Actions.formCadastro()}>
+                    <Text style={styles.btnText}>CRIAR CONTA</Text>
                 </TouchableHighlight>
                 
                 
-                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15, marginBottom: 15 }}>
-                    <Text style={{fontSize: 20, color: '#fff', backgroundColor: 'transparent', fontWeight: '500', justifyContent: 'center', alignItems: 'center' }}>OU</Text>
+                <View style={{flexDirection: 'row', marginTop: 15, marginBottom: 15 }}>
+                    <Text style={styles.textOu}>ou</Text>
                 </View>
                 
                 <View>
                 <LoginButton
-                    style={{ padding: 23, justifyContent: 'center', alignItems: 'center' }}
+                    style={styles.btnFacebook}
                     publishPermissions={["publish_actions"]}
                     onLoginFinished={
                         (error, result) => {
@@ -114,11 +114,22 @@ class formLogin  extends Component {
             <ImageBackground style={{flex: 1, width: null}} source={background}>
                 <View style={{flex: 1, padding: 10}}>
                     <View style={{flex:2, justifyContent: 'center', alignItems: 'center'}}>
-                        <Image source={logo} />
+                        <Image  source={logo} />
                     </View>
-                    <View style={{flex: 2}}>
-                        <TextInput value={this.props.email} style={{ color: '#fff', backgroundColor: 'transparent', fontSize: 20, height: 45 }} placeholderTextColor='#fff' placeholder='E-mail' onChangeText={texto => this.props.modificaEmail(texto)}/>
-                        <TextInput secureTextEntry value={this.props.senha} style={{ color: '#fff', backgroundColor: 'transparent', fontSize: 20, height: 45}} placeholderTextColor='#fff' placeholder='Senha'  onChangeText={texto => this.props.modificaSenha(texto)}/>
+                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <View>
+                            <TextInput value={this.props.email} style={styles.textInput} placeholderTextColor='#fff' placeholder='usuário' onChangeText={texto => this.props.modificaEmail(texto)}/>
+                            <View style={styles.linha}></View>
+                        </View>
+                        
+                        <View style={styles.containerTextInput}>
+                            <TextInput secureTextEntry value={this.props.senha} style={styles.textInput} placeholderTextColor='#fff' placeholder='senha'  onChangeText={texto => this.props.modificaSenha(texto)}/> 
+                            <View style={styles.linha}></View>   
+                        </View>
+                        
+                        
+                        
+
                         <Text style={ { backgroundColor: 'transparent', color: '#ff0000', fontSize: 18} }> {this.props.erroLogin}</Text>
                     </View>
                     <View style={{flex: 4}}>
@@ -129,6 +140,68 @@ class formLogin  extends Component {
         ); 
     }
   }
+
+  const styles = StyleSheet.create({
+    container: {
+     flex: 1,
+     paddingTop: 22
+    },
+    containerTextInput: {
+        marginTop: 20
+    },
+    textInput: { 
+        color: '#fff', 
+        width: 200, 
+        backgroundColor: 'black',
+        opacity: 0.5, 
+        fontSize: 20, 
+        height: 45
+    },
+    linha: {
+        backgroundColor: 'white',
+        width: 200,
+        height: 2
+    },
+    btn: { 
+        borderWidth: 1,
+        borderColor: '#9da3a2',
+        borderRadius: 18,
+        backgroundColor: '#fefefe',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        width: 250
+    },
+    textOu: {
+        fontSize: 15,
+        color: '#fff',
+        backgroundColor: 'transparent',
+        fontWeight: '500',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    btnFacebook: {
+        borderColor: '#9da3a2',
+        borderRadius: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 15,
+        width: 200,
+        height: 40,
+    },
+    btnText: {
+        fontSize: 13,
+        color: '#00319c',
+        fontWeight: 'bold'
+    },
+    item: {
+      padding: 10,
+      fontSize: 18,
+      backgroundColor: 'transparent',
+      color: '#fff',
+      height: 44,
+    },
+  });
 
 const mapStateToProps = state => (
     {

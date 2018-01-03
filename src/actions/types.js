@@ -50,5 +50,5 @@ export const ENVIANDO_DADOS = 'enviando_dados';
 export const USER_SIDEBAR_REFRESH = 'user_sidebar_refresh';
 export const UPDATE_DADOS_EM_ANDAMENTO = 'update_dados_em_andamento';
 export const UPDATE_DADOS_SUCESSO = 'update_dados_sucesso';
-
+export const MODIFICAR_TITULO_POPUP = 'modificar_titulo_popup';
 
