@@ -13,9 +13,18 @@ import {  MODIFICAR_DESCRICAO_PROFISSIONAL,
           ENVIANDO_DADOS_FORM_MENTORING_SUCESSO,
           ENVIANDO_DADOS,
           USER_SIDEBAR_REFRESH,
-          MODIFICAR_TITULO_POPUP
+          MODIFICAR_TITULO_POPUP,
+          SET_HORA_INICIAL,
+          SET_MINUTO_INICIAL,
+          SET_HORA_FINAL,
+          SET_MINUTO_FINAL,
+          SELECTED_DAY,
+          LISTA_AGENDA_DAYS,
+          GET_HORARIOS,
+          MODIFICAR_VALOR_MENTORIA,
           } from './types';
 import { Platform } from 'react-native';
+import _ from 'lodash';
 
 
 
@@ -26,11 +35,132 @@ const testImageName = `time2goal-${Platform.OS}-${new Date()}.png`
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 
+
 export const modificarTitlePopup = (title) => {
         console.log('title: ', title)
         return {
                 type: MODIFICAR_TITULO_POPUP,
                 payload: title
+            }
+}
+export const modificarHoraInicial = (hora) => {
+        return {
+                type: SET_HORA_INICIAL,
+                payload: hora
+            }
+}
+
+
+export const modificarHoraFinal = (hora) => {
+        return {
+                type: SET_HORA_FINAL,
+                payload: hora
+            }
+}
+
+export const modificarMinutoInicial = (minuto) => {
+        return {
+                type: SET_MINUTO_INICIAL,
+                payload: minuto
+            }
+}
+export const modificarMinutoFinal = (minuto) => {
+        return {
+                type: SET_MINUTO_FINAL,
+                payload: minuto
+            }
+}
+
+export const selecionarHorario = (lista_agenda_horarios, emailMentor, day, usuario) => {
+                return (dispatch) => {
+                        
+                        console.log('selecionarHorario', {lista_agenda_horarios, emailMentor, day, usuario})  
+                        var emailB64 = b64.encode(emailMentor);
+                        let horarios = firebase.database().ref("agenda_horarios_mentores")
+                        horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("bool").set(true)
+                        horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("nome_aluno").set(usuario.nome)
+                        horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("email_aluno").set(usuario.email)
+                        horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("img_aluno").set(usuario)
+                              
+                }
+                
+}
+
+export const salvarHorario = (day, hora_inicial, hora_final, minuto_inicial, minuto_final, email) => {
+
+        console.log('salvarHorario: ', {day, hora_inicial, hora_final, minuto_inicial, minuto_final, email})
+        var emailB64 = b64.encode(email);
+        let mentore = firebase.database().ref(`/agenda_mentores/${emailB64}`) 
+        mentore.child('agenda').child(`${day}`).set({
+                selected: true
+        }).then(() => console.log('funcionou'))
+        .catch(erro => console.log('erro day set: ', erro))
+
+        let horarios = firebase.database().ref(`/agenda_horarios_mentores/${emailB64}`)
+        horarios.child(`${day}`).push().set({
+                hora_inicial: hora_inicial,
+                minuto_inicial: minuto_inicial,
+                hora_final: hora_final,
+                minuto_final: minuto_final,
+                nome_aluno: '',
+                email_aluno: '',
+                img_aluno: '',
+                bool: false
+        }).then( () => console.log('funcionou horario')).catch( erro => console.log('erro horario set: ', erro))
+        
+}
+
+export const getHorarioDisponivel = (emailMentor, day) => {
+        console.log('getHorarioDisponivel', {emailMentor, day})
+        return (dispatch) => {
+                var emailB64 = b64.encode(emailMentor);
+                let mentore = firebase.database().ref(`/agenda_horarios_mentores/${emailB64}/${day}`)
+                mentore.on('value', function(snapshot) {
+                console.log('getHorarioDisponivel itens: ', snapshot.val())
+                        modificaDays(dispatch, snapshot.val().agenda)
+                });
+        }
+}
+
+export const getDaysAgendados = (email) => {
+        console.log('getDaysAgendados', {email})
+        return (dispatch) => {
+        
+                var emailB64 = b64.encode(email);
+                let mentore = firebase.database().ref(`/agenda_mentores/${emailB64}`)
+                mentore.on('value', function(snapshot) {
+                console.log('item-lista-agenda', snapshot.val().agenda)
+                        modificaDays(dispatch, snapshot.val().agenda)
+                });
+        }
+}
+
+export const getHorarios = (email, day) => {
+        return (dispatch) => {
+                var emailB64 = b64.encode(email);
+                let listadeHorariosDia = firebase.database().ref(`/agenda_horarios_mentores/${emailB64}/${day}`)
+                listadeHorariosDia.on('value', function(snapshot) {
+
+                const horarios = _.map(snapshot.val(), (val, uid) => {
+                        return { ...val, uid }
+                        })
+                dispatch({ type: GET_HORARIOS, payload: horarios})
+                });
+        }
+}
+
+const modificaDays = (dispatch, listaDays) => {
+        console.log('modificaDays: ', listaDays)
+        dispatch({
+                type: LISTA_AGENDA_DAYS,
+                payload: listaDays
+            })
+}
+
+export const modificarSelectDay = (day) => {
+        return {
+                type: SELECTED_DAY,
+                payload: day
             }
 }
 export const modificaDescrricaoProfissional = (texto) => {
@@ -88,6 +218,13 @@ export const modificaCategoriaMentoria = (texto) => {
         }
 }
 
+export const modificaValorMentoria = (texto) => {
+        return {
+                type: MODIFICAR_VALOR_MENTORIA,
+                payload: texto
+        }
+}
+
 const enviarImg1 = (img1, emailB64) => {
         console.log('enviarImg1', {img1, emailB64})
         return dispatch => {
@@ -103,12 +240,12 @@ const dadosEnviadosComSucesso = ( dispatch, navigation, email) => {
 }
 
 
-export const enviarFormMentoring = (nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, navigation) => {
+export const enviarFormMentoring = (nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, img, valor_mentor, navigation) => {
         return (dispatch) => {
             
             dispatch({type: ENVIANDO_DADOS})
             
-            console.log('enviarFormMentoring:',{nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria});
+            console.log('enviarFormMentoring:',{nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, img});
             var emailB64 = b64.encode(email);
             firebase.auth().onAuthStateChanged((user) => {
                 console.log('onAuthStateChanged: ', user)
@@ -152,6 +289,7 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
                                                 .getDownloadURL().then((url) => {
                                                                 console.log('url2: ', url)
                                                                 let mentore = firebase.database().ref(`/mentores/ ${emailB64}` ).set({
+                                                                        img: img,
                                                                         nome: nome,
                                                                         email: email,
                                                                         descricao_profissional: descricao_profissional,
@@ -163,6 +301,9 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
                                                                         idioma: idioma,
                                                                         categoria_mentoria: categoria_mentoria,
                                                                         mentoring: false,
+                                                                        valor_hora: valor_mentor,
+                                                                        qtd_alunos: 0,
+
                                                                 })  
                                                                 
                                                                 let usuario = firebase.database().ref(`/usuarios/ ${emailB64}`).child('mentoring').set(true)

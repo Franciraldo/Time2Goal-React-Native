@@ -16,15 +16,95 @@ import { MODIFICA_ADICIONA_CONTATO_EMAIL,
          USER_FORM_MENTORING,
          USER_HOME,
          USER_CONTATOS,
-         USER_CONVERSAS } from './types';
+         USER_CONVERSAS,
+         LISTA_MENTORES,
+         PROFILE_MENTOR,
+         SET_NOME_MENTOR,
+         SET_EMAIL_MENTOR, 
+         SET_DESCRICAO_PROFISSIONAL_MENTOR, 
+         SET_CATEGORIA_MENTORIA_MENTOR, 
+         SET_IDIOMA_MENTOR, 
+         SET_IMAGEM_MENTOR, 
+         SET_QTD_ALUNOS, 
+         SET_VALOR_HORA } from './types';
 
+const setNomeMentor = (texto) => {
+    return {
+        type: SET_NOME_MENTOR,
+        payload: texto
+    }
+}
+
+const setEmailMentor = (texto) => {
+    return {
+        type: SET_EMAIL_MENTOR,
+        payload: texto
+    }
+}
+const setDescricaoProfissionalMentor = (texto) => {
+    return {
+        type: SET_DESCRICAO_PROFISSIONAL_MENTOR,
+        payload: texto
+    }
+}
+const setCategoriaMentoriaMentor = (texto) => {
+    return {
+        type: SET_CATEGORIA_MENTORIA_MENTOR,
+        payload: texto
+    }
+}
+const setIdiomaMentor = (texto) => {
+    return {
+        type: SET_IDIOMA_MENTOR,
+        payload: texto
+    }
+}
+const setImagemMentor = (texto) => {
+    return {
+        type: SET_IMAGEM_MENTOR,
+        payload: texto
+    }
+}
+const setQtdAlunosMentor = (texto) => {
+    return {
+        type: SET_QTD_ALUNOS,
+        payload: texto
+    }
+}
+const setValorHoraMentor = (texto) => {
+    return {
+        type: SET_VALOR_HORA,
+        payload: texto
+    }
+}
 export const modificaAdicionaContatoEmail = (texto) => {
     return {
         type: MODIFICA_ADICIONA_CONTATO_EMAIL,
         payload: texto.toLowerCase()
     }
 }
+export const marcarMentoria = (texto) => {
+    return dispatch => {
+        dispatch({type: SET_EMAIL_MENTOR, payload: texto})
+        Actions.marcarMentoring()
+    }
+}
 
+export const abrirPerfil = (contato) => {
+    return dispatch => {
+        console.log('abrir Perfil: ', contato)
+        dispatch({type: SET_NOME_MENTOR, payload: contato.nome})
+        dispatch({type: SET_EMAIL_MENTOR, payload: contato.email})
+        dispatch({type: SET_DESCRICAO_PROFISSIONAL_MENTOR, payload: contato.descricao_profissional})
+        dispatch({type: SET_CATEGORIA_MENTORIA_MENTOR, payload: contato.categoria_mentoria})
+        dispatch({type: SET_IDIOMA_MENTOR, payload: contato.idioma})
+        dispatch({type: SET_IMAGEM_MENTOR, payload: contato.img})
+        dispatch({type: SET_QTD_ALUNOS, payload: contato.qtd_alunos})
+        dispatch({type: SET_VALOR_HORA, payload: contato.valor_hora})
+        
+        Actions.profileMentor()
+    }    
+}
 export const adicionaContato = (email) => {
     
     return dispatch => {
@@ -32,7 +112,6 @@ export const adicionaContato = (email) => {
         firebase.database().ref(`/contatos/ ${emailB64}` )
         .on('value')
         .then(snapshot => { 
-            
             if(snapshot.val()){
                 //email do contato que queremos adicionar
                 //email => outra alternativa para capturar o primeiro elemento do array _.first(_.values(snapshot.val()))
@@ -79,13 +158,11 @@ export const habilitaInclusaoContato = () => (
     }
 )
 
-export const contatosUsuarioFetch = (email) => {
-    const { currentUser } = firebase.auth();
+export const contatosUsuarioFetch = () => {
     return (dispatch) => {
-        
-        let emailUsuarioB64 = email !== undefined ? b64.encode(email) : b64.encode(currentUser.email) 
-        firebase.database().ref(`/usuario_contatos/ ${emailUsuarioB64}` )
+        firebase.database().ref(`/mentores` )
             .on("value", snapshot => {   
+                console.log('value Mentores: ', snapshot.val())
                 dispatch({ type: LISTA_CONTATO_USUARIO, payload: snapshot.val() });
              })
         
@@ -163,6 +240,20 @@ export const conversasUsuarioFetch = (email) => {
         firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}`)
             .on("value", snapshot => { 
                 dispatch({ type: LISTA_CONVERSAS_USUARIO, payload: snapshot.val() })
+            })
+    }
+}
+
+export const menotresFetch = () => {
+    const { currentUser } = firebase.auth();
+
+    return dispatch => {
+        let usuarioEmailB64 = b64.encode(currentUser.email);
+
+        firebase.database().ref(`/mentores`)
+            .on("value", snapshot => { 
+                console.log('value Mentores: ', snapshot.val())
+                dispatch({ type: LISTA_MENTORES, payload: snapshot.val() })
             })
     }
 }

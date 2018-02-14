@@ -4,15 +4,16 @@ import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, I
 import { StackNavigator } from "react-navigation";
 import {LocaleConfig} from 'react-native-calendars';
 import {Calendar} from 'react-native-calendars';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
-import { getDaysAgendados, salvarHorario, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios } from '../actions/FormMentoringActions';
+import { getDaysAgendados, getHorarios, salvarHorario, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, selecionarHorario } from '../actions/FormMentoringActions';
+import _ from 'lodash';
+const today = new Date()
 const checkout_off = require('../imgs/checked_off.png')
 const checkout_on = require('../imgs/checked_on.png')
-class GerenciarAgendaScreen extends React.Component {
-
+class MarcarMentoring extends React.Component {
   componentDidMount(){
-    console.log('GerenciarAgendaScreen componentDidMount: ', this.props) 
+    console.log('MarcarMentoring componentDidMount: ', this.props) 
   }
 
   formatDate() {
@@ -27,25 +28,34 @@ class GerenciarAgendaScreen extends React.Component {
     return [year, month, day].join('-');
 }
 
-  componentWillMount() {
-      console.log('GerenciarAgendaScreen componentWillMount: ', this.props) 
-      const {lista_agenda_horarios} = this.props
-      const {email} = this.props.usuario
-      this.props.getDaysAgendados(email)
+    componentWillMount(){
+      console.log('MarcarMentoring componentWillMount: ', this.props) 
+    
+      const {emailMentor, lista_agenda_horarios} = this.props
+      this.props.getDaysAgendados(emailMentor)
       const day = this.formatDate()
-      this.props.getHorarios(email, day)
-      this.criaFonteDeDados(lista_agenda_horarios);    
+      this.props.getHorarios(emailMentor, day)
+      this.criaFonteDeDados(lista_agenda_horarios);
+      
+      console.log('horarios componentDidMount: ', lista_agenda_horarios) 
   }
 
   componentWillReceiveProps(nextProps){
-    console.log('GerenciarAgendaScreen componentWillReceiveProps: ', nextProps)
+
+    console.log('MarcarMentoring componentWillReceiveProps: ', nextProps)
+
     const {emailMentor, lista_agenda_horarios} = nextProps
     this.criaFonteDeDados(lista_agenda_horarios);
+    
+    //this.criaFonteDeDados(nextProps.lista_agenda_horarios);
+    
+    
+
   }
   
-  _salvarHorario() {
-    const { hora_inicial, minuto_inicial, hora_final, minuto_final } = this.props
-    const { email } = this.props.usuario
+  _salvarHorario(){
+    const { hora_inicial, minuto_inicial, hora_final, minuto_final} = this.props
+    const { email} = this.props.usuario
     const day = this.props.selected_day.dateString
     
 
@@ -53,34 +63,31 @@ class GerenciarAgendaScreen extends React.Component {
     if( hora_inicial != '' && minuto_inicial != ''  && hora_final != '' && minuto_final != ''){
       
       salvarHorario(day, hora_inicial, hora_final, minuto_inicial, minuto_final, email)
+      
       this.props.modificarHoraInicial('')
       this.props.modificarHoraFinal('')
       this.props.modificarMinutoInicial('')
       this.props.modificarMinutoFinal('')
 
       this.popupDialog.dismiss()
-    } else {
+    }else{
       alert('Por favor informe Horario inicial e horario final')
     }
-  }
-
-
-
-  onDaySelect(day) {
-
-    const {emailMentor, lista_agenda_horarios, usuario} = this.props
-    console.log('onDaySelect', { day, emailMentor, lista_agenda_horarios})
-    this.props.modificarSelectDay(day)
-    this.props.getHorarios(usuario.email, day.dateString)
-    this.criaFonteDeDados(lista_agenda_horarios);
-    this.popupDialog.show()
     
+  }
+  onDaySelect(day) {
+    console.log('onDaySelect', day)
+    const {emailMentor, lista_agenda_horarios} = this.props
+    console.log('onDaySelect', { day, emailMentor, lista_agenda_horarios})
+    this.props.getHorarios(emailMentor, day.dateString)
+    this.criaFonteDeDados(lista_agenda_horarios);
   }
 
     criaFonteDeDados( lista_agenda_horarios ) {
       const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2});
       this.dataSource = ds.cloneWithRows( lista_agenda_horarios )
   }
+  
 
   renderRow(lista_agenda_horarios, emailMentor) {
     const day = this.formatDate()
@@ -90,10 +97,7 @@ class GerenciarAgendaScreen extends React.Component {
                 () => false
             }>
                 <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
-                        <View style={{ flexDirection: 'column'}}>
-                          <Text style={{ fontSize: 16, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.nome_aluno}</Text>
-                          <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
-                        </View>
+                        <Text style={{ fontSize: 25, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
                         <Image
                           style={styles.uploadImage}
                           source={checkout_on}
@@ -104,13 +108,9 @@ class GerenciarAgendaScreen extends React.Component {
       }else{
           return (
             <TouchableHighlight onPress={
-                () =>  false}>
+                () =>  this.props.selecionarHorario(lista_agenda_horarios, this.props.emailMentor, day, this.props.usuario)}>
                 <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
-                        <View style={{ flexDirection: 'column'}}>
-                          <Text style={{ fontSize: 16, color: "#fff", backgroundColor: 'transparent'}}>Horario vago</Text>
-                          <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
-                        </View>
-                        
+                        <Text style={{ fontSize: 25, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
                         <Image
                           style={styles.uploadImage}
                           source={checkout_off}
@@ -135,13 +135,14 @@ class GerenciarAgendaScreen extends React.Component {
         return (
               <FlatList
                 data={[
-                  {key: 'você não selecionou horarios para hoje.'}
+                  {key: 'Não exisate Horario disponivel para hoje'}
                 ]}
                 renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
               />
           );
     }
   }
+
   render() {
     const slideAnimation = new SlideAnimation({
       slideFrom: 'bottom',
@@ -162,16 +163,16 @@ class GerenciarAgendaScreen extends React.Component {
                       <View style={{ flex: 1, flexDirection: 'column' }}>
                           <Picker  selectedValue={ this.props.hora_inicial } onValueChange={ hora => this.props.modificarHoraInicial(hora)}>
                                 <Picker.Item color='#fff'label='' value=''/>
-                                <Picker.Item color='#fff'label='00' value='00'/>
-                                <Picker.Item color='#fff'label='01' value='01'/>
-                                <Picker.Item color='#fff'label='02' value='02'/>
-                                <Picker.Item color='#fff'label='03' value='03'/>
-                                <Picker.Item color='#fff'label='04' value='04'/>
-                                <Picker.Item color='#fff'label='05' value='05'/>
-                                <Picker.Item color='#fff'label='06' value='06'/>
-                                <Picker.Item color='#fff'label='07' value='07'/>
-                                <Picker.Item color='#fff'label='08' value='08'/>
-                                <Picker.Item color='#fff'label='09' value='09'/>
+                                <Picker.Item color='#fff'label='00' value='0'/>
+                                <Picker.Item color='#fff'label='01' value='1'/>
+                                <Picker.Item color='#fff'label='02' value='2'/>
+                                <Picker.Item color='#fff'label='03' value='3'/>
+                                <Picker.Item color='#fff'label='04' value='4'/>
+                                <Picker.Item color='#fff'label='05' value='5'/>
+                                <Picker.Item color='#fff'label='06' value='6'/>
+                                <Picker.Item color='#fff'label='07' value='7'/>
+                                <Picker.Item color='#fff'label='08' value='8'/>
+                                <Picker.Item color='#fff'label='09' value='9'/>
                                 <Picker.Item color='#fff'label='10' value='10'/>
                                 <Picker.Item color='#fff'label='11' value='11'/>
                                 <Picker.Item color='#fff'label='12' value='12'/>
@@ -193,9 +194,18 @@ class GerenciarAgendaScreen extends React.Component {
                             <Picker  selectedValue={ this.props.minuto_inicial } onValueChange={ minuto => this.props.modificarMinutoInicial(minuto)}>
                               <Picker.Item color='#fff'label='' value=''/>
                               <Picker.Item color='#fff'label='00' value='00'/>
+                              <Picker.Item color='#fff'label='05' value='05'/>
+                              <Picker.Item color='#fff'label='10' value='10'/>
                               <Picker.Item color='#fff'label='15' value='15'/>
+                              <Picker.Item color='#fff'label='20' value='20'/>
+                              <Picker.Item color='#fff'label='25' value='25'/>
                               <Picker.Item color='#fff'label='30' value='30'/>
+                              <Picker.Item color='#fff'label='35' value='35'/>
+                              <Picker.Item color='#fff'label='40' value='40'/>
                               <Picker.Item color='#fff'label='45' value='45'/>
+                              <Picker.Item color='#fff'label='50' value='50'/>
+                              <Picker.Item color='#fff'label='55' value='55'/>
+                              <Picker.Item color='#fff'label='60' value='60'/>
                           </Picker>
                       </View>                      
                     </View>
@@ -238,9 +248,18 @@ class GerenciarAgendaScreen extends React.Component {
                         <Picker  selectedValue={ this.props.minuto_final } onValueChange={ minuto => this.props.modificarMinutoFinal(minuto)}>
                           <Picker.Item color='#fff'label='' value=''/>
                           <Picker.Item color='#fff'label='00' value='00'/>
+                          <Picker.Item color='#fff'label='05' value='05'/>
+                          <Picker.Item color='#fff'label='10' value='10'/>
                           <Picker.Item color='#fff'label='15' value='15'/>
+                          <Picker.Item color='#fff'label='20' value='20'/>
+                          <Picker.Item color='#fff'label='25' value='25'/>
                           <Picker.Item color='#fff'label='30' value='30'/>
+                          <Picker.Item color='#fff'label='35' value='35'/>
+                          <Picker.Item color='#fff'label='40' value='40'/>
                           <Picker.Item color='#fff'label='45' value='45'/>
+                          <Picker.Item color='#fff'label='50' value='50'/>
+                          <Picker.Item color='#fff'label='55' value='55'/>
+                          <Picker.Item color='#fff'label='60' value='60'/>
                       </Picker>
                   </View>
               </View>
@@ -257,7 +276,7 @@ class GerenciarAgendaScreen extends React.Component {
                 <Calendar
                     onDayPress={ this.onDaySelect.bind(this) } 
                     style={styles.calendar}
-                    current={new Date().toDateString()}
+                    current={today}
                     markingType={'multi-dot'}
                     theme={{
                       backgroundColor: '#ffffff',
@@ -279,6 +298,7 @@ class GerenciarAgendaScreen extends React.Component {
                     markedDates={ this.props.lista_agenda_day }
                     hideArrows={false}
                   />
+
                   <View style={{ flex: 1, flexDirection: 'row', marginTop: 10}}>
                       {this.renderListView()}
                   </View>
@@ -290,7 +310,7 @@ class GerenciarAgendaScreen extends React.Component {
 
 }
 
-GerenciarAgendaScreen.navigationOptions = ({ navigation }) => ({
+MarcarMentoring.navigationOptions = ({ navigation }) => ({
   header: (
         <Header style={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
           <Left>
@@ -314,6 +334,13 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
     height: 350
   },
+  uploadImage: {
+    justifyContent: 'flex-end',
+    marginLeft: 120,
+    width: 30,
+    height: 30,
+    borderRadius: 15  
+},
   DialogTitle: {
     backgroundColor: '#fc5b07',
     borderColor: '#fc5b07',
@@ -342,16 +369,15 @@ btnText: {
   },
   container: {
     flex: 1,
-    padding: 10,
+    marginTop: 60,
     backgroundColor: '#2b2a29'
 
 },
-uploadImage: {
-  justifyContent: 'flex-end',
-  marginLeft: 200,
-  width: 30,
-  height: 30,
-  borderRadius: 15  
+text: {
+  marginTop: 30,
+  marginBottom: 10,
+  fontSize: 15,
+  color: '#fff',
 },
 item: {
   padding: 10,
@@ -359,12 +385,6 @@ item: {
   backgroundColor: 'transparent',
   color: '#fff',
   height: 44,
-},
-text: {
-  marginTop: 30,
-  marginBottom: 10,
-  fontSize: 15,
-  color: '#fff',
 },
 });
 
@@ -378,15 +398,18 @@ const mapStateToProps = state => {
 
     return ({
       usuario,
+      emailMentor: state.MentoringReducer.emailMentor,
       selected_day: state.MentoringReducer.selected_day,
       days_selected: state.MentoringReducer.days_selected,
       hora_inicial: state.MentoringReducer.hora_inicial,
       minuto_inicial: state.MentoringReducer.minuto_inicial,
       hora_final: state.MentoringReducer.hora_final,
       minuto_final: state.MentoringReducer.minuto_final,
+      mode: state.MentoringReducer.mode,
       lista_agenda_day: state.MentoringReducer.lista_agenda_day,
-      lista_agenda_horarios: state.MentoringReducer.lista_agenda_horarios
+      lista_agenda_horarios: state.MentoringReducer.lista_agenda_horarios,
+      checkout_mentoria_Andamento: state.MentoringReducer.checkout_mentoria_Andamento
     })
   }
 
-export default connect(mapStateToProps, {salvarHorario, getDaysAgendados, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios})(GerenciarAgendaScreen)
+export default connect(mapStateToProps, {getDaysAgendados, getHorarios, salvarHorario, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, selecionarHorario})(MarcarMentoring)

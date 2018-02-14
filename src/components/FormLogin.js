@@ -10,10 +10,24 @@ const background = require('../imgs/background.png');
 const logo = require('../imgs/logo.png');
 class formLogin  extends Component {
 
+    componentDidMount(){
+        console.log('formLogin componentDidMount: ', this.props)
+      }
+    
+      componentWillMount(){
+        console.log('formLogin componentWillMount: ', this.props)
+        
+    }
+    
+    componentWillReceiveProps(nextProps){
+      console.log('formLogin componentWillReceiveProps: ', nextProps)
+        
+    }
+
     _autenticarUsuario() {
         const {email, senha} = this.props;
         if (email != undefined && senha != undefined){
-            this.props.autenticarUsuario(email, senha, this.props.navigation);
+            this.props.autenticarUsuario(email, senha);
         }else{
             alert('Por favor insira Senha e Usuário')
         }

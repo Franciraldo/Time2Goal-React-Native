@@ -111,7 +111,6 @@ const mapStateToProps = state => {
 
     return ({
       usuario,
-      email: state.AuthenticacaoReducer.email,
     })
   }
 

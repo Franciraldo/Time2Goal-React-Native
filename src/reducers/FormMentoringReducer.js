@@ -11,7 +11,8 @@ import { USER_FORM_MENTORING,
          ENVIANDO_DADOS_FORM_MENTORING_SUCESSO,
          ENVIANDO_DADOS_FORM_MENTORING_ERRO,
          ENVIANDO_DADOS,
-         MODIFICAR_TITULO_POPUP
+         MODIFICAR_TITULO_POPUP,
+         MODIFICAR_VALOR_MENTORIA
         } from '../actions/types';
 
 const INITIAL_STATE = { 
@@ -25,6 +26,7 @@ const INITIAL_STATE = {
     idioma: '',
     categoria_mentoria: '',
     titlePopup: '',
+    valor_mentor: 0,
     enviando_dados: false
 }
 
@@ -35,7 +37,10 @@ export default (state = INITIAL_STATE, action) => {
 
         case MODIFICAR_DESCRICAO_PROFISSIONAL:
             return { ...state, descricao_profissional: action.payload }
-        
+            
+        case MODIFICAR_VALOR_MENTORIA:
+            return { ...state, valor_mentor: action.payload }
+            
         case MODIFICAR_AGENCIA:
             return { ...state, agencia: action.payload }
         

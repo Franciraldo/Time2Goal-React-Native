@@ -129,7 +129,7 @@ _uploadImage() {
             </View>
 
             <View style={{ flex: 1,  marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
-              <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() =>  this.props.signOut()}>
+              <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.props.navigation.navigate("DrawerClose"); this.props.signOut()}}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Logout</Text>
                     </TouchableHighlight>
             </View>

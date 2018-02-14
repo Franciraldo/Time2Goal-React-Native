@@ -7,7 +7,9 @@ import ListaConvetsasReducer from './ListaConversasReducer';
 import SideBarReducer from './SideBarReducer';
 import ProfileReducer from './ProfileReducer';
 import FormMentoringReducer from './FormMentoringReducer';
-import HomeReducer from './HomeReducer'
+import HomeReducer from './HomeReducer';
+import MentoringReducer from './MentoringReducer';
+import ProfileMentorReducer from './ProfileMentorReducer';
 
 
 export default combineReducers({
@@ -17,7 +19,9 @@ export default combineReducers({
     ListaConversaReducer,
     ListaConvetsasReducer,
     SideBarReducer,
+    MentoringReducer,
     ProfileReducer,
     FormMentoringReducer,
+    ProfileMentorReducer,
     HomeReducer
 });

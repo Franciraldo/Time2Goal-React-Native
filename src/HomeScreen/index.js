@@ -3,7 +3,7 @@ import HomeScreen from "./HomeScreen.js";
 import GerenciarAgendaScreen from "../GerenciarAgendaScreen/index.js";
 import GerenciarVideosScreen from "../GerenciarVideosScreen/index.js";
 import FormMentoring from "../FormMentoring/index.js";
-import LoginScreen from '../LoginScreen/index.js'
+import formLogin from '../components/FormLogin'
 import Profile from "../ProfileScreen/index.js";
 import SideBar from "../SideBar/SideBar.js";
 
@@ -15,7 +15,7 @@ const HomeScreenRouter = DrawerNavigator(
     GerenciarVideosScreen: {screen: GerenciarVideosScreen },
     FormMentoring: {screen: FormMentoring}, 
     Profile: { screen: Profile },
-    LoginScreen: { screen: LoginScreen}
+    LoginScreen: { screen: formLogin, navigationOptions: { header: null }}
   },
   {
     contentComponent: props => <SideBar {...props} />

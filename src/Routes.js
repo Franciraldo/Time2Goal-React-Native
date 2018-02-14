@@ -10,6 +10,8 @@ import CameraView from './components/CameraView';
 import formComplement from './components/FormComplement';
 import FormMentoring from './FormMentoring/FormMentoring';
 import Profile from './ProfileScreen/Profile';
+import MarcarMentoring from './components/MarcarMentoring';
+import ProfileMentor from './components/ProfileMentor';
 
 export default props => (
     <Router navigationBarStyle={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
@@ -22,5 +24,7 @@ export default props => (
         <Scene key='camera' component={CameraView} tabTitle="Cam" hideNavBar={true} />
         <Scene key='formMentoring' component={FormMentoring} tabTitle="Mentoria" hideNavBar={true} />
         <Scene key='profile' component={Profile} tabTitle="Profile" hideNavBar={true} />
+        <Scene key='profileMentor' component={ProfileMentor} tabTitle="profileMentor" hideNavBar={false} />
+        <Scene key='marcarMentoring' component={MarcarMentoring} tabTitle="Marcar Mentoria" hideNavBar={false} />
     </Router>
 )

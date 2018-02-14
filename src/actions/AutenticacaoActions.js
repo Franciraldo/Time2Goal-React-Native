@@ -249,9 +249,9 @@ const cadastraUsuarioErro = (erro, dispatch) => {
     
 }
 
-export const autenticarUsuario = ({email, senha}) => {
+export const autenticarUsuario = (email, senha) => {
     return (dispatch) => {
-
+        console.log('Usuario: ', {email, senha} )
         dispatch({type: LOGIN_EM_ANDAMENTO})
         var emailB64 = b64.encode(email);
 
@@ -421,6 +421,7 @@ const loginUsuarioSucesso = (dispatch, emailB64) => {
             type: LOGIN_USUARIO_SUCESSO,
         }
     );
+    console.log('loginUsuarioSucesso: ', emailB64)
 
     firebase.database().ref(`/usuarios/ ${emailB64}`)
         .on("value", snapshot => { 

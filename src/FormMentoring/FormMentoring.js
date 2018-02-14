@@ -6,7 +6,7 @@ import { StackNavigator } from "react-navigation";
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { modificarTitlePopup, modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria } from '../actions/FormMentoringActions';
+import { modificaValorMentoria, modificarTitlePopup, modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria } from '../actions/FormMentoringActions';
 import { modificaScreenRequest } from '../actions/AutenticacaoActions';
 import { enviarFormMentoring } from '../actions/FormMentoringActions';
 import PopupDialog from 'react-native-popup-dialog';
@@ -30,13 +30,14 @@ class FormMentoring extends React.Component {
     }
 
   _cadastraUsuario() {
-      const { descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria } = this.props;
+      const { descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, valor_mentor } = this.props;
       const nome = this.props.usuario.nome
       const email = this.props.usuario.email
+      const img = this.props.usuario.img
 
       console.log('enviarDados Mentoring', { nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria }) 
-      if(nome != undefined && email != undefined, descricao_profissional != undefined, agencia != undefined, conta != undefined, banco != undefined, img1 != undefined, img2 != undefined, idioma != undefined, categoria_mentoria != undefined ){
-        this.props.enviarFormMentoring(nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, this.props.navigation)
+      if(nome != undefined && email != undefined, descricao_profissional != undefined, agencia != undefined, conta != undefined, banco != undefined, img1 != undefined, img2 != undefined, idioma != undefined, categoria_mentoria != undefined, valor_mentor != undefined ){
+        this.props.enviarFormMentoring(nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, img, valor_mentor, this.props.navigation)
         
        
       }else{
@@ -296,6 +297,23 @@ renderPopupView(){
                     <View style={styles.linha}></View>   
                 </View>
 
+                <View style={styles.conteinerText}>
+                    <Text style={styles.text}>
+                        Valor Hora em R$:  
+                    </Text>
+                </View>
+
+                <View style={styles.containerTextInput}>
+                        <TextInput 
+                            value={this.props.valor_mentor} 
+                            style={styles.textInput}
+                            placeholder='00,00'
+                            keyboardType='numbers-and-punctuation'
+                            placeholderTextColor='#fff' 
+                            onChangeText={ texto => this.props.modificaValorMentoria(texto)}/>
+                        <View style={styles.linha}></View>   
+                </View>
+
                 {this.renderButton()}
             </View> 
             </ScrollView>
@@ -336,7 +354,8 @@ const mapStateToProps = state => {
         idioma: state.FormMentoringReducer.idioma,
         categoria_mentoria: state.FormMentoringReducer.categoria_mentoria,
         enviando_dados: state.FormMentoringReducer.enviando_dados,
-        PopupTitle: state.FormMentoringReducer.titlePopup
+        PopupTitle: state.FormMentoringReducer.titlePopup,
+        valor_mentor: state.FormMentoringReducer.valor_mentor
     })
     
 }
@@ -452,4 +471,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(mapStateToProps, { modificarTitlePopup, enviarFormMentoring, modificaScreenRequest, modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria})(FormMentoring)
+export default connect(mapStateToProps, { modificaValorMentoria, modificarTitlePopup, enviarFormMentoring, modificaScreenRequest, modificaDescrricaoProfissional, modificaAgencia, modificaConta, modificaBanco, modificaImg1, modificaImg2, modificaIdioma, modificaCategoriaMentoria})(FormMentoring)
