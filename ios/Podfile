@@ -8,6 +8,8 @@ target 'Time2Goal' do
   # Pods for Time2Goal
   pod 'GoogleMobileVision/FaceDetector'
   pod 'GoogleMobileVision/MVDataOutput'
+  pod 'RSKImageCropper'
+  pod 'QBImagePickerController'
 
 
 end
