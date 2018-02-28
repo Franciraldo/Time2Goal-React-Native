@@ -1,7 +1,11 @@
 import React from "react";
-import { AppRegistry, Alert, StyleSheet } from "react-native";
+import { AppRegistry, Alert, StyleSheet, View, TouchableHighlight, Picker } from "react-native";
 import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, Icon, Button, Text } from "native-base";
 import { StackNavigator } from "react-navigation";
+import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
+import {connect} from 'react-redux';
+import { checkpopup, modificarTypeVideo, uploadVideos } from '../actions/GerenciarVideosActions';
+import RNFetchBlob from 'react-native-fetch-blob'
 var ImagePicker = require('react-native-image-picker');
 // More info on all the options is below in the README...just some common use cases shown here
 var options = {
@@ -16,20 +20,79 @@ var options = {
   }
 };
 
-export default class GerenciarVideosScreen extends React.Component {
+class GerenciarVideosScreen extends React.Component {
   componentDidMount() {
+    this.props.navigation.setParams({ popupDialog: this.popupDialog });
+    console.log('GerenciarVideosScreen componentDidMount: ', this.props) 
     
+  }
+  componentWillMount() {
+    console.log('GerenciarVideosScreen componentWillMount: ', this.props)
+        
+  }
+  componentWillReceiveProps(nextProps){
+    console.log('GerenciarVideosScreen componentWillReceiveProps: ', nextProps)
   }
   render() {
     return (
       <Container>
         <Content padder style={styles.container}>
-          
+              <PopupDialog height= {250} dialogTitle={<DialogTitle titleStyle={styles.DialogTitle} titleTextStyle={{color: 'white'}} title="Tipo de Video" />} dialogAnimation={this.slideAnimation}  dialogStyle={{backgroundColor: '#2b2a29'}} ref={(popupDialog) => { this.popupDialog = popupDialog; }}>          
+                          <View zIndex={1} style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', bottom: 10, top: 5}}>
+                              <View style={{ flex: 1, flexDirection: 'column' }}>
+                                  <Picker
+                                    selectedValue={ this.props.select_type_video }
+                                    onValueChange={ type => this.props.modificarTypeVideo(type) }>
+                                    <Picker.Item color='#fff' label='' value=''/>
+                                    <Picker.Item color='#fff' label="free" value="free" />
+                                    <Picker.Item color='#fff' label="premium" value="premium" />
+                                  </Picker>
+                              </View>
+                          </View>
+                          <View zIndex={2} style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
+                              <TouchableHighlight style={styles.btn} onPress={() => {
+                                console.log('select_type_video: ', this.props.select_type_video);
+                                if(this.props.select_type_video != ''){
+                                  ImagePicker.showImagePicker(options, (response) => {
+                                    if (response.didCancel) {
+                                      console.log('User cancelled image picker');
+                                    }
+                                    else if (response.error) {
+                                      console.log('ImagePicker Error: ', response.error);
+                                    }
+                                    else if (response.customButton) {
+                                      console.log('User tapped custom button: ', response.customButton);
+                                    }
+                                    else {
+                                      let source = { uri: response.uri };
+                                  
+                                      // You can also display the image using data:
+                                      // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+                                      console.log('Response = ', response);
+                                      
+                                      
+                                        this.props.uploadVideos(response.origURL, this.props.usuario, this.props.select_type_video)
+                                    
+                                      
+                                      
+                                    }
+                                  });
+                                }else{
+                                  alert('por favor selecione um tipo')
+                                }                                
+                                this.popupDialog.dismiss()
+                              } }>
+                                  <Text style={styles.btnText}>Confirmar</Text>
+                              </TouchableHighlight>
+                          </View>
+                  </PopupDialog>
+
         </Content>
       </Container>
     );
   }
 }
+
 GerenciarVideosScreen.navigationOptions = ({ navigation }) => ({
   header: (
     <Header style={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
@@ -44,24 +107,7 @@ GerenciarVideosScreen.navigationOptions = ({ navigation }) => ({
       <Right>
         <Button transparent
           onPress={() => {
-            ImagePicker.showImagePicker(options, (response) => {
-              if (response.didCancel) {
-                console.log('User cancelled image picker');
-              }
-              else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-              }
-              else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-              }
-              else {
-                let source = { uri: response.uri };
-            
-                // You can also display the image using data:
-                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-                console.log('Response = ', response);
-              }
-            });
+            navigation.state.params.popupDialog.show()
           } }  underlayColor="transparent">
           <Icon style={styles.icon} name="ios-add" />
         </Button>
@@ -136,3 +182,19 @@ text: {
   color: '#fff',
 },
 });
+
+const mapStateToProps = state => {
+
+  const usuario = state.HomeReducer;
+
+  //console.log('mapStateToProps SideBar', usuario)
+ //console.log('Conversas mapStateToProps state: ', state);
+
+    return ({
+      usuario,
+      abrirPopUp: state.GerenciarVideosReducer.abrirPopUp,
+      select_type_video: state.GerenciarVideosReducer.select_type_video
+    })
+  }
+
+export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos})(GerenciarVideosScreen)

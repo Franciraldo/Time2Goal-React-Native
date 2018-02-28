@@ -72,5 +72,7 @@ export const SET_IDIOMA_MENTOR = 'set_idioma_mentor';
 export const SET_IMAGEM_MENTOR = 'set_imagem_mentor';
 export const SET_QTD_ALUNOS = 'set_qtd_alunos';
 export const SET_VALOR_HORA = 'set_valor_hora';
-export const CHECKOUT_MENTORIA = 'checkout_mentoria'
+export const CHECKOUT_MENTORIA = 'checkout_mentoria';
+export const ABRIR_POPUP_GERENCIAR_VIDEOS = 'abrir_popup_gerenciar_videos';
+export const SELECTED_TYPE_VIDEO = 'selected_type_video';
 

@@ -10,6 +10,7 @@ import FormMentoringReducer from './FormMentoringReducer';
 import HomeReducer from './HomeReducer';
 import MentoringReducer from './MentoringReducer';
 import ProfileMentorReducer from './ProfileMentorReducer';
+import GerenciarVideosReducer from './GerenciarVideosReducer';
 
 
 export default combineReducers({
@@ -23,5 +24,6 @@ export default combineReducers({
     ProfileReducer,
     FormMentoringReducer,
     ProfileMentorReducer,
+    GerenciarVideosReducer,
     HomeReducer
 });
