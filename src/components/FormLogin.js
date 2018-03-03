@@ -11,16 +11,16 @@ const logo = require('../imgs/logo.png');
 class formLogin  extends Component {
 
     componentDidMount(){
-        console.log('formLogin componentDidMount: ', this.props)
+        //console.log('formLogin componentDidMount: ', this.props)
       }
     
       componentWillMount(){
-        console.log('formLogin componentWillMount: ', this.props)
+        //console.log('formLogin componentWillMount: ', this.props)
         
     }
     
     componentWillReceiveProps(nextProps){
-      console.log('formLogin componentWillReceiveProps: ', nextProps)
+      //console.log('formLogin componentWillReceiveProps: ', nextProps)
         
     }
 

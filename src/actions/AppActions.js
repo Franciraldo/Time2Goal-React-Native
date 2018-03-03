@@ -162,7 +162,7 @@ export const contatosUsuarioFetch = () => {
     return (dispatch) => {
         firebase.database().ref(`/mentores` )
             .on("value", snapshot => {   
-                console.log('value Mentores: ', snapshot.val())
+                //console.log('value Mentores: ', snapshot.val())
                 dispatch({ type: LISTA_CONTATO_USUARIO, payload: snapshot.val() });
              })
         
@@ -176,16 +176,16 @@ export const modificaMensagem = texto => {
     })
 }
 
-export const enviarMensagem = (mensagem, contatoNome, contatoEmail) => {
+export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, usuario) => {
     // dados do contato (contatoNome e contatoEmail)
     //dados do usuario (email)
     const { currentUser } = firebase.auth();
     const usuarioEmail = currentUser.email;
-
+    console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario})
     return dispatch => {
 
         //conversão para base 64
-        const usuarioEmailB64 = b64.encode(usuarioEmail);
+        const usuarioEmailB64 = b64.encode(usuario.email);
         const contatoEmailB64 = b64.encode(contatoEmail);
 
         firebase.database().ref(`/mensagens/${usuarioEmailB64}/${contatoEmailB64}`)
@@ -198,19 +198,12 @@ export const enviarMensagem = (mensagem, contatoNome, contatoEmail) => {
         .then(() => {
             // Armazenar o cabeçalho de conversa do usuário autenticado
             firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}/${contatoEmailB64}`)
-            .set({ nome: contatoNome, email: contatoEmail})
+            .set({ nome: contatoNome, email: contatoEmail, img: contatoImg})
         })
         .then(() => {
             // Armazenar o cabeçalho de conversa do contato
-            firebase.database().ref(`/contatos/${usuarioEmailB64}`)
-            .once('value')
-            .then( snapshot => {
-
-                const dadosUsuario = _.first(_.values(snapshot.val()))
-
-                firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}/${contatoEmailB64}`)
-                .set({nome: dadosUsuario.nome, email: usuarioEmail})
-            })
+            firebase.database().ref(`/usuario_conversas/${contatoEmailB64}/${usuarioEmailB64}`)
+                .set({nome: usuario.nome, email: usuario.email, img: usuario.img })
         })
     }
 }
@@ -232,13 +225,13 @@ export const conversaUsuarioFetch = contatoEmail => {
 }
 
 export const conversasUsuarioFetch = (email) => {
-    const { currentUser } = firebase.auth();
-
     return dispatch => {
-        let usuarioEmailB64 = email !== undefined ? b64.encode(email) : b64.encode(currentUser.email);
+        console.log('conversasUsuarioFetch: ', email)
+        let usuarioEmailB64 = b64.encode(email);
 
         firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}`)
             .on("value", snapshot => { 
+                console.log('conversasUsuarioFetch snapshot', snapshot.val())
                 dispatch({ type: LISTA_CONVERSAS_USUARIO, payload: snapshot.val() })
             })
     }
@@ -252,7 +245,7 @@ export const menotresFetch = () => {
 
         firebase.database().ref(`/mentores`)
             .on("value", snapshot => { 
-                console.log('value Mentores: ', snapshot.val())
+                //console.log('value Mentores: ', snapshot.val())
                 dispatch({ type: LISTA_MENTORES, payload: snapshot.val() })
             })
     }

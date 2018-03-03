@@ -12,16 +12,16 @@ import { connect } from 'react-redux';
 class HomeScreen extends React.Component {
   
       componentDidMount(){
-        console.log('HomeScreen componentDidMount: ', this.props)
+        //console.log('HomeScreen componentDidMount: ', this.props)
       }
 
       componentWillMount(){
-        console.log('HomeScreen componentWillMount: ', this.props)
+        //console.log('HomeScreen componentWillMount: ', this.props)
         
     }
 
     componentWillReceiveProps(nextProps){
-      console.log('HomeScreen componentWillReceiveProps: ', nextProps)
+      //console.log('HomeScreen componentWillReceiveProps: ', nextProps)
       
         
     }
@@ -63,7 +63,7 @@ class HomeScreen extends React.Component {
           </Body>
           <Right>
             <Button transparent
-              onPress={() => false }  underlayColor="transparent">
+              onPress={() => Actions.adicionarContato() }  underlayColor="transparent">
               <Icon style={styles.icon} name="ios-search" />
             </Button>
           </Right>

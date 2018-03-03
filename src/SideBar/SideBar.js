@@ -12,16 +12,16 @@ import { habilitarPremiumSideBar } from '../actions/AutenticacaoActions';
 class SideBar extends React.Component {
 
   componentDidMount(){
-    console.log('SideBar componentDidMount: ', this.props)
+    //console.log('SideBar componentDidMount: ', this.props)
   }
 
   componentWillMount(){
-    console.log('SideBar componentWillMount: ', this.props)
+    //console.log('SideBar componentWillMount: ', this.props)
     
 }
 
 componentWillReceiveProps(nextProps){
-  console.log('SideBar componentWillReceiveProps: ', nextProps)
+  //console.log('SideBar componentWillReceiveProps: ', nextProps)
     
 }
 _uploadImage() {

@@ -55,7 +55,6 @@ export const uploadVideos = (uri, usuario, type) => {
                     .ref('videos-mentor/' + testVideoName)
                     .getDownloadURL().then((url) => {
                                 console.log('url: ', url)
-
                                 firebase.database().ref(`videos/${type}`).push().set({                                
                                         email_mentor: usuario.email,
                                         uri: url,

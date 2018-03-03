@@ -3,32 +3,32 @@ import { View, Text, ListView, FlatList, TouchableHighlight, StyleSheet} from 'r
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux'
 import { conversasUsuarioFetch } from '../actions/AppActions';
+import _ from 'lodash';
 
 class Conversas extends Component {
     componentDidMount(){
-        //console.log('Conversas componentDidMount: ', this.props)
+        console.log('Conversas componentDidMount: ', this.props)
         //console.log('Conversas componentDidMount email: ', this.props.email)
         
     }
 
     componentWillMount() {
-        //console.log('Conversas componentWillMount: ', this.props)
-        //console.log('Conversas componentWillMount email: ', this.props.email)
-        this.props.conversasUsuarioFetch(this.props.usuario.email)
+        console.log('Conversas componentWillMount: ', this.props)
+        //console.log('Conversas componentWillMount email: ', this.props.usuario.email)
+        this.props.conversasUsuarioFetch(this.props.email)
         if(this.props.conversas !== null){
-            //console.log('componentWillMount: ', this.criaFonteDeDados(this.props.conversas))
+            //console.log('componentWillMount: ', this.criaFonteDeDados`(this.props.conversas))
             this.criaFonteDeDados(this.props.conversas);
         }
         
         
     }
     componentWillReceiveProps(nextProps) {
-        
+        console.log('Conversas componentWillReceiveProps: ', nextProps)
         //console.log('Conversas componentWillReceiveProps: ', nextProps)
-        //console.log('Conversas componentWillReceiveProps: ', nextProps)
-        //nextProps.conversasUsuarioFetch(nextProps.email);
+        //nextProps.conversasUsuarioFetch(nextProps.usuario.email);
         if(nextProps.conversas !== null){
-            console.log('componentWillReceiveProps: ', nextProps.conversas)
+            console.log('Conversas componentWillReceiveProps: ', nextProps.conversas)
             this.criaFonteDeDados(nextProps.conversas);
         }
             
@@ -39,10 +39,11 @@ class Conversas extends Component {
         this.dataSource = ds.cloneWithRows( conversas )
     }
     renderRow(conversa) {
-        //console.log(conversa);
+        
+        console.log('conversa: ', { conversa});
         return (
             <TouchableHighlight onPress={
-                () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email})
+                () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email, contatoImg: conversa.img})
             }>
                 <View style={{ flex: 1, padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
                     <Text style={{ fontSize: 25, color: "#fff", backgroundColor: 'transparent'}}>{conversa.nome}</Text>
@@ -91,10 +92,13 @@ const styles = StyleSheet.create({
 
 mapStateToProps = state => {
     
-    const conversas = state.ListaConvetsasReducer;
+    const conversas = _.map(state.ListaConversasReducer, (val, uid) => {
+        return { ...val, uid }
+    })
+
     const usuario = state.HomeReducer
 
-    //console.log('Conversas mapStateToProps state: ', state);
+    //console.log('Conversas mapStateToProps conversas: ', state);
 
     return ({
         conversas,

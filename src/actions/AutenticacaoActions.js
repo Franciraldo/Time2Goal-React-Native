@@ -264,7 +264,11 @@ export const autenticarUsuario = (email, senha) => {
 
 const salvarDatavaseDados = (dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64) => {
     
-    firebase.database().ref(`/contatos/ ${emailB64}`).set({nome})
+    firebase.database().ref(`/contatos/ ${emailB64}`).set({
+        nome,
+        email,
+        img
+    })
     console.log('salvarDatavaseDados', {dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64})   
     let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
         nome: nome !== undefined ? nome : '',
@@ -431,7 +435,7 @@ const loginUsuarioSucesso = (dispatch, emailB64) => {
             dispatch({ type: USER_FORM_MENTORING , payload: snapshot.val() })
             dispatch({ type: USER_HOME , payload: snapshot.val() })
             UPDATE_DADOS_SUCESSO
-            console.log('getUsuario snapshot: ',  snapshot)
+            //console.log('getUsuario snapshot: ',  snapshot)
         })
 
     Actions.principal();

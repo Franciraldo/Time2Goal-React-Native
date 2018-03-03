@@ -74,7 +74,7 @@ class ProfileMentor extends Component {
                                 source={calendario}
                             />
                         </TouchableHighlight>
-                        <TouchableHighlight onPress={() => { Actions.conversa({ title: this.props.nome, contatoNome: this.props.nome , contatoEmail: this.props.email}) }}>
+                        <TouchableHighlight onPress={() => { Actions.conversa({ title: this.props.nome, contatoNome: this.props.nome , contatoEmail: this.props.email, contatoImg: this.props.img }) }}>
                             <Image
                                 style={styles.button}
                                 source={chat}

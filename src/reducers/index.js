@@ -3,7 +3,7 @@ import AuthenticacaoReducer from './AuthenticacaoReducer';
 import AppReducer from './AppReducer';
 import ListaContatosReducer from './ListaContatosReducer';
 import ListaConversaReducer from './ListaConversaReducer';
-import ListaConvetsasReducer from './ListaConversasReducer';
+import ListaConversasReducer from './ListaConversasReducer';
 import SideBarReducer from './SideBarReducer';
 import ProfileReducer from './ProfileReducer';
 import FormMentoringReducer from './FormMentoringReducer';
@@ -18,7 +18,7 @@ export default combineReducers({
     AppReducer,
     ListaContatosReducer,
     ListaConversaReducer,
-    ListaConvetsasReducer,
+    ListaConversasReducer,
     SideBarReducer,
     MentoringReducer,
     ProfileReducer,

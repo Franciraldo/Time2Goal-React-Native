@@ -4,14 +4,17 @@ import _ from 'lodash';
 import { View, Text, TextInput, Image, TouchableHighlight, ListView} from 'react-native';
 import { modificaMensagem, enviarMensagem, conversaUsuarioFetch } from '../actions/AppActions';
 
-class Conversas extends Component {
+class Conversa extends Component {
+    componentDidMount(){
+        console.log('Conversa componentDidMount: ', this.props)
+      }      
     componentWillMount() {
-        //console.log('componentWillMount: ', this.props.contatoEmail);
+        console.log('Conversa componentWillMount: ', this.props);
         this.props.conversaUsuarioFetch(this.props.contatoEmail);
         this.criaFonteDeDados(this.props.conversa);
     }
     componentWillReceiveProps(nextProps) {
-        //console.log('componentWillReceiveProps: ', nextProps.contatoEmail);
+        console.log('Conversa componentWillReceiveProps: ', nextProps);
         /*
         
         // Não funcionou deu o Erro MAximun update depth exceeded. This can happen when a component
@@ -29,8 +32,8 @@ class Conversas extends Component {
         this.dataSource = ds.cloneWithRows( conversa );
     }
     _enviarMensagem() {
-        const { mensagem, contatoNome, contatoEmail } = this.props;
-        this.props.enviarMensagem(mensagem, contatoNome, contatoEmail);
+        const { mensagem, contatoNome, contatoEmail, contatoImg, usuario } = this.props;
+        this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario);
     }
     renderRow(texto) {
         if(texto.tipo === 'e') {
@@ -75,11 +78,13 @@ mapStateToProps = state => {
     const conversa = _.map(state.ListaConversaReducer,(val, uid) => {
         return { ...val, uid};
     });
+    const usuario = state.HomeReducer;
 
     return ({
         conversa,
+        usuario,
         mensagem: state.AppReducer.mensagem
     })
 }
 
-export default connect(mapStateToProps, { modificaMensagem, enviarMensagem, conversaUsuarioFetch })(Conversas);
+export default connect(mapStateToProps, { modificaMensagem, enviarMensagem, conversaUsuarioFetch })(Conversa);

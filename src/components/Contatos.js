@@ -8,7 +8,7 @@ import { contatosUsuarioFetch, marcarMentoria, abrirPerfil } from '../actions/Ap
 const calendario = require('../imgs/calendar_icon.png');
 class Contatos extends Component {
     componentDidMount(){
-        console.log('Contatos componentDidMount: ', this.props)
+        //console.log('Contatos componentDidMount: ', this.props)
         //console.log('Contatos componentDidMount email: ', this.props.email)
         
     }
@@ -19,7 +19,7 @@ class Contatos extends Component {
             //console.log('componentWillMount: ', this.criaFonteDeDados(this.props.contatos))
             this.criaFonteDeDados(this.props.contatos);
         }
-        console.log('Contatos componentWillMount: ', this.props)
+        //console.log('Contatos componentWillMount: ', this.props)
         //console.log('recuperado via props: ', this.props.contatos);
     }
 
@@ -29,7 +29,7 @@ class Contatos extends Component {
             this.criaFonteDeDados(nextProps.contatos);
         }
         //console.log('recuperado via props após update: ', nextProps.contatos);
-        console.log('Contatos componentWillReceiveProps: ', nextProps)
+        //console.log('Contatos componentWillReceiveProps: ', nextProps)
         //console.log('Contatos componentWillReceiveProps: ', nextProps)
         
     }
@@ -58,7 +58,7 @@ class Contatos extends Component {
     }
 
     renderRow(contato){
-        console.log('conato: ', contato)
+        //console.log('conato: ', contato)
         return (
             
         <View>
