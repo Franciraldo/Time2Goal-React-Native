@@ -176,12 +176,25 @@ export const modificaMensagem = texto => {
     })
 }
 
-export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, usuario) => {
+const doTruncarStr = (str, size) => {
+    if (str==undefined || str=='undefined' || str =='' || size==undefined || size=='undefined' || size ==''){
+        return str;
+    }
+    var shortText = str;
+    if(str.length >= size+3){
+        shortText = str.substring(0, size).concat('...');
+    }
+    return shortText;
+}
+
+export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual) => {
     // dados do contato (contatoNome e contatoEmail)
     //dados do usuario (email)
     const { currentUser } = firebase.auth();
     const usuarioEmail = currentUser.email;
-    console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario})
+    let shortText = doTruncarStr(mensagem, 28)
+
+    console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, shortText, hora_atual, data_atual})
     return dispatch => {
 
         //conversão para base 64
@@ -189,21 +202,21 @@ export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, 
         const contatoEmailB64 = b64.encode(contatoEmail);
 
         firebase.database().ref(`/mensagens/${usuarioEmailB64}/${contatoEmailB64}`)
-        .push({mensagem, tipo: 'e'})
+        .push({mensagem, tipo: 'e', hora_atual, data_atual})
         .then(() => {
             firebase.database().ref(`/mensagens/${contatoEmailB64}/${usuarioEmailB64}`)
-            .push({mensagem, tipo: 'r'})
+            .push({mensagem, tipo: 'r', hora_atual, data_atual})
             .then(() => dispatch ({ type: ENVIA_MENSAGEM_SUCESSO}))
         })
         .then(() => {
             // Armazenar o cabeçalho de conversa do usuário autenticado
             firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}/${contatoEmailB64}`)
-            .set({ nome: contatoNome, email: contatoEmail, img: contatoImg})
+            .set({ nome: contatoNome, email: contatoEmail, img: contatoImg, shortText, hora_atual, data_atual})
         })
         .then(() => {
             // Armazenar o cabeçalho de conversa do contato
             firebase.database().ref(`/usuario_conversas/${contatoEmailB64}/${usuarioEmailB64}`)
-                .set({nome: usuario.nome, email: usuario.email, img: usuario.img })
+                .set({nome: usuario.nome, email: usuario.email, img: usuario.img, shortText, hora_atual, data_atual })
         })
     }
 }

@@ -27,7 +27,7 @@ class Conversas extends Component {
         console.log('Conversas componentWillReceiveProps: ', nextProps)
         //console.log('Conversas componentWillReceiveProps: ', nextProps)
         //nextProps.conversasUsuarioFetch(nextProps.usuario.email);
-        if(nextProps.conversas !== null){
+        if(nextProps.conversas.length !== 0){
             console.log('Conversas componentWillReceiveProps: ', nextProps.conversas)
             this.criaFonteDeDados(nextProps.conversas);
         }

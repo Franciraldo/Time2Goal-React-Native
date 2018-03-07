@@ -73,7 +73,7 @@ class Contatos extends Component {
                     <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>Trabalha: {contato.categoria_mentoria}</Text>
                     <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>Total alunos: {contato.qtd_alunos}</Text>
                 </View>
-                <View style={{ marginLeft: 20, marginTop: 15 }}>
+                <View style={{ marginLeft: 10, marginTop: 15 }}>
                     <TouchableHighlight onPress={() => { this.props.marcarMentoria(contato.email)}}>
                         <Image
                             style={styles.button}
@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
         borderRadius: 40  
     },
     button: {
-        width: 50,
-        height:50,
+        width: 60,
+        height: 49,
     }
 });
 

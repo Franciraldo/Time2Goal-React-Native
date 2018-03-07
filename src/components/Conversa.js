@@ -33,7 +33,12 @@ class Conversa extends Component {
     }
     _enviarMensagem() {
         const { mensagem, contatoNome, contatoEmail, contatoImg, usuario } = this.props;
-        this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario);
+        let now = new Date
+        let hora_atual = `${now.getHours()}:${now.getMinutes()}`
+        let data_atual = `${now.getDate()}/${now.getMonth()}/${now.getFullYear()}`
+        let getUTCHours = `${now.getUTCHours()}`
+        //console.log('_enviarMensagem', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual})
+        this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual);
     }
     renderRow(texto) {
         if(texto.tipo === 'e') {
