@@ -434,7 +434,6 @@ const loginUsuarioSucesso = (dispatch, emailB64) => {
             dispatch({ type: USER_PROFILE , payload: snapshot.val() })
             dispatch({ type: USER_FORM_MENTORING , payload: snapshot.val() })
             dispatch({ type: USER_HOME , payload: snapshot.val() })
-            UPDATE_DADOS_SUCESSO
             //console.log('getUsuario snapshot: ',  snapshot)
         })
 

@@ -14,25 +14,21 @@ class Conversas extends Component {
 
     componentWillMount() {
         console.log('Conversas componentWillMount: ', this.props)
-        //console.log('Conversas componentWillMount email: ', this.props.usuario.email)
-        this.props.conversasUsuarioFetch(this.props.email)
-        if(this.props.conversas !== null){
-            //console.log('componentWillMount: ', this.criaFonteDeDados`(this.props.conversas))
+
+        if(this.props.email !== undefined){
+            this.props.conversasUsuarioFetch(this.props.email)
+            this.criaFonteDeDados(this.props.conversas);
+        }else{
+            this.props.conversasUsuarioFetch(this.props.usuario.email)
             this.criaFonteDeDados(this.props.conversas);
         }
-        
         
     }
     componentWillReceiveProps(nextProps) {
         console.log('Conversas componentWillReceiveProps: ', nextProps)
-        //console.log('Conversas componentWillReceiveProps: ', nextProps)
-        //nextProps.conversasUsuarioFetch(nextProps.usuario.email);
-        if(nextProps.conversas.length !== 0){
-            console.log('Conversas componentWillReceiveProps: ', nextProps.conversas)
-            this.criaFonteDeDados(nextProps.conversas);
-        }
-            
-        
+        //console.log('Conversas componentWillReceiveProps email: ', nextProps.usuario.email)
+        //nextProps.conversasUsuarioFetch(nextProps.usuario.email);    
+        this.criaFonteDeDados(nextProps.conversas);
     }
     criaFonteDeDados( conversas ) {
         const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2});
