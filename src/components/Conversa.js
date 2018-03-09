@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { View, Text, TextInput, Image, TouchableHighlight, ListView} from 'react-native';
+import { View, Text, TextInput, Image, TouchableHighlight, ListView, StyleSheet} from 'react-native';
 import { modificaMensagem, enviarMensagem, conversaUsuarioFetch } from '../actions/AppActions';
-
+const botaoEnviar = require('../imgs/enviar_mensagem.png');
+const ON = require('../imgs/ON.png');
+const OFF = require('../imgs/OFF.png');
 class Conversa extends Component {
     componentDidMount(){
         console.log('Conversa componentDidMount: ', this.props)
@@ -34,30 +36,59 @@ class Conversa extends Component {
     _enviarMensagem() {
         const { mensagem, contatoNome, contatoEmail, contatoImg, usuario } = this.props;
         let now = new Date
-        let hora_atual = `${now.getHours()}:${now.getMinutes()}`
-        let data_atual = `${now.getDate()}/${now.getMonth()}/${now.getFullYear()}`
-        let getUTCHours = `${now.getUTCHours()}`
+        let hora = `${now.getHours()}`
+        let minuto = `${now.getMinutes()}`
+        let dia = `${now.getUTCDay()}`
+        let mes = `${now.getUTCMonth()}`
+
+        if(hora <= 9){
+            hora = hora.replace(hora.substring(-1, 0), '0');
+        }
+        if(minuto <= 9){
+            minuto = minuto.replace(minuto.substring(-1, 0), '0');
+        }
+        if(dia <= 9){
+            dia = dia.replace(dia.substring(-1, 0), '0');
+        }
+        if(mes <= 9){
+            mes = mes.replace(mes.substring(-1, 0), '0');
+        }
+
+        
+        let hora_atual = `${hora}:${minuto}`
+        let data_atual = `${dia}/${mes}/${now.getUTCFullYear()}`
         //console.log('_enviarMensagem', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual})
         this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual);
     }
     renderRow(texto) {
+        console.log('texto: ', texto)
         if(texto.tipo === 'e') {
             return (
-                <View style={{ alignItems: 'flex-end', marginTop: 5, marginBottom: 5, marginLeft: 40}}>
-                    <Text style={{ fontSize: 18, color: '#000', padding: 10, backgroundColor: '#dbf5b4', elevation: 1}}>{texto.mensagem}</Text>
+                <View style={{ backgroundColor: '#0b96c8', borderRadius: 5,  marginTop: 15}}>
+                    <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={{ fontSize: 18, color: '#fff', marginRight: 10, marginTop: 10, marginBottom: 5}}>{texto.mensagem}</Text>
+                    </View>
+                    <View style={{ alignItems: 'flex-start' }}>
+                        <Text style={{ fontSize: 14, color: '#fff', marginLeft: 10 , marginBottom: 5}}>{texto.hora_atual}</Text>
+                    </View>
                 </View>
             );    
         }
         return (
-            <View style={{ alignItems: 'flex-start', marginTop: 10, marginBottom: 5, marginRight: 40}}>
-                <Text style={{ fontSize: 18, color: '#000', padding: 10, backgroundColor: '#f7f7f7', elevation: 1}}>{texto.mensagem}</Text>
-            </View>
+            <View style={{ backgroundColor: '#f7f7f7', borderRadius: 5, marginTop: 15}}>
+                    <View style={{ alignItems: 'flex-start' }}>
+                        <Text style={{ fontSize: 18, color: '#000', marginLeft: 10, marginBottom: 5, marginTop: 10}}>{texto.mensagem}</Text>
+                    </View>
+                    <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={{ fontSize: 14, color: '#000', marginRight: 10, marginBottom: 5}}>{texto.hora_atual}</Text>
+                    </View>
+                </View>
         );
     }
     render (){
         //console.log('render: ', this.props.contatoEmail);
         return (
-            <View style={{ flex: 1, marginTop: 50, backgroundColor: '#eee4dc', padding: 10 }}>
+            <View style={{ flex: 1, marginTop: 50, backgroundColor: '#2b2a29', padding: 10 }}>
                 <View style={{flex: 1, paddingBottom: 20}}>
                         <ListView
                             enableEmptySections
@@ -66,19 +97,35 @@ class Conversa extends Component {
                         />
                 </View>
                 <View style={{flexDirection: 'row', height: 60, paddingBottom: 20}}>
-                        <TextInput style={{flex: 4, backgroundColor: "#fff", fontSize: 18}}
+                        <TouchableHighlight style={{marginRight: 10}} underlayColor="#fff" onPress={false}>
+                            <Image style={styles.btn} source={ON}/>
+                        </TouchableHighlight>
+
+                        <TextInput style={{flex: 4, borderRadius: 25, backgroundColor: "#fff", fontSize: 18}}
                             value = { this.props.mensagem }
                             onChangeText = {texto => this.props.modificaMensagem(texto)} 
                          />
 
-                        <TouchableHighlight underlayColor="#fff" onPress={this._enviarMensagem.bind(this)}>
-                            <Image source={require('../imgs/enviar_mensagem.png')}/>
+                        <TouchableHighlight style={{marginLeft: 10}} underlayColor="#fff" onPress={this._enviarMensagem.bind(this)}>
+                            <Image style={styles.btn} source={botaoEnviar}/>
                         </TouchableHighlight>
                 </View>
             </View>
         )
     }
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 10,
+        backgroundColor: '#2b2a29'
+    
+    },
+    btn:{
+        width: 40,
+        height: 40,
+    }
+});
 mapStateToProps = state => {
     const conversa = _.map(state.ListaConversaReducer,(val, uid) => {
         return { ...val, uid};

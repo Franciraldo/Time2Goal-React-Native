@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, ListView, FlatList, TouchableHighlight, StyleSheet} from 'react-native';
+import { View, Text, ListView, FlatList, TouchableHighlight, StyleSheet, Image} from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux'
 import { conversasUsuarioFetch } from '../actions/AppActions';
 import _ from 'lodash';
 
+const imgAnonimo = require('../imgs/anonymous.jpg');
 class Conversas extends Component {
     componentDidMount(){
         console.log('Conversas componentDidMount: ', this.props)
@@ -37,18 +38,66 @@ class Conversas extends Component {
     renderRow(conversa) {
         
         console.log('conversa: ', { conversa});
-        return (
-            <TouchableHighlight onPress={
-                () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email, contatoImg: conversa.img})
-            }>
-                <View style={{ flex: 1, padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
-                    <Text style={{ fontSize: 25, color: "#fff", backgroundColor: 'transparent'}}>{conversa.nome}</Text>
+        if(conversa.img === ""){
+            return (
+                <View>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View>
+                        <Image
+                            style={styles.uploadImage}
+                            source={imgAnonimo}
+                        />
+                    </View>
+                    <View style={{marginLeft: 10, marginTop: 15, width: 230 , height: 60}}>
+                        <TouchableHighlight onPress={
+                            () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email, contatoImg: conversa.img})
+                        }>
+                            <Text style={{ fontSize: 25, color: "#fff", backgroundColor: 'transparent'}}>{conversa.nome}</Text>
+                        </TouchableHighlight>
+                        <Text style={{ marginTop: 10, fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{conversa.shortText}</Text>                                 
+                    </View>
+                    <View>
+                        <Text style={{ marginTop: 25, fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{conversa.hora_atual}</Text>
+                    </View>                                
                 </View>
-            </TouchableHighlight>
-        )
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View style={{ borderBottomWidth: 1, borderColor: "#CCC", width: 290, marginLeft: 80, marginTop: 10}}>
+                    </View> 
+                </View> 
+           </View>                
+            )
+        }else{
+            return (
+                <View>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                        <View>
+                            <Image
+                            style={styles.uploadImage}
+                            source={{ uri: conversa.img}}
+                            />
+                        </View>
+                        <View style={{marginLeft: 10, marginTop: 15, width: 230 , height: 60}}>
+                            <TouchableHighlight onPress={
+                                () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email, contatoImg: conversa.img})
+                            }>
+                                <Text style={{ fontSize: 25, color: "#fff", backgroundColor: 'transparent'}}>{conversa.nome}</Text>
+                            </TouchableHighlight>
+                            <Text style={{ marginTop: 10, fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{conversa.shortText}</Text>                                 
+                        </View>
+                        <View>
+                            <Text style={{ marginTop: 25, fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{conversa.hora_atual}</Text>
+                        </View>                                
+                    </View>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                        <View style={{ borderBottomWidth: 1, borderColor: "#CCC", width: 290, marginLeft: 80, marginTop: 10}}>
+                        </View> 
+                    </View> 
+               </View>       
+            )
+        }
     }
     render() {
-        if(this.props.conversas !== null){
+        if(this.props.conversas !== undefined){
             return (
                 <ListView 
                     enableEmptySections
@@ -76,6 +125,13 @@ const styles = StyleSheet.create({
     container: {
      flex: 1,
      paddingTop: 22
+    },
+    uploadImage: {
+        marginLeft: 15,
+        marginTop: 15,
+        width: 60,
+        height: 60,
+        borderRadius: 30  
     },
     item: {
       padding: 10,

@@ -6,6 +6,7 @@ import {Actions} from 'react-native-router-flux';
 import { contatosUsuarioFetch, marcarMentoria, abrirPerfil } from '../actions/AppActions';
 
 const calendario = require('../imgs/calendar_icon.png');
+const imgAnonimo = require('../imgs/anonymous.jpg');
 class Contatos extends Component {
     componentDidMount(){
         //console.log('Contatos componentDidMount: ', this.props)
@@ -50,8 +51,8 @@ class Contatos extends Component {
         }else{
             return (
                 <Image
-                style={styles.uploadImage}
-                source={require('../imgs/anonymous.jpg')}
+                    style={styles.uploadImage}
+                    source={imgAnonimo}
                 />
             );
         }
