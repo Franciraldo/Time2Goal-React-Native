@@ -41,19 +41,20 @@ class Contatos extends Component {
     }
 
     renderImageContato(contato){
-        if (contato.img !== undefined) {
+        //console.log('renderImageContato: ', contato)
+        if (contato.img !== "") {
             return (
                 <Image
                 style={styles.uploadImage}
                 source={{ uri: contato.img}}
-                />
+                ></Image>
             );
         }else{
             return (
                 <Image
                     style={styles.uploadImage}
                     source={imgAnonimo}
-                />
+                ></Image>
             );
         }
     }
@@ -63,23 +64,23 @@ class Contatos extends Component {
         return (
             
         <View>
-            <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row'}}>
                 <View>
                 {this.renderImageContato(contato)}
                 </View>
-                <View style={{marginLeft: 10, marginTop: 15}}>
+                <View style={{marginLeft: 10, marginTop: 15, width: 190}}>
                 <TouchableHighlight onPress={() => { this.props.abrirPerfil(contato)}}>
                     <Text style={{ fontSize: 18, color: "#fff", backgroundColor: 'transparent'}}>{contato.nome}</Text>
                 </TouchableHighlight>
                     <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>Trabalha: {contato.categoria_mentoria}</Text>
                     <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>Total alunos: {contato.qtd_alunos}</Text>
                 </View>
-                <View style={{ marginLeft: 10, marginTop: 15 }}>
+                <View style={{ marginLeft: 10, marginTop: 15, alignItems: 'flex-end'}}>
                     <TouchableHighlight onPress={() => { this.props.marcarMentoria(contato.email)}}>
                         <Image
                             style={styles.button}
                             source={calendario}
-                        />
+                        ></Image>
                     </TouchableHighlight>
                 </View>
             </View>

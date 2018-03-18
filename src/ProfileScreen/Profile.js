@@ -72,7 +72,7 @@ _onPress() {
 }
 
   renderImage(){
-    if (this.props.img !== undefined) {
+    if (this.props.img !== "") {
         return (
             <Image
             style={styles.uploadImage}
@@ -88,25 +88,6 @@ _onPress() {
         );
     }
 }
-
-/*
-<TextInput 
-                            secureTextEntry
-                            value={this.props.senha} 
-                            style={styles.form}
-                            placeholder='Senha'
-                            placeholderTextColor='#fff' 
-                            onChangeText={ texto => this.props.modificaSenha(texto)}/>
-
-                            <TextInput 
-                            value={this.props.email}
-                            style={styles.form}
-                            placeholder='E-mail' 
-                            placeholderTextColor='#fff' 
-                            onChangeText={ texto => this.props.modificaEmail(texto)}/>
-
-*/
-
     _onPressDescricao() {
         alert('Este campo e para você informar um breve descrição.')
     }

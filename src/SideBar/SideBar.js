@@ -12,16 +12,16 @@ import { habilitarPremiumSideBar } from '../actions/AutenticacaoActions';
 class SideBar extends React.Component {
 
   componentDidMount(){
-    //console.log('SideBar componentDidMount: ', this.props)
+    console.log('SideBar componentDidMount: ', this.props)
   }
 
   componentWillMount(){
-    //console.log('SideBar componentWillMount: ', this.props)
+    console.log('SideBar componentWillMount: ', this.props)
     
 }
 
 componentWillReceiveProps(nextProps){
-  //console.log('SideBar componentWillReceiveProps: ', nextProps)
+  console.log('SideBar componentWillReceiveProps: ', nextProps)
     
 }
 _uploadImage() {
@@ -42,7 +42,7 @@ _uploadImage() {
 
   renderImage(){
     
-    if (this.props.usuario.img !== undefined) {
+    if (this.props.usuario.img !== "") {
         return (
             <Image
             style={styles.uploadImage}
@@ -88,35 +88,56 @@ _uploadImage() {
               <Text style={styles.NomeUser}>{this.props.usuario.nome}</Text>       
           </View>
 
-          <View style={{ flex: 5, marginTop: 20, marginLeft: 10, marginBottom: 50 }}>
-              <View style={{ flexDirection: 'row', marginTop: 15 }}>  
+          <View style={{ flex: 5, marginTop: 10, marginLeft: 10, marginBottom: 50, }}>
+              <View style={{ flexDirection: 'row', marginTop: 15, marginLeft: 10 }}>  
                     <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("Profile")}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Alterar perfil</Text>
                     </TouchableHighlight>      
               </View>
 
-              <View style={{ flexDirection: 'row', marginTop: 15 }}>  
-                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("GerenciarAgendaScreen")}>
-                        <Text style={{fontSize: 20, color: '#fff'}}>Gerenciar Agenda</Text>
+              <View style={{ flexDirection: 'row', marginTop: 60, marginLeft: 10 }}>  
+                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => {
+                      if(this.props.usuario.mentoring){
+                        this.props.navigation.navigate("GerenciarAgendaScreen")
+                      }else{
+                        return false
+                      }
+                    }}>
+                        <Text style={{fontSize: 20, color: '#fff'}}>Gerenciar Agenda (mentor)</Text>
                     </TouchableHighlight>      
               </View>
 
-              <View style={{ flexDirection: 'row', marginTop: 15 }}>  
-                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("GerenciarVideosScreen")}>
-                        <Text style={{fontSize: 20, color: '#fff'}}>Gerenciar Videos</Text>
+              <View style={{ flexDirection: 'row', marginTop: 15, marginLeft: 10 }}>  
+                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => {
+                      if(this.props.usuario.mentoring){
+                        this.props.navigation.navigate("GerenciarVideosScreen")
+                      }else{
+                        return false
+                      }
+                  }}>
+                        <Text style={{fontSize: 20, color: '#fff'}}>Gerenciar Videos (mentor)</Text>
                     </TouchableHighlight>      
               </View>
 
-              <View style={{ flexDirection: 'row', marginTop: 15 }}>  
-                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("FormMentoring")}>
+              <View style={{ flexDirection: 'row', marginTop: 50, marginLeft: 10 }}>  
+                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("Home")}>
+                        <Text style={{fontSize: 20, color: '#fff'}}>Tela Principal</Text>
+                    </TouchableHighlight>      
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 50, marginLeft: 10 }}>  
+                    <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => {
+                      if(this.props.usuario.mentoring){
+                        return false
+                      }else{
+                        this.props.navigation.navigate("FormMentoring")
+                      }
+                  }}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Torna-se mentor</Text>
                     </TouchableHighlight>      
               </View>
-          </View>
-          
 
-
-          <View style={{ flex: 1,  marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
+              <View style={{ marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
                     <Text style={{marginTop: 10, marginBottom: 30, backgroundColor: "transparent", fontSize: 16, color: '#fff', fontWeight: 'bold', marginRight: 15}}>Habilitar conta Premium </Text>
                     <TouchableOpacity onPress={() => this._onPress()} style={{ width: 55, height: 25,
                     borderWidth: 1, marginTop: 10,
@@ -127,12 +148,12 @@ _uploadImage() {
                     </TouchableOpacity>
                     
             </View>
-
-            <View style={{ flex: 1,  marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
+            <View style={{ marginTop: 5, marginLeft: 10, flexDirection: 'row'}}>
               <TouchableHighlight style={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.props.navigation.navigate("DrawerClose"); this.props.signOut()}}>
                         <Text style={{fontSize: 20, color: '#fff'}}>Logout</Text>
                     </TouchableHighlight>
             </View>
+          </View>
         </Content>
       </Container>
     );

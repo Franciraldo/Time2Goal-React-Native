@@ -58,31 +58,25 @@ class Conversa extends Component {
         let hora_atual = `${hora}:${minuto}`
         let data_atual = `${dia}/${mes}/${now.getUTCFullYear()}`
         //console.log('_enviarMensagem', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual})
-        this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual);
+        if(mensagem.trim() !== ""){
+            this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual);
+        }        
     }
     renderRow(texto) {
         console.log('texto: ', texto)
         if(texto.tipo === 'e') {
             return (
-                <View style={{ backgroundColor: '#0b96c8', borderRadius: 5,  marginTop: 15}}>
-                    <View style={{ alignItems: 'flex-end' }}>
-                        <Text style={{ fontSize: 18, color: '#fff', marginRight: 10, marginTop: 10, marginBottom: 5}}>{texto.mensagem}</Text>
-                    </View>
-                    <View style={{ alignItems: 'flex-start' }}>
-                        <Text style={{ fontSize: 14, color: '#fff', marginLeft: 10 , marginBottom: 5}}>{texto.hora_atual}</Text>
-                    </View>
-                </View>
+                <View style={{ alignItems: 'flex-end', marginTop: 10, marginBottom: 5, marginLeft: 40, backgroundColor: '#0b96c8', borderRadius: 15  }}>
+                        <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{texto.mensagem}</Text>
+                        <Text style={{ fontSize: 14, color: '#fff', marginRight: 10, marginBottom: 5}}>{texto.hora_atual}</Text>
+                </View>                
             );    
         }
         return (
-            <View style={{ backgroundColor: '#f7f7f7', borderRadius: 5, marginTop: 15}}>
-                    <View style={{ alignItems: 'flex-start' }}>
-                        <Text style={{ fontSize: 18, color: '#000', marginLeft: 10, marginBottom: 5, marginTop: 10}}>{texto.mensagem}</Text>
-                    </View>
-                    <View style={{ alignItems: 'flex-end' }}>
-                        <Text style={{ fontSize: 14, color: '#000', marginRight: 10, marginBottom: 5}}>{texto.hora_atual}</Text>
-                    </View>
-                </View>
+            <View style={{ alignItems: 'flex-start', marginTop: 10, marginBottom: 5, marginRight: 40, backgroundColor: '#f7f7f7', borderRadius: 15 }}>
+                <Text style={{ fontSize: 18, marginTop: 10, color: '#000', padding: 10, elevation: 1 }}>{texto.mensagem}</Text>
+                <Text style={{ fontSize: 14, color: '#000', marginLeft: 10, marginBottom: 5}}>{texto.hora_atual}</Text>
+            </View>
         );
     }
     render (){

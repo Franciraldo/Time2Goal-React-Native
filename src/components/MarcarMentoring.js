@@ -79,6 +79,7 @@ class MarcarMentoring extends React.Component {
     console.log('onDaySelect', day)
     const {emailMentor, lista_agenda_horarios} = this.props
     console.log('onDaySelect', { day, emailMentor, lista_agenda_horarios})
+    this.props.modificarSelectDay(day)
     this.props.getHorarios(emailMentor, day.dateString)
     this.criaFonteDeDados(lista_agenda_horarios);
   }
@@ -90,33 +91,44 @@ class MarcarMentoring extends React.Component {
   
 
   renderRow(lista_agenda_horarios, emailMentor) {
-    const day = this.formatDate()
+    let day = ""    
+    if(this.props.selected_day === ""){
+      day = this.formatDate()
+    }else{
+      day = this.props.selected_day.dateString
+    }
       if(lista_agenda_horarios.bool){
           return (
             <TouchableHighlight onPress={
-                () => false
-            }>
-                <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
-                        <Text style={{ fontSize: 25, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
-                        <Image
-                          style={styles.uploadImage}
+              () =>  false}>
+              <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
+                      <View style={{ flexDirection: 'column', width: 285}}>                      
+                        <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
+                      </View>
+                      
+                      <Image
+                          style={styles.check_on}
                           source={checkout_on}
                           />
-                </View>
-            </TouchableHighlight>
+              </View>
+          </TouchableHighlight>            
         )
       }else{
           return (
             <TouchableHighlight onPress={
-                () =>  this.props.selecionarHorario(lista_agenda_horarios, this.props.emailMentor, day, this.props.usuario)}>
-                <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
-                        <Text style={{ fontSize: 25, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
-                        <Image
-                          style={styles.uploadImage}
-                          source={checkout_off}
-                          />
-                </View>
-            </TouchableHighlight>
+              () =>  this.props.selecionarHorario(lista_agenda_horarios, this.props.emailMentor, day, this.props.usuario)}>
+              <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
+                      <View style={{ flexDirection: 'column', width: 285}}>
+                        <Text style={{ fontSize: 16, color: "#fff", backgroundColor: 'transparent'}}>Horario vago</Text>
+                        <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
+                      </View>
+                      
+                      <Image
+                        style={styles.check_off}
+                        source={checkout_off}
+                        />
+              </View>
+          </TouchableHighlight>        
         )
       }
   }
@@ -385,6 +397,18 @@ item: {
   backgroundColor: 'transparent',
   color: '#fff',
   height: 44,
+},
+check_on: {
+  marginLeft: 10,
+  width: 30,
+  height: 30,
+  borderRadius: 15  
+},
+check_off: {
+  marginLeft: 10,
+  width: 30,
+  height: 30,
+  borderRadius: 15
 },
 });
 

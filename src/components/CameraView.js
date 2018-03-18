@@ -73,7 +73,7 @@ class CameraView extends Component {
               this.props.navigation.navigate('FormMentoring')            
             break;
         default:
-              //console.log(data)
+              console.log(data)
               this.props.modificarIMG(data.uri)
               Actions.pop()
             break;

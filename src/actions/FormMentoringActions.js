@@ -80,7 +80,7 @@ export const selecionarHorario = (lista_agenda_horarios, emailMentor, day, usuar
                         horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("bool").set(true)
                         horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("nome_aluno").set(usuario.nome)
                         horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("email_aluno").set(usuario.email)
-                        horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("img_aluno").set(usuario)
+                        horarios.child(`${emailB64}`).child(`${day}`).child(`${lista_agenda_horarios.uid}`).child("img_aluno").set(usuario.img)
                               
                 }
                 
@@ -122,11 +122,11 @@ export const getHorarioDisponivel = (emailMentor, day) => {
         }
 }
 
-export const getDaysAgendados = (email) => {
-        console.log('getDaysAgendados', {email})
+export const getDaysAgendados = (email) => {        
         return (dispatch) => {
         
                 var emailB64 = b64.encode(email);
+                console.log('getDaysAgendados', {email, emailB64})
                 let mentore = firebase.database().ref(`/agenda_mentores/${emailB64}`)
                 mentore.on('value', function(snapshot) {
                 console.log('item-lista-agenda', snapshot.val().agenda)
@@ -239,6 +239,18 @@ const dadosEnviadosComSucesso = ( dispatch, navigation, email) => {
         navigation.navigate("Home")
 }
 
+const formatDate = () => {
+        var d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+    
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+    
+        return [year, month, day].join('-');
+    }
+
 
 export const enviarFormMentoring = (nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, img, valor_mentor, navigation) => {
         return (dispatch) => {
@@ -246,88 +258,103 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
             dispatch({type: ENVIANDO_DADOS})
             
             console.log('enviarFormMentoring:',{nome, email, descricao_profissional, agencia, conta, banco, img1, img2, idioma, categoria_mentoria, img});
-            var emailB64 = b64.encode(email);
+            var emailB64 = b64.encode(email);            
             firebase.auth().onAuthStateChanged((user) => {
                 console.log('onAuthStateChanged: ', user)
-                let rnfbURI = RNFetchBlob.wrap(img1)
-                // create Blob from file path
-                Blob
-                    .build(rnfbURI, { type : 'image/png;'})
-                    .then((blob) => {
-                    // upload image using Firebase SDK
-                    firebase.storage()
-                        .ref('img-form-mentoring') // rn-firebase-upload
-                        .child(testImageName)
-                        .put(blob, { contentType : 'image/png' })
-                        .then((snapshot) => {
-                        console.log('snapshot img1', snapshot)
-                        
-                    firebase.storage()
-                        .ref('img-form-mentoring/' + testImageName)
-                        .getDownloadURL().then((url) => {
-                                    console.log('url1: ', url)          
+
+                //INICIO CORREÇÃO
+                var mime = 'image/jpeg';
+                new Promise((resolve, reject) => {
+                        let imgUri = img1; let uploadBlob = null;
+                        const uploadUri = Platform.OS === 'ios' ? imgUri.replace('file://', '') : imgUri;
+                        const { currentUser } = firebase.auth();
+                        const imageRef = firebase.storage().ref(`'img-form-mentoring/${email}`)
+                    
+                        fs.readFile(uploadUri, 'base64')
+                            .then(data => {
+                            return Blob.build(data, { type: `${mime};BASE64` });
+                            })
+                            .then(blob => {
+                            uploadBlob = blob;
+                            return imageRef.put(blob, { contentType: mime, name: testImageName });
+                            })
+                            .then(() => {
+                            uploadBlob.close()
+                            imageRef.getDownloadURL().then((url) => {                                          
+                                var url1 = url;
+                                console.log('var url1: ', url1)
+                                new Promise((resolve, reject) => {
+                                        let imgUri = img2; let uploadBlob = null;
+                                        const uploadUri = Platform.OS === 'ios' ? imgUri.replace('file://', '') : imgUri;
+                                        const { currentUser } = firebase.auth();
+                                        const imageRef = firebase.storage().ref(`'img-form-mentoring/${email}`)
                                     
-                                    var url1 = url;
+                                        fs.readFile(uploadUri, 'base64')
+                                            .then(data => {
+                                            return Blob.build(data, { type: `${mime};BASE64` });
+                                            })
+                                            .then(blob => {
+                                            uploadBlob = blob;
+                                            return imageRef.put(blob, { contentType: mime, name: testImageName });
+                                            })
+                                            .then(() => {
+                                            uploadBlob.close()
+                                            imageRef.getDownloadURL().then((url) => {                                          
+                                                var url2 = url;
+                                                console.log('url2: ', url)
+                                                let mentore = firebase.database().ref(`/mentores/ ${emailB64}` ).set({
+                                                        img: img,
+                                                        nome: nome,
+                                                        email: email,
+                                                        descricao_profissional: descricao_profissional,
+                                                        agencia: agencia,
+                                                        conta: conta,
+                                                        banco: banco,
+                                                        img1: url1,
+                                                        img2: url2,
+                                                        idioma: idioma,
+                                                        categoria_mentoria: categoria_mentoria,
+                                                        mentoring: false,
+                                                        valor_hora: valor_mentor,
+                                                        qtd_alunos: 0,
 
-                                    console.log('var url1: ', url1)
-
-                                        let rnfbURI = RNFetchBlob.wrap(img2)
-                                        // create Blob from file path
-                                        Blob
-                                                .build(rnfbURI, { type : 'image/png;'})
-                                                .then((blob) => {
-                                                // upload image using Firebase SDK
-                                                firebase.storage()
-                                                .ref('img-form-mentoring') // rn-firebase-upload
-                                                .child(testImageName)
-                                                .put(blob, { contentType : 'image/png' })
-                                                .then((snapshot) => {
-                                                console.log('snapshot img2', snapshot)
+                                                })  
                                                 
-                                                firebase.storage()
-                                                .ref('img-form-mentoring/' + testImageName)
-                                                .getDownloadURL().then((url) => {
-                                                                console.log('url2: ', url)
-                                                                let mentore = firebase.database().ref(`/mentores/ ${emailB64}` ).set({
-                                                                        img: img,
-                                                                        nome: nome,
-                                                                        email: email,
-                                                                        descricao_profissional: descricao_profissional,
-                                                                        agencia: agencia,
-                                                                        conta: conta,
-                                                                        banco: banco,
-                                                                        img1: url1,
-                                                                        img2: url,
-                                                                        idioma: idioma,
-                                                                        categoria_mentoria: categoria_mentoria,
-                                                                        mentoring: false,
-                                                                        valor_hora: valor_mentor,
-                                                                        qtd_alunos: 0,
-
-                                                                })  
-                                                                
-                                                                let usuario = firebase.database().ref(`/usuarios/ ${emailB64}`).child('mentoring').set(true)
-                                                                
-                                                                dadosEnviadosComSucesso(dispatch, navigation, email)
-                                                                
-                                                                
-                                                        }).catch((err) => {
-                                                                console.log('display storage filed', err)
-                                                        })
-                                                        blob.close()
-                                                })
-                                                }).catch((err) => {
-                                                console.log('firebase upload storage filed', err)
-                                                })
-                                }).catch((err) => {
-                                    console.log('display storage filed', err)
-                                })
-                                blob.close()
+                                                let usuario = firebase.database().ref(`/usuarios/ ${emailB64}`).child('mentoring').set(true)
+                                                let day = formatDate()
+                                                console.log('enviarFormMentoring day: ', day)
+                                                let agendaMentor = firebase.database().ref(`/agenda_mentores/${emailB64}`).child('agenda').child(`${day}`).set({
+                                                        selected: true
+                                                });
+                                                
+                                                dadosEnviadosComSucesso(dispatch, navigation, email)
+                                            })                                        
+                                            //return imageRef.getDownloadURL();
+                                            })
+                                            .then(url => {
+                                            console.log('url: ', url)
+                                            resolve(url);
+                                            })
+                                            .catch(error => {
+                                            reject(error)
+                                        })
+                                        })
+                            })                                        
+                            //return imageRef.getDownloadURL();
+                            })
+                            .then(url => {
+                            console.log('url: ', url)
+                            resolve(url);
+                            })
+                            .catch(error => {
+                            reject(error)
                         })
-                    }).catch((err) => {
-                        console.log('firebase upload storage filed', err)
-                    })
+                        })
 
+
+
+
+                //FIM CORREÇÃO
             })              
                             
     }

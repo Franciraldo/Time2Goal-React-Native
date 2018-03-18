@@ -14,7 +14,7 @@ import MarcarMentoring from './components/MarcarMentoring';
 import ProfileMentor from './components/ProfileMentor';
 
 export default props => (
-    <Router navigationBarStyle={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
+    <Router navigationBarStyle={{ backgroundColor: '#fc5b07'}} barButtonIconStyle={{ tintColor: '#fff' }} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
         <Scene key='formLogin' component={FormLogin} tabTitle="Login" hideNavBar={true} initial/>
         <Scene key='formCadastro' component={FormCadastro} title="Cadastro" hideNavBar={false}/>
         <Scene key='principal' component={HomeScreen} tabTitle="Principal" hideNavBar={true} />
@@ -25,6 +25,6 @@ export default props => (
         <Scene key='formMentoring' component={FormMentoring} tabTitle="Mentoria" hideNavBar={true} />
         <Scene key='profile' component={Profile} tabTitle="Profile" hideNavBar={true} />
         <Scene key='profileMentor' component={ProfileMentor} tabTitle="profileMentor" hideNavBar={false} />
-        <Scene key='marcarMentoring' component={MarcarMentoring} tabTitle="Marcar Mentoria" hideNavBar={false} />
+        <Scene key='marcarMentoring' component={MarcarMentoring} title="Marcar Mentoria" hideNavBar={false} />
     </Router>
 )

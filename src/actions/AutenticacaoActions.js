@@ -171,6 +171,7 @@ export const cadastraUsuario = ({nome, email, senha, descricao, img, bool, cpf, 
     //console.log('props', {nome, email, senha, descricao, img, bool, cpf, dataNascimento, cep, endereco, titularCard, numeroCard, validadeCard, cvv, pais});
     return (dispatch) => {
         console.log('cadastroMetod:',{nome, email, senha, descricao, img});
+        var mime = 'image/jpeg';
         var emailB64 = b64.encode(email);
         dispatch({type: CADASTRO_EM_ANDAMENTO});
         
@@ -186,37 +187,36 @@ export const cadastraUsuario = ({nome, email, senha, descricao, img, bool, cpf, 
                         })
 
                         firebase.auth().onAuthStateChanged((user) => {
-                           
+                            if(img !== ""){
+                            return new Promise((resolve, reject) => {
+                                let imgUri = img; let uploadBlob = null;
+                                const uploadUri = Platform.OS === 'ios' ? imgUri.replace('file://', '') : imgUri;
+                                const { currentUser } = firebase.auth();
+                                const imageRef = firebase.storage().ref('images-users/' + testImageName)
                             
-
-                            if(img !== undefined){
-                                let rnfbURI = RNFetchBlob.wrap(img)
-                                // create Blob from file path
-                                Blob
-                                    .build(rnfbURI, { type : 'image/png;'})
-                                    .then((blob) => {
-                                    // upload image using Firebase SDK
-                                    firebase.storage()
-                                        .ref('images-users') // rn-firebase-upload
-                                        .child(testImageName)
-                                        .put(blob, { contentType : 'image/png' })
-                                        .then((snapshot) => {
-                                        console.log('snapshot', snapshot)
-                                        
-                                    firebase.storage()
-                                        .ref('images-users/' + testImageName)
-                                        .getDownloadURL().then((url) => {
-                                            console.log('url: ', url)
-                                            salvarDatavaseDados(dispatch, nome, email, descricao, url, false, cpf, titularCard, numeroCard, validadeCard, cvv, dataNascimento, cep, endereco, pais, true, '', emailB64)    
-                                            }).catch((err) => {
-                                                console.log('display storage filed', err)
-                                            })
-                                            blob.close()
-                                        })
-                                    }).catch((err) => {
-                                        console.log('firebase upload storage filed', err)
+                                fs.readFile(uploadUri, 'base64')
+                                    .then(data => {
+                                    return Blob.build(data, { type: `${mime};BASE64` });
                                     })
-                            
+                                    .then(blob => {
+                                    uploadBlob = blob;
+                                    return imageRef.put(blob, { contentType: mime, name: testImageName });
+                                    })
+                                    .then(() => {
+                                    uploadBlob.close()
+                                    imageRef.getDownloadURL().then((url) => {                                          
+                                        salvarDatavaseDados(dispatch, nome, email, descricao, url, false, cpf, titularCard, numeroCard, validadeCard, cvv, dataNascimento, cep, endereco, pais, true, '', emailB64)
+                                    })                                        
+                                    //return imageRef.getDownloadURL();
+                                    })
+                                    .then(url => {
+                                    console.log('url: ', url)
+                                    resolve(url);
+                                    })
+                                    .catch(error => {
+                                    reject(error)
+                                })
+                                })
                             } else {
                                 salvarDatavaseDados(dispatch, nome, email, descricao, '', false, '', '', '', '', '', '', '', '', '', false, '', emailB64)
                             }
@@ -269,7 +269,7 @@ const salvarDatavaseDados = (dispatch, nome, email, descricao, img, mentoring, c
         email,
         img
     })
-    console.log('salvarDatavaseDados', {dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64})   
+    console.log('salvarDatabaseDados', {dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64})   
     let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
         nome: nome !== undefined ? nome : '',
         email: email,
@@ -321,7 +321,7 @@ export const UpdateDados = (nome, email, descricao, img, cpf, titularCartao, num
         dispatch({type: UPDATE_DADOS_EM_ANDAMENTO})
         var emailB64 = b64.encode(email);
         console.log('UpdateDados: ', {nome, email, descricao, img, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, navigation})
-            let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
+        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
                 nome: nome ,
                 email: email,
                 descricao: descricao,

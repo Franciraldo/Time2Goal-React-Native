@@ -5,13 +5,16 @@ import { StackNavigator } from "react-navigation";
 import {LocaleConfig} from 'react-native-calendars';
 import {Calendar} from 'react-native-calendars';
 import {connect} from 'react-redux';
+import {Actions} from 'react-native-router-flux';
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import { getDaysAgendados, salvarHorario, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios } from '../actions/FormMentoringActions';
 const checkout_off = require('../imgs/checked_off.png')
 const checkout_on = require('../imgs/checked_on.png')
+const chat = require('../imgs/chat-icon.png');
 class GerenciarAgendaScreen extends React.Component {
 
   componentDidMount(){
+    this.props.navigation.setParams({ popupDialog: this.popupDialog });
     console.log('GerenciarAgendaScreen componentDidMount: ', this.props) 
   }
 
@@ -50,6 +53,7 @@ class GerenciarAgendaScreen extends React.Component {
     
 
     console.log('_salvarHorario: ', { day, hora_inicial, minuto_inicial, hora_final, minuto_final, email })
+    
     if( hora_inicial != '' && minuto_inicial != ''  && hora_final != '' && minuto_final != ''){
       
       salvarHorario(day, hora_inicial, hora_final, minuto_inicial, minuto_final, email)
@@ -73,7 +77,6 @@ class GerenciarAgendaScreen extends React.Component {
     this.props.modificarSelectDay(day)
     this.props.getHorarios(usuario.email, day.dateString)
     this.criaFonteDeDados(lista_agenda_horarios);
-    this.popupDialog.show()
     
   }
 
@@ -90,14 +93,22 @@ class GerenciarAgendaScreen extends React.Component {
                 () => false
             }>
                 <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
-                        <View style={{ flexDirection: 'column'}}>
+                        <View style={{ flexDirection: 'column', width: 200}}>
                           <Text style={{ fontSize: 16, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.nome_aluno}</Text>
                           <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
                         </View>
-                        <Image
-                          style={styles.uploadImage}
+                        <View style={{flexDirection: 'row', marginLeft: 10}}>
+                          <TouchableHighlight onPress={() => { Actions.conversa({ title: lista_agenda_horarios.nome_aluno, contatoNome: lista_agenda_horarios.nome_aluno , contatoEmail: lista_agenda_horarios.email_aluno, contatoImg: lista_agenda_horarios.img_aluno }) }}>
+                              <Image
+                                  style={styles.button}
+                                  source={chat}
+                              />
+                          </TouchableHighlight>
+                          <Image
+                          style={styles.check_on}
                           source={checkout_on}
-                          />
+                          />    
+                        </View>
                 </View>
             </TouchableHighlight>
         )
@@ -106,13 +117,13 @@ class GerenciarAgendaScreen extends React.Component {
             <TouchableHighlight onPress={
                 () =>  false}>
                 <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
-                        <View style={{ flexDirection: 'column'}}>
+                        <View style={{ flexDirection: 'column', width: 285}}>
                           <Text style={{ fontSize: 16, color: "#fff", backgroundColor: 'transparent'}}>Horario vago</Text>
                           <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
                         </View>
                         
                         <Image
-                          style={styles.uploadImage}
+                          style={styles.check_off}
                           source={checkout_off}
                           />
                 </View>
@@ -299,9 +310,16 @@ GerenciarAgendaScreen.navigationOptions = ({ navigation }) => ({
             </Button>
           </Left>
           <Body>
-            <Title style={{backgroundColor: 'transparent', color: '#fff'}}> Agenda Mentor </Title>
+            <Title style={{backgroundColor: 'transparent', color: '#fff'}}> Agenda </Title>
           </Body>
-          <Right />
+          <Right>
+            <Button transparent
+              onPress={() => {
+                navigation.state.params.popupDialog.show()
+              } }  underlayColor="transparent">
+              <Icon style={styles.icon} name="ios-add" />
+            </Button>
+          </Right>
         </Header>
   )
 });
@@ -346,12 +364,26 @@ btnText: {
     backgroundColor: '#2b2a29'
 
 },
-uploadImage: {
-  justifyContent: 'flex-end',
-  marginLeft: 200,
+icon: {
+  fontSize: 35,
+  color: '#fff',
+  
+},
+check_on: {
+  marginLeft: 25,
   width: 30,
   height: 30,
   borderRadius: 15  
+},
+check_off: {
+  marginLeft: 10,
+  width: 30,
+  height: 30,
+  borderRadius: 15
+},
+button: {
+  width: 60,
+  height: 49,
 },
 item: {
   padding: 10,
