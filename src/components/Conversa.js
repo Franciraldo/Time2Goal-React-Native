@@ -2,22 +2,27 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { View, Text, TextInput, Image, TouchableHighlight, ListView, StyleSheet, Linking} from 'react-native';
-import { modificaMensagem, enviarMensagem, conversaUsuarioFetch, setHora, setData, check_call } from '../actions/AppActions';
+import { modificaMensagem, enviarMensagem, conversaUsuarioFetch, setHora, setData, check_call, stop_call, get_check_call } from '../actions/AppActions';
 const botaoEnviar = require('../imgs/enviar_mensagem.png');
 const ON = require('../imgs/ON.png');
 const OFF = require('../imgs/OFF.png');
+import { Actions } from 'react-native-router-flux';
+import PopupDialog from 'react-native-popup-dialog';
+
 class Conversa extends Component {
     componentDidMount(){
         console.log('Conversa componentDidMount: ', this.props)
+        console.log('checkCall: ', this.props.booleanCall)
         let now = new Date
         this.props.setHora(now);
         this.props.setData(now);
       }      
     componentWillMount() {
-        
+        const { usuario, contatoEmail, conversa } = this.props;
         console.log('Conversa componentWillMount: ', this.props);
-        this.props.conversaUsuarioFetch(this.props.contatoEmail);
-        this.criaFonteDeDados(this.props.conversa);
+        this.props.conversaUsuarioFetch(contatoEmail);
+        this.criaFonteDeDados(conversa);
+        this.props.get_check_call(usuario, contatoEmail);
     }
     componentWillReceiveProps(nextProps) {
         console.log('Conversa componentWillReceiveProps: ', nextProps);
@@ -28,11 +33,11 @@ class Conversa extends Component {
         this.dataSource = ds.cloneWithRows( conversa );
     }
     _startCall(){
-        const { contatoNome, contatoEmail, contatoImg, usuario, data, hora, check_call } = this.props;
+        const { contatoNome, contatoEmail, contatoImg, usuario, data, hora, booleanCall } = this.props;
         if(usuario.mentoring){
             let link = "https://api-project-494074651441.appspot.com/r/call-" + new Date().getTime();
             let mensagem = "Segue o link para a nossa mentoria:";
-            this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora, data, link);
+            this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora, data, link, '');
             this.props.check_call(usuario, contatoEmail, true, false, data, hora, '', '' );
             Linking.openURL(link);
         }else{
@@ -42,21 +47,38 @@ class Conversa extends Component {
 
     }
     _stopCall(){
-        const { mensagem, contatoNome, contatoEmail, contatoImg, usuario, data, hora, check_call } = this.props;
-        this.props.check_call(false);
+        const { contatoNome, contatoEmail, contatoImg, usuario, data, hora, booleanCall } = this.props;
+        
+        let mensagem = "Por favor clique no link abaixo e avalie a sua mentoria:";
+        this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora, data, '', 'avaliação de mentoria');
+        this.props.stop_call(usuario, contatoEmail, false, hora );
+        //
+
     }
     _enviarMensagem() {
         const { mensagem, contatoNome, contatoEmail, contatoImg, usuario, data, hora } = this.props;
         
         if(mensagem.trim() !== ""){
-            this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora, data, '');
+            this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora, data, '', '');
         }        
     }
-    renderLink(link){
+    renderLinkOrAction(link, avaliacaoAction){
         if(link != ""){
             return (
                 <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={() => { Linking.openURL(link); }}>
                     <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{link}</Text>
+                </ TouchableHighlight>
+            );
+        }
+
+        if(avaliacaoAction != ""){
+            return (
+                <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={() => { 
+                    console.log('clico');
+                    const { mensagem, contatoNome, contatoEmail, contatoImg } = this.props;
+                    Actions.avaliacao({contatoNome, contatoEmail, contatoImg})
+                 }}>
+                    <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{avaliacaoAction}</Text>
                 </ TouchableHighlight>
             );
         }
@@ -66,7 +88,7 @@ class Conversa extends Component {
             return (
                 <View style={{ alignItems: 'flex-end', marginTop: 10, marginBottom: 5, marginLeft: 40, backgroundColor: '#0b96c8', borderRadius: 15  }}>
                         <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{texto.mensagem}</Text>
-                        {this.renderLink(texto.link)}
+                        {this.renderLinkOrAction(texto.link, texto.avaliacaoAction)}
                         <Text style={{ fontSize: 14, color: '#fff', marginRight: 10, marginBottom: 5}}>{texto.hora_atual}</Text>
                 </View>                
             );    
@@ -80,16 +102,18 @@ class Conversa extends Component {
         );
     }
     renderToogleBtn(){
-        if(this.props.check_call){
+        if(this.props.booleanCall){
             return(
-                <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={this._startCall.bind(this)}>
+                <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={this._stopCall.bind(this)}>
                     <Image style={styles.btn} source={OFF}/>
                 </TouchableHighlight>
             );
         }else{
-            <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={this._stopCall.bind(this)}>
+            return(
+                <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={this._startCall.bind(this)}>
                     <Image style={styles.btn} source={ON}/>
                 </TouchableHighlight>
+            );
         }
     }
     render (){
@@ -105,7 +129,6 @@ class Conversa extends Component {
                 </View>
                 <View style={{flexDirection: 'row', height: 60, paddingBottom: 20}}>
                         {this.renderToogleBtn()}
-                        
 
                         <TextInput style={{flex: 4, borderRadius: 25, backgroundColor: "#fff", fontSize: 18}}
                             value = { this.props.mensagem }
@@ -144,8 +167,8 @@ mapStateToProps = state => {
         data: state.AppReducer.data,
         hora: state.AppReducer.hora, 
         mensagem: state.AppReducer.mensagem,
-        check_call: state.AppReducer.check_call
+        booleanCall: state.AppReducer.booleanCall
     })
 }
 
-export default connect(mapStateToProps, { modificaMensagem, enviarMensagem, conversaUsuarioFetch, setHora, setData, check_call })(Conversa);
+export default connect(mapStateToProps, { modificaMensagem, enviarMensagem, conversaUsuarioFetch, setHora, setData, check_call, stop_call, get_check_call })(Conversa);

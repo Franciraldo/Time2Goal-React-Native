@@ -12,6 +12,7 @@ import FormMentoring from './FormMentoring/FormMentoring';
 import Profile from './ProfileScreen/Profile';
 import MarcarMentoring from './components/MarcarMentoring';
 import ProfileMentor from './components/ProfileMentor';
+import Avaliacao from './components/Avaliacao';
 
 export default props => (
     <Router navigationBarStyle={{ backgroundColor: '#fc5b07'}} barButtonIconStyle={{ tintColor: '#fff' }} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
@@ -26,5 +27,6 @@ export default props => (
         <Scene key='profile' component={Profile} tabTitle="Profile" hideNavBar={true} />
         <Scene key='profileMentor' component={ProfileMentor} tabTitle="profileMentor" hideNavBar={false} />
         <Scene key='marcarMentoring' component={MarcarMentoring} title="Marcar Mentoria" hideNavBar={false} />
+        <Scene key='avaliacao' component={Avaliacao} tabTitle="Avaliação" hideNavBar={false} />
     </Router>
 )

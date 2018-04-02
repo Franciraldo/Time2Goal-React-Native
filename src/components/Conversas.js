@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, ListView, FlatList, TouchableHighlight, StyleSheet, Image} from 'react-native';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux'
+import { Actions } from 'react-native-router-flux';
 import { conversasUsuarioFetch } from '../actions/AppActions';
 import _ from 'lodash';
 

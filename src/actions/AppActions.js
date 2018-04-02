@@ -200,13 +200,41 @@ export const setHora = (now) => {
 export const check_call = (usuario, contatoEmail, checkCall, checkAvaliacao, data, hora, horaFinal, nota ) => {
     return (dispatch) => {
 
+        console.log('check_call: ', {usuario, contatoEmail, checkCall, checkAvaliacao, data, hora, horaFinal, nota})
         const mentorEmailB64 = b64.encode(usuario.email);
         const alunoEmailB64 = b64.encode(contatoEmail);
         
         firebase.database().ref(`/avaliacao/${mentorEmailB64}/${alunoEmailB64}`)
         .set({checkCall, checkAvaliacao, data, imgMentor: usuario.img, horaInicial: hora, horaFinal, nota})
         .then(() => dispatch ({ type: CHECK_CALL, payload: checkCall}))
+        
 
+    }
+}
+
+export const get_check_call = (usuario, contatoEmail) => {
+    return (dispatch) => {
+        const mentorEmailB64 = b64.encode(usuario.email);
+        const alunoEmailB64 = b64.encode(contatoEmail);
+        
+        firebase.database().ref(`/avaliacao/${mentorEmailB64}/${alunoEmailB64}`)
+        .on("value", snapshot => { 
+            console.log('conversasUsuarioFetch snapshot', snapshot.val())
+            dispatch ({ type: CHECK_CALL, payload: snapshot.val().checkCall})
+        })
+    }
+}
+
+export const stop_call = (usuario, contatoEmail, checkCall, horaFinal ) => {
+    return (dispatch) => {
+        console.log('stop_call: ', {checkCall, horaFinal})
+        const mentorEmailB64 = b64.encode(usuario.email);
+        const alunoEmailB64 = b64.encode(contatoEmail);
+        
+        let db = firebase.database().ref(`/avaliacao/${mentorEmailB64}/${alunoEmailB64}`);
+        db.child("checkCall").set(checkCall);
+        db.child("horaFinal").set(horaFinal);
+        dispatch ({ type: CHECK_CALL, payload: checkCall})
     }
 }
 
@@ -244,9 +272,9 @@ const doTruncarStr = (str, size) => {
     return shortText;
 }
 
-export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual, link) => {
+export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual, link, avaliacaoAction) => {
     let shortText = doTruncarStr(mensagem, 28);
-    console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, shortText, hora_atual, data_atual, link})
+    console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, shortText, hora_atual, data_atual, link, avaliacaoAction})
     return dispatch => {
 
         //conversão para base 64
@@ -255,10 +283,10 @@ export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, 
         
 
         firebase.database().ref(`/mensagens/${usuarioEmailB64}/${contatoEmailB64}`)
-        .push({mensagem, tipo: 'e', hora_atual, data_atual, link})
+        .push({mensagem, tipo: 'e', hora_atual, data_atual, link, avaliacaoAction})
         .then(() => {
             firebase.database().ref(`/mensagens/${contatoEmailB64}/${usuarioEmailB64}`)
-            .push({mensagem, tipo: 'r', hora_atual, data_atual, link})
+            .push({mensagem, tipo: 'r', hora_atual, data_atual, link, avaliacaoAction})
             .then(() => dispatch ({ type: ENVIA_MENSAGEM_SUCESSO}))
         })
         .then(() => {

@@ -7,7 +7,7 @@ const INITIAL_STATE = {
     mensagem: '',
     data: '',
     hora: '',
-    check_call: false, 
+    booleanCall: false, 
  };
 
 export default (state = INITIAL_STATE, action) => {
@@ -31,7 +31,7 @@ export default (state = INITIAL_STATE, action) => {
         case MODIFICAR_HORA:
             return { ...state, hora: action.payload }
         case CHECK_CALL:
-            return { ...state, check_call: action.payload }         
+            return { ...state, booleanCall: action.payload }         
         default: 
             return state;
             break;
