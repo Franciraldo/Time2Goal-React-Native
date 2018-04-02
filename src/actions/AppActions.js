@@ -26,7 +26,10 @@ import { MODIFICA_ADICIONA_CONTATO_EMAIL,
          SET_IDIOMA_MENTOR, 
          SET_IMAGEM_MENTOR, 
          SET_QTD_ALUNOS, 
-         SET_VALOR_HORA } from './types';
+         SET_VALOR_HORA,
+         MODIFICAR_DATA,
+         MODIFICAR_HORA,
+         CHECK_CALL, } from './types';
 
 const setNomeMentor = (texto) => {
     return {
@@ -176,6 +179,60 @@ export const modificaMensagem = texto => {
     })
 }
 
+export const setHora = (now) => {
+    return (dispatch) => {
+        let hora = `${now.getHours()}`
+        let minuto = `${now.getMinutes()}`
+
+        if(hora <= 9){
+            hora = hora.replace(hora.substring(-1, 0), '0');
+        }
+        if(minuto <= 9){
+            minuto = minuto.replace(minuto.substring(-1, 0), '0');
+        }
+
+        let hora_atual = `${hora}:${minuto}`
+
+        dispatch({ type: MODIFICAR_HORA, payload: hora_atual });
+    }
+}
+
+export const check_call = (usuario, contatoEmail, checkCall, checkAvaliacao, data, hora, horaFinal, nota ) => {
+    return (dispatch) => {
+
+        const mentorEmailB64 = b64.encode(usuario.email);
+        const alunoEmailB64 = b64.encode(contatoEmail);
+        
+        firebase.database().ref(`/avaliacao/${mentorEmailB64}/${alunoEmailB64}`)
+        .set({checkCall, checkAvaliacao, data, imgMentor: usuario.img, horaInicial: hora, horaFinal, nota})
+        .then(() => dispatch ({ type: CHECK_CALL, payload: checkCall}))
+
+    }
+}
+
+export const setData = (now) => {
+    return (dispatch) => {
+    
+        let dia = `${now.getUTCDay()}`
+        let mes = `${now.getUTCMonth()}`
+
+        if(dia <= 9){
+            if(dia === '0'){
+                dia = "1";
+                dia = dia.replace(dia.substring(-1, 0), '0');
+            }else{
+                dia = dia.replace(dia.substring(-1, 0), '0');
+            }
+        }
+        if(mes <= 9){
+            mes = mes.replace(mes.substring(-1, 0), '0');
+        }
+        let data_atual = `${dia}/${mes}/${now.getUTCFullYear()}`
+
+        dispatch({ type: MODIFICAR_DATA, payload: data_atual });
+    }
+}
+
 const doTruncarStr = (str, size) => {
     if (str==undefined || str=='undefined' || str =='' || size==undefined || size=='undefined' || size ==''){
         return str;
@@ -187,25 +244,21 @@ const doTruncarStr = (str, size) => {
     return shortText;
 }
 
-export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual) => {
-    // dados do contato (contatoNome e contatoEmail)
-    //dados do usuario (email)
-    const { currentUser } = firebase.auth();
-    const usuarioEmail = currentUser.email;
-    let shortText = doTruncarStr(mensagem, 28)
-
-    console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, shortText, hora_atual, data_atual})
+export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual, link) => {
+    let shortText = doTruncarStr(mensagem, 28);
+    console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, shortText, hora_atual, data_atual, link})
     return dispatch => {
 
         //conversão para base 64
         const usuarioEmailB64 = b64.encode(usuario.email);
         const contatoEmailB64 = b64.encode(contatoEmail);
+        
 
         firebase.database().ref(`/mensagens/${usuarioEmailB64}/${contatoEmailB64}`)
-        .push({mensagem, tipo: 'e', hora_atual, data_atual})
+        .push({mensagem, tipo: 'e', hora_atual, data_atual, link})
         .then(() => {
             firebase.database().ref(`/mensagens/${contatoEmailB64}/${usuarioEmailB64}`)
-            .push({mensagem, tipo: 'r', hora_atual, data_atual})
+            .push({mensagem, tipo: 'r', hora_atual, data_atual, link})
             .then(() => dispatch ({ type: ENVIA_MENSAGEM_SUCESSO}))
         })
         .then(() => {

@@ -98,7 +98,7 @@ class GerenciarAgendaScreen extends React.Component {
                           <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
                         </View>
                         <View style={{flexDirection: 'row', marginLeft: 10}}>
-                          <TouchableHighlight onPress={() => { Actions.conversa({ title: lista_agenda_horarios.nome_aluno, contatoNome: lista_agenda_horarios.nome_aluno , contatoEmail: lista_agenda_horarios.email_aluno, contatoImg: lista_agenda_horarios.img_aluno }) }}>
+                          <TouchableHighlight onPress={() => { Actions.conversa({ title: lista_agenda_horarios.nome_aluno, contatoNome: lista_agenda_horarios.nome_aluno , contatoEmail: lista_agenda_horarios.email_aluno, contatoImg: lista_agenda_horarios.img_aluno.img }) }}>
                               <Image
                                   style={styles.button}
                                   source={chat}

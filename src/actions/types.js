@@ -75,4 +75,6 @@ export const SET_VALOR_HORA = 'set_valor_hora';
 export const CHECKOUT_MENTORIA = 'checkout_mentoria';
 export const ABRIR_POPUP_GERENCIAR_VIDEOS = 'abrir_popup_gerenciar_videos';
 export const SELECTED_TYPE_VIDEO = 'selected_type_video';
-
+export const MODIFICAR_DATA = 'modificar_data';
+export const MODIFICAR_HORA = 'modificar_hora';
+export const CHECK_CALL = 'check_call';
