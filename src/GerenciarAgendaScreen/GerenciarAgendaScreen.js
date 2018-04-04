@@ -7,7 +7,7 @@ import {Calendar} from 'react-native-calendars';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
-import { getDaysAgendados, salvarHorario, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios } from '../actions/FormMentoringActions';
+import { getDaysAgendados, salvarHorario, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios} from '../actions/FormMentoringActions';
 const checkout_off = require('../imgs/checked_off.png')
 const checkout_on = require('../imgs/checked_on.png')
 const chat = require('../imgs/chat-icon.png');
@@ -15,6 +15,9 @@ class GerenciarAgendaScreen extends React.Component {
 
   componentDidMount(){
     this.props.navigation.setParams({ popupDialog: this.popupDialog });
+    const day = this.formatDate();
+    console.log('GerenciarAgendaScreen day: ', day); 
+    this.props.modificarSelectDay(day);
     console.log('GerenciarAgendaScreen componentDidMount: ', this.props) 
   }
 
@@ -31,17 +34,17 @@ class GerenciarAgendaScreen extends React.Component {
 }
 
   componentWillMount() {
-      console.log('GerenciarAgendaScreen componentWillMount: ', this.props) 
-      const {lista_agenda_horarios} = this.props
-      const {email} = this.props.usuario
-      this.props.getDaysAgendados(email)
-      const day = this.formatDate()
-      this.props.getHorarios(email, day)
+      console.log('GerenciarAgendaScreen componentWillMount: ', this.props); 
+      const {lista_agenda_horarios} = this.props;
+      const {email} = this.props.usuario;
+      const day = this.formatDate();
+      this.props.getDaysAgendados(email);
+      this.props.getHorarios(email, day);
       this.criaFonteDeDados(lista_agenda_horarios);    
   }
 
   componentWillReceiveProps(nextProps){
-    console.log('GerenciarAgendaScreen componentWillReceiveProps: ', nextProps)
+    //console.log('GerenciarAgendaScreen componentWillReceiveProps: ', nextProps)
     const {emailMentor, lista_agenda_horarios} = nextProps
     this.criaFonteDeDados(lista_agenda_horarios);
   }
@@ -49,7 +52,7 @@ class GerenciarAgendaScreen extends React.Component {
   _salvarHorario() {
     const { hora_inicial, minuto_inicial, hora_final, minuto_final } = this.props
     const { email } = this.props.usuario
-    const day = this.props.selected_day.dateString
+    const day = this.props.selected_day
     
 
     console.log('_salvarHorario: ', { day, hora_inicial, minuto_inicial, hora_final, minuto_final, email })
@@ -74,7 +77,7 @@ class GerenciarAgendaScreen extends React.Component {
 
     const {emailMentor, lista_agenda_horarios, usuario} = this.props
     console.log('onDaySelect', { day, emailMentor, lista_agenda_horarios})
-    this.props.modificarSelectDay(day)
+    this.props.modificarSelectDay(day.dateString)
     this.props.getHorarios(usuario.email, day.dateString)
     this.criaFonteDeDados(lista_agenda_horarios);
     
@@ -86,6 +89,7 @@ class GerenciarAgendaScreen extends React.Component {
   }
 
   renderRow(lista_agenda_horarios, emailMentor) {
+    console.log('lista_agenda_horarios: ', lista_agenda_horarios)
     const day = this.formatDate()
       if(lista_agenda_horarios.bool){
           return (
@@ -98,15 +102,15 @@ class GerenciarAgendaScreen extends React.Component {
                           <Text style={{ fontSize: 14, color: "#fff", backgroundColor: 'transparent'}}>{lista_agenda_horarios.hora_inicial}:{lista_agenda_horarios.minuto_inicial} - {lista_agenda_horarios.hora_final}:{lista_agenda_horarios.minuto_final}</Text>
                         </View>
                         <View style={{flexDirection: 'row', marginLeft: 10}}>
-                          <TouchableHighlight onPress={() => { Actions.conversa({ title: lista_agenda_horarios.nome_aluno, contatoNome: lista_agenda_horarios.nome_aluno , contatoEmail: lista_agenda_horarios.email_aluno, contatoImg: lista_agenda_horarios.img_aluno.img }) }}>
+                          <TouchableHighlight onPress={() => { Actions.conversa({ title: lista_agenda_horarios.nome_aluno, contatoNome: lista_agenda_horarios.nome_aluno , contatoEmail: lista_agenda_horarios.email_aluno, contatoImg: lista_agenda_horarios.img_aluno }) }}>
                               <Image
                                   style={styles.button}
                                   source={chat}
                               />
                           </TouchableHighlight>
                           <Image
-                          style={styles.check_on}
-                          source={checkout_on}
+                            style={styles.check_on}
+                            source={checkout_on}
                           />    
                         </View>
                 </View>
@@ -133,7 +137,6 @@ class GerenciarAgendaScreen extends React.Component {
   }
 
   renderListView() {
-    console.log(this.props.lista_agenda_horarios)
       if(this.props.lista_agenda_horarios.length > 0){
         return (
             <ListView 
@@ -266,28 +269,26 @@ class GerenciarAgendaScreen extends React.Component {
               </PopupDialog>
               <View>
                 <Calendar
-                    onDayPress={ this.onDaySelect.bind(this) } 
-                    style={styles.calendar}
-                    current={new Date().toDateString()}
+                    onDayPress={ this.onDaySelect.bind(this) }                   
+                    current={this.props.lista_agenda_day}
                     markingType={'multi-dot'}
                     theme={{
                       backgroundColor: '#ffffff',
-                      calendarBackground: '#ffffff',
+                      calendarBackground: '#2b2a29',
                       textSectionTitleColor: '#b6c1cd',
-                      selectedDayBackgroundColor: '#fc5b03',
-                      selectedDayTextColor: '#ffffff',
+                      selectedDayBackgroundColor: '#fc5b07',
+                      selectedDayTextColor: '#fc5b07',
                       todayTextColor: '#fc5b03',
-                      dayTextColor: '#2d4150',
+                      dayTextColor: '#ffffff',
                       textDisabledColor: '#d9e1e8',
                       dotColor: '#00adf5',
                       selectedDotColor: '#ffffff',
-                      arrowColor: 'orange',
-                      monthTextColor: '#fc5b03',
+                      arrowColor: '#ffffff',
+                      monthTextColor: '#ffffff',
                       textDayFontSize: 16,
                       textMonthFontSize: 16,
                       textDayHeaderFontSize: 16
-                    }}
-                    markedDates={ this.props.lista_agenda_day }
+                    }}            
                     hideArrows={false}
                   />
                   <View style={{ flex: 1, flexDirection: 'row', marginTop: 10}}>

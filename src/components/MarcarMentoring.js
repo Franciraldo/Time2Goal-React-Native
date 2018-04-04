@@ -285,29 +285,27 @@ class MarcarMentoring extends React.Component {
                     
               </PopupDialog>
               <View>
-                <Calendar
-                    onDayPress={ this.onDaySelect.bind(this) } 
-                    style={styles.calendar}
-                    current={today}
+              <Calendar
+                    onDayPress={ this.onDaySelect.bind(this) }                   
+                    current={this.props.lista_agenda_day}
                     markingType={'multi-dot'}
                     theme={{
                       backgroundColor: '#ffffff',
-                      calendarBackground: '#ffffff',
+                      calendarBackground: '#2b2a29',
                       textSectionTitleColor: '#b6c1cd',
-                      selectedDayBackgroundColor: '#fc5b03',
-                      selectedDayTextColor: '#ffffff',
+                      selectedDayBackgroundColor: '#fc5b07',
+                      selectedDayTextColor: '#fc5b07',
                       todayTextColor: '#fc5b03',
-                      dayTextColor: '#2d4150',
+                      dayTextColor: '#ffffff',
                       textDisabledColor: '#d9e1e8',
                       dotColor: '#00adf5',
                       selectedDotColor: '#ffffff',
-                      arrowColor: 'orange',
-                      monthTextColor: '#fc5b03',
+                      arrowColor: '#ffffff',
+                      monthTextColor: '#ffffff',
                       textDayFontSize: 16,
                       textMonthFontSize: 16,
                       textDayHeaderFontSize: 16
-                    }}
-                    markedDates={ this.props.lista_agenda_day }
+                    }}            
                     hideArrows={false}
                   />
 

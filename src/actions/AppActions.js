@@ -216,12 +216,16 @@ export const get_check_call = (usuario, contatoEmail) => {
     return (dispatch) => {
         const mentorEmailB64 = b64.encode(usuario.email);
         const alunoEmailB64 = b64.encode(contatoEmail);
+
+        if(usuario.mentoring){
+            firebase.database().ref(`/avaliacao/${mentorEmailB64}/${alunoEmailB64}`)
+            .on("value", snapshot => { 
+                console.log('get_check_call snapshot', snapshot.val())
+                dispatch ({ type: CHECK_CALL, payload: snapshot.val()})
+            })
+        }
         
-        firebase.database().ref(`/avaliacao/${mentorEmailB64}/${alunoEmailB64}`)
-        .on("value", snapshot => { 
-            console.log('conversasUsuarioFetch snapshot', snapshot.val())
-            dispatch ({ type: CHECK_CALL, payload: snapshot.val().checkCall})
-        })
+        
     }
 }
 
@@ -280,24 +284,24 @@ export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, 
         //conversão para base 64
         const usuarioEmailB64 = b64.encode(usuario.email);
         const contatoEmailB64 = b64.encode(contatoEmail);
-        
 
-        firebase.database().ref(`/mensagens/${usuarioEmailB64}/${contatoEmailB64}`)
-        .push({mensagem, tipo: 'e', hora_atual, data_atual, link, avaliacaoAction})
-        .then(() => {
-            firebase.database().ref(`/mensagens/${contatoEmailB64}/${usuarioEmailB64}`)
-            .push({mensagem, tipo: 'r', hora_atual, data_atual, link, avaliacaoAction})
-            .then(() => dispatch ({ type: ENVIA_MENSAGEM_SUCESSO}))
-        })
-        .then(() => {
-            // Armazenar o cabeçalho de conversa do usuário autenticado
-            firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}/${contatoEmailB64}`)
-            .set({ nome: contatoNome, email: contatoEmail, img: contatoImg, shortText, hora_atual, data_atual})
-        })
-        .then(() => {
-            // Armazenar o cabeçalho de conversa do contato
-            firebase.database().ref(`/usuario_conversas/${contatoEmailB64}/${usuarioEmailB64}`)
-                .set({nome: usuario.nome, email: usuario.email, img: usuario.img, shortText, hora_atual, data_atual })
+        firebase.auth().onAuthStateChanged((user) => {
+            firebase.database().ref(`/mensagens/${usuarioEmailB64}/${contatoEmailB64}`)
+            .push({mensagem, tipo: 'e', hora_atual, data_atual, link, avaliacaoAction})
+            .then(() => {
+                firebase.database().ref(`/mensagens/${contatoEmailB64}/${usuarioEmailB64}`)
+                .push({mensagem, tipo: 'r', hora_atual, data_atual, link, avaliacaoAction})
+                .then(() => {
+                    // Armazenar o cabeçalho de conversa do usuário autenticado
+                    firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}/${contatoEmailB64}`)
+                    .set({ nome: contatoNome, email: contatoEmail, img: contatoImg, shortText, hora_atual, data_atual}).then(() => {
+                        firebase.database().ref(`/usuario_conversas/${contatoEmailB64}/${usuarioEmailB64}`)
+                        .set({nome: usuario.nome, email: usuario.email, img: usuario.img, shortText, hora_atual, data_atual }).then(() => {
+                            dispatch ({ type: ENVIA_MENSAGEM_SUCESSO})
+                        })
+                    })
+                })
+            })
         })
     }
 }

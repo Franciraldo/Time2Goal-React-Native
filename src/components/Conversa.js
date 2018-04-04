@@ -22,7 +22,11 @@ class Conversa extends Component {
         console.log('Conversa componentWillMount: ', this.props);
         this.props.conversaUsuarioFetch(contatoEmail);
         this.criaFonteDeDados(conversa);
+        
         this.props.get_check_call(usuario, contatoEmail);
+        
+        
+        
     }
     componentWillReceiveProps(nextProps) {
         console.log('Conversa componentWillReceiveProps: ', nextProps);
@@ -58,48 +62,73 @@ class Conversa extends Component {
     _enviarMensagem() {
         const { mensagem, contatoNome, contatoEmail, contatoImg, usuario, data, hora } = this.props;
         
-        if(mensagem.trim() !== ""){
+        if(mensagem.trim() !== ""){       
             this.props.enviarMensagem(mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora, data, '', '');
         }        
     }
-    renderLinkOrAction(link, avaliacaoAction){
-        if(link != ""){
-            return (
-                <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={() => { Linking.openURL(link); }}>
-                    <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{link}</Text>
-                </ TouchableHighlight>
-            );
-        }
-
-        if(avaliacaoAction != ""){
-            return (
-                <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={() => { 
-                    console.log('clico');
-                    const { mensagem, contatoNome, contatoEmail, contatoImg } = this.props;
-                    Actions.avaliacao({contatoNome, contatoEmail, contatoImg})
-                 }}>
-                    <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{avaliacaoAction}</Text>
-                </ TouchableHighlight>
-            );
+    renderLinkOrAction(link, avaliacaoAction, tipo){
+        if(tipo === 'e') {
+            if(link != ""){
+                return (
+                    <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={() => { Linking.openURL(link); }}>
+                        <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{link}</Text>
+                    </ TouchableHighlight>
+                );
+            }
+    
+            if(avaliacaoAction != ""){
+                return (
+                    <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={() => { 
+                        console.log('clico');
+                        const { mensagem, contatoNome, contatoEmail, contatoImg } = this.props;
+                        Actions.avaliacao({contatoNome, contatoEmail, contatoImg})
+                     }}>
+                        <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{avaliacaoAction}</Text>
+                    </ TouchableHighlight>
+                );
+            }
+        }else{
+            if(link != ""){
+                return (
+                    <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={() => { Linking.openURL(link); }}>
+                        <Text style={{ fontSize: 18, color: '#018dd2', marginTop: 10, padding: 10, elevation: 1 }}>{link}</Text>
+                    </ TouchableHighlight>
+                );
+            }
+    
+            if(avaliacaoAction != ""){
+                return (
+                    <TouchableHighlight style={{marginRight: 10}} underlayColor="transparent" onPress={() => { 
+                        console.log('clico');
+                        const { mensagem, contatoNome, contatoEmail, contatoImg } = this.props;
+                        Actions.avaliacao({contatoNome, contatoEmail, contatoImg})
+                     }}>
+                        <Text style={{ fontSize: 18, color: '#018dd2', marginTop: 10, padding: 10, elevation: 1 }}>{avaliacaoAction}</Text>
+                    </ TouchableHighlight>
+                );
+            }
         }
     }
     renderRow(texto) {
         if(texto.tipo === 'e') {
+            console.log('e')
             return (
                 <View style={{ alignItems: 'flex-end', marginTop: 10, marginBottom: 5, marginLeft: 40, backgroundColor: '#0b96c8', borderRadius: 15  }}>
                         <Text style={{ fontSize: 18, color: '#fff', marginTop: 10, padding: 10, elevation: 1 }}>{texto.mensagem}</Text>
-                        {this.renderLinkOrAction(texto.link, texto.avaliacaoAction)}
+                        {this.renderLinkOrAction(texto.link, texto.avaliacaoAction, texto.tipo)}
                         <Text style={{ fontSize: 14, color: '#fff', marginRight: 10, marginBottom: 5}}>{texto.hora_atual}</Text>
                 </View>                
             );    
+        }else{
+            return (
+                <View style={{ alignItems: 'flex-start', marginTop: 10, marginBottom: 5, marginRight: 40, backgroundColor: '#f7f7f7', borderRadius: 15 }}>
+                    <Text style={{ fontSize: 18, marginTop: 10, color: '#000', padding: 10, elevation: 1 }}>{texto.mensagem}</Text>
+                    {this.renderLinkOrAction(texto.link, texto.avaliacaoAction, texto.tipo)}
+                    <Text style={{ fontSize: 14, color: '#000', marginLeft: 10, marginBottom: 5}}>{texto.hora_atual}</Text>
+                </View>
+            );
         }
-        return (
-            <View style={{ alignItems: 'flex-start', marginTop: 10, marginBottom: 5, marginRight: 40, backgroundColor: '#f7f7f7', borderRadius: 15 }}>
-                <Text style={{ fontSize: 18, marginTop: 10, color: '#000', padding: 10, elevation: 1 }}>{texto.mensagem}</Text>
-                {this.renderLink(texto.link)}
-                <Text style={{ fontSize: 14, color: '#000', marginLeft: 10, marginBottom: 5}}>{texto.hora_atual}</Text>
-            </View>
-        );
+        
     }
     renderToogleBtn(){
         if(this.props.booleanCall){
@@ -135,7 +164,7 @@ class Conversa extends Component {
                             onChangeText = {texto => this.props.modificaMensagem(texto)} 
                          />
 
-                        <TouchableHighlight style={{marginLeft: 10}} underlayColor="#fff" onPress={this._enviarMensagem.bind(this)}>
+                        <TouchableHighlight style={{marginLeft: 10}} underlayColor="transparent" onPress={this._enviarMensagem.bind(this)}>
                             <Image style={styles.btn} source={botaoEnviar}/>
                         </TouchableHighlight>
                 </View>

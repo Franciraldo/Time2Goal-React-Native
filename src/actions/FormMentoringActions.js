@@ -92,7 +92,7 @@ export const salvarHorario = (day, hora_inicial, hora_final, minuto_inicial, min
         var emailB64 = b64.encode(email);
         let mentore = firebase.database().ref(`/agenda_mentores/${emailB64}`) 
         mentore.child('agenda').child(`${day}`).set({
-                selected: true
+                selected: true,
         }).then(() => console.log('funcionou'))
         .catch(erro => console.log('erro day set: ', erro))
 
@@ -117,7 +117,7 @@ export const getHorarioDisponivel = (emailMentor, day) => {
                 let mentore = firebase.database().ref(`/agenda_horarios_mentores/${emailB64}/${day}`)
                 mentore.on('value', function(snapshot) {
                 console.log('getHorarioDisponivel itens: ', snapshot.val())
-                        modificaDays(dispatch, snapshot.val().agenda)
+                        modificaDays( snapshot.val().agenda)
                 });
         }
 }
@@ -126,11 +126,11 @@ export const getDaysAgendados = (email) => {
         return (dispatch) => {
         
                 var emailB64 = b64.encode(email);
-                console.log('getDaysAgendados', {email, emailB64})
-                let mentore = firebase.database().ref(`/agenda_mentores/${emailB64}`)
+                //console.log('getDaysAgendados', {email, emailB64})
+                let mentore = firebase.database().ref(`/agenda_mentores/${emailB64}/agenda`)
                 mentore.on('value', function(snapshot) {
-                console.log('item-lista-agenda', snapshot.val().agenda)
-                        modificaDays(dispatch, snapshot.val().agenda)
+                        console.log('item-lista-agenda', snapshot.val())
+                        dispatch({ type: LISTA_AGENDA_DAYS, payload: snapshot.val() })
                 });
         }
 }
@@ -140,7 +140,6 @@ export const getHorarios = (email, day) => {
                 var emailB64 = b64.encode(email);
                 let listadeHorariosDia = firebase.database().ref(`/agenda_horarios_mentores/${emailB64}/${day}`)
                 listadeHorariosDia.on('value', function(snapshot) {
-
                 const horarios = _.map(snapshot.val(), (val, uid) => {
                         return { ...val, uid }
                         })
@@ -149,15 +148,9 @@ export const getHorarios = (email, day) => {
         }
 }
 
-const modificaDays = (dispatch, listaDays) => {
-        console.log('modificaDays: ', listaDays)
-        dispatch({
-                type: LISTA_AGENDA_DAYS,
-                payload: listaDays
-            })
-}
 
 export const modificarSelectDay = (day) => {
+        console.log('modificarSelectDay: ', day)
         return {
                 type: SELECTED_DAY,
                 payload: day
