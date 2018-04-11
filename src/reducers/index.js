@@ -11,10 +11,12 @@ import HomeReducer from './HomeReducer';
 import MentoringReducer from './MentoringReducer';
 import ProfileMentorReducer from './ProfileMentorReducer';
 import GerenciarVideosReducer from './GerenciarVideosReducer';
+import AvaliacaoReducer from './AvaliacaoReducer';
 
 
 export default combineReducers({
     AuthenticacaoReducer,
+    AvaliacaoReducer,
     AppReducer,
     ListaContatosReducer,
     ListaConversaReducer,

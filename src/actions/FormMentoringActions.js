@@ -261,7 +261,7 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
                         let imgUri = img1; let uploadBlob = null;
                         const uploadUri = Platform.OS === 'ios' ? imgUri.replace('file://', '') : imgUri;
                         const { currentUser } = firebase.auth();
-                        const imageRef = firebase.storage().ref(`'img-form-mentoring/${email}`)
+                        const imageRef = firebase.storage().ref(`img-form-mentoring/${email}`)
                     
                         fs.readFile(uploadUri, 'base64')
                             .then(data => {
@@ -280,7 +280,7 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
                                         let imgUri = img2; let uploadBlob = null;
                                         const uploadUri = Platform.OS === 'ios' ? imgUri.replace('file://', '') : imgUri;
                                         const { currentUser } = firebase.auth();
-                                        const imageRef = firebase.storage().ref(`'img-form-mentoring/${email}`)
+                                        const imageRef = firebase.storage().ref(`img-form-mentoring/${email}`)
                                     
                                         fs.readFile(uploadUri, 'base64')
                                             .then(data => {

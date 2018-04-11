@@ -78,3 +78,6 @@ export const SELECTED_TYPE_VIDEO = 'selected_type_video';
 export const MODIFICAR_DATA = 'modificar_data';
 export const MODIFICAR_HORA = 'modificar_hora';
 export const CHECK_CALL = 'check_call';
+export const MODIFICAR_RATING = 'modificar_rating';
+export const MODIFICAR_TRABALHO = 'modificar_trabalho';
+export const MODIFICAR_TOTAL_ALUNOS = 'modificar_total_alunos';
