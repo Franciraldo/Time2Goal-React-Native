@@ -99,12 +99,12 @@ class Avaliacao extends Component {
                 
                 <TouchableHighlight style={styles.btn} onPress={() => {
                     const { starCount, contatoEmail, contatoNome } = this.props;
-                    const { nome } = this.props.usuario;
+                    const { nome, email } = this.props.usuario;
                     if(starCount === 0){
                         alert('Por favor, selecione o pelomenos 1 estrela')
                     }else{
                         this.popupDialog.show()                                            
-                        this.props.setAvaliacao(contatoEmail, contatoNome, nome, starCount)
+                        this.props.setAvaliacao(contatoEmail, contatoNome, nome, email, starCount)
                     }
                 }}>
                       <Text style={styles.btnText}>ENVIAR AVALIAÇÃO</Text>

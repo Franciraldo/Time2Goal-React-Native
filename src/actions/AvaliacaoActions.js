@@ -11,14 +11,24 @@ export const modificarRating = (rating) => {
     }
 }
 
-export const setAvaliacao = (email, nome, alunoNome, rating) => {
+export const setAvaliacao = (email, nome, alunoNome, alunoEmail, rating) => {
     return dispatch => {
-        let mentorEmailB64 = b64.encode(email)        
-        firebase.database().ref(`/avaliacao_mentores/${mentorEmailB64}`).push().set({
-            nome_mentor: nome,
-            nome_aluno: alunoNome,
-            nota: rating
+        let mentorEmailB64 = b64.encode(email);
+        let alunoEmailB64 = b64.encode(alunoEmail);        
+        
+        firebase.database().ref(`/mentores/ ${mentorEmailB64}`)
+        .once('value', snapshot => { 
+            let valor = snapshot.val().qtd_alunos + 1;
+            firebase.database().ref(`/mentores/ ${mentorEmailB64}`).child('qtd_alunos').set(valor)        
         })
+
+        firebase.database().ref(`/avaliacao/${mentorEmailB64}/${alunoEmailB64}`).child('nota').set(rating)
+
+
+        
+
+        
+
         
     }
 }
