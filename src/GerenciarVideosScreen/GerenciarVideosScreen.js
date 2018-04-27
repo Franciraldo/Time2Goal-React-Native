@@ -4,7 +4,7 @@ import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, I
 import { StackNavigator } from "react-navigation";
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import {connect} from 'react-redux';
-import { checkpopup, modificarTypeVideo, uploadVideos } from '../actions/GerenciarVideosActions';
+import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree } from '../actions/GerenciarVideosActions';
 import RNFetchBlob from 'react-native-fetch-blob'
 var ImagePicker = require('react-native-image-picker');
 // More info on all the options is below in the README...just some common use cases shown here
@@ -24,6 +24,8 @@ class GerenciarVideosScreen extends React.Component {
   componentDidMount() {
     this.props.navigation.setParams({ popupDialog: this.popupDialog });
     console.log('GerenciarVideosScreen componentDidMount: ', this.props) 
+    const { email } = this.props.usuario;
+    this.props.getVideosMentorFree(email);
     
   }
   componentWillMount() {
@@ -209,8 +211,9 @@ const mapStateToProps = state => {
       usuario,
       abrirPopUp: state.GerenciarVideosReducer.abrirPopUp,
       select_type_video: state.GerenciarVideosReducer.select_type_video,
-      loadin_upload: state.GerenciarVideosReducer.loadin_upload
+      loadin_upload: state.GerenciarVideosReducer.loadin_upload,
+      lista_videos: state.GerenciarVideosReducer.lista_videos
     })
   }
 
-export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos})(GerenciarVideosScreen)
+export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree})(GerenciarVideosScreen)

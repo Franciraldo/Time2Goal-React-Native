@@ -4,7 +4,7 @@ import { Actions } from 'react-native-router-flux';
 import b64 from 'base-64';
 import _ from 'lodash';
 import { Platform, Alert } from 'react-native';
-import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO, LOADING_UPLOAD_VIDEO } from './types';
+import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO, LOADING_UPLOAD_VIDEO, LISTA_VIDEOS_FREE_MENTOR } from './types';
 
 
 const fs = RNFetchBlob.fs
@@ -27,6 +27,18 @@ export const modificarTypeVideo = (type_video) => {
     return {
         type: SELECTED_TYPE_VIDEO,
         payload: type_video
+    }
+}
+
+export const getVideosMentorFree = (email) => {
+    return (dispatch) => {
+        console.log("getVideosMentor email: ", email)
+        var emailB64 = b64.encode(email);
+        firebase.database().ref(`videos_mentor/${emailB64}/free`)
+        .on("value", snapshot => {
+            console.log("getVideosMentor: ", _.values(snapshot.val()))
+            dispatch({type: LISTA_VIDEOS_FREE_MENTOR, payload: _.values(snapshot.val())})
+        })
     }
 }
 
