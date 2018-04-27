@@ -3,8 +3,8 @@ import RNFetchBlob from 'react-native-fetch-blob'
 import { Actions } from 'react-native-router-flux'; 
 import b64 from 'base-64';
 import _ from 'lodash';
-import { Platform } from 'react-native';
-import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO } from './types';
+import { Platform, Alert } from 'react-native';
+import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO, LOADING_UPLOAD_VIDEO } from './types';
 
 
 const fs = RNFetchBlob.fs
@@ -32,7 +32,7 @@ export const modificarTypeVideo = (type_video) => {
 
 export const uploadVideos = (uri, usuario, type) => {
     return (dispatch) => {
-
+        dispatch({type: LOADING_UPLOAD_VIDEO, payload: true})
         var emailB64 = b64.encode(usuario.email);
         firebase.auth().onAuthStateChanged((user) => {
             console.log('onAuthStateChanged: ', user)
@@ -44,6 +44,7 @@ export const uploadVideos = (uri, usuario, type) => {
                 .build(rnfbURI, { type : 'multipart/form-data;'})
                 .then((blob) => {
                 // upload image using Firebase SDK
+                let uidVideos = b64.encode(testVideoName);
                 firebase.storage()
                     .ref('videos-mentor') // rn-firebase-upload
                     .child(testVideoName)
@@ -55,13 +56,25 @@ export const uploadVideos = (uri, usuario, type) => {
                     .ref('videos-mentor/' + testVideoName)
                     .getDownloadURL().then((url) => {
                                 console.log('url: ', url)
-                                firebase.database().ref(`videos/${type}`).push().set({                                
+                                dispatch({type: LOADING_UPLOAD_VIDEO, payload: false})
+                                firebase.database().ref(`videos/${type}/${uidVideos}`).set({                                
                                         email_mentor: usuario.email,
                                         uri: url,
                                 })
                                 firebase.database().ref(`videos_mentor/${emailB64}/${type}`).push().set({                                    
                                     uri: url,
+                                    uidVideos,
                                 })
+
+                                Alert.alert(
+                                    'Sucesso',
+                                    'O upload do video foi feito com sucesso.',
+                                    [
+                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                    ],
+                                    { cancelable: false }
+                                  )
+
                             }).catch((err) => {
                                 console.log('display storage filed', err)
                             })

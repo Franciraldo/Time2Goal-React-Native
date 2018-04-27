@@ -1,5 +1,5 @@
 import React from "react";
-import { AppRegistry, Alert, StyleSheet, View, TouchableHighlight, Picker } from "react-native";
+import { AppRegistry, Alert, StyleSheet, View, TouchableHighlight, Picker, ActivityIndicator } from "react-native";
 import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, Icon, Button, Text } from "native-base";
 import { StackNavigator } from "react-navigation";
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
@@ -32,6 +32,19 @@ class GerenciarVideosScreen extends React.Component {
   }
   componentWillReceiveProps(nextProps){
     console.log('GerenciarVideosScreen componentWillReceiveProps: ', nextProps)
+  }
+  renderVideos() {
+    if(this.props.loadin_upload){
+        return (
+            <ActivityIndicator size='large'/>
+        );    
+    }else{
+      return(
+        <View>
+          <Text style={{color: '#fff'}}>Videos</Text>
+        </View>
+      );  
+    }
   }
   render() {
     return (
@@ -86,6 +99,8 @@ class GerenciarVideosScreen extends React.Component {
                               </TouchableHighlight>
                           </View>
                   </PopupDialog>
+
+                  {this.renderVideos()}
 
         </Content>
       </Container>
@@ -193,7 +208,8 @@ const mapStateToProps = state => {
     return ({
       usuario,
       abrirPopUp: state.GerenciarVideosReducer.abrirPopUp,
-      select_type_video: state.GerenciarVideosReducer.select_type_video
+      select_type_video: state.GerenciarVideosReducer.select_type_video,
+      loadin_upload: state.GerenciarVideosReducer.loadin_upload
     })
   }
 
