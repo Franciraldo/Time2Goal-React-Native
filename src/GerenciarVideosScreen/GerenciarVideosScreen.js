@@ -6,6 +6,7 @@ import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dia
 import {connect} from 'react-redux';
 import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree } from '../actions/GerenciarVideosActions';
 import RNFetchBlob from 'react-native-fetch-blob'
+import VideoPlayer from 'react-native-video-player';
 var ImagePicker = require('react-native-image-picker');
 // More info on all the options is below in the README...just some common use cases shown here
 var options = {
@@ -36,16 +37,16 @@ class GerenciarVideosScreen extends React.Component {
     console.log('GerenciarVideosScreen componentWillReceiveProps: ', nextProps)
   }
   renderVideos() {
+    const {lista_videos} = this.props;
     if(this.props.loadin_upload){
         return (
             <ActivityIndicator size='large'/>
         );    
     }else{
-      return(
-        <View>
-          <Text style={{color: '#fff'}}>Videos</Text>
-        </View>
-      );  
+      for(var element in lista_videos) {
+        console.log("element: ", lista_videos[element])
+        
+      } 
     }
   }
   render() {
