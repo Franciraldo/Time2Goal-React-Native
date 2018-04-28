@@ -26,6 +26,7 @@
     "react-native-router-flux": "^3.43.0",
     "react-native-star-rating": "^1.0.9",
     "react-native-tab-view": "0.0.70",
+    "react-native-thumbnail": "^1.1.0",
     "react-native-vector-icons": "^4.6.0",
     "react-native-video": "^2.0.0",
     "react-native-video-player": "^0.9.1",

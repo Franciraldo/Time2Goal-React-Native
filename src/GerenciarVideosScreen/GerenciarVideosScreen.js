@@ -1,5 +1,5 @@
 import React from "react";
-import { AppRegistry, Alert, StyleSheet, View, TouchableHighlight, Picker, ActivityIndicator } from "react-native";
+import { AppRegistry, Alert, StyleSheet, View, TouchableHighlight, Picker, ActivityIndicator, Image, FlatList, Dimensions } from "react-native";
 import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, Icon, Button, Text } from "native-base";
 import { StackNavigator } from "react-navigation";
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree } from '../actions/GerenciarVideosActions';
 import RNFetchBlob from 'react-native-fetch-blob'
 import VideoPlayer from 'react-native-video-player';
+import _ from 'lodash';
 var ImagePicker = require('react-native-image-picker');
 // More info on all the options is below in the README...just some common use cases shown here
 var options = {
@@ -21,10 +22,14 @@ var options = {
   }
 };
 
+let {width} = Dimensions.get('window')
+let numberGrid = 3
+let itemWidth = width / numberGrid
+
 class GerenciarVideosScreen extends React.Component {
   componentDidMount() {
     this.props.navigation.setParams({ popupDialog: this.popupDialog });
-    console.log('GerenciarVideosScreen componentDidMount: ', this.props) 
+    console.log('GerenciarVideosScreen componentDidMount: ', this.props); 
     const { email } = this.props.usuario;
     this.props.getVideosMentorFree(email);
     
@@ -36,6 +41,14 @@ class GerenciarVideosScreen extends React.Component {
   componentWillReceiveProps(nextProps){
     console.log('GerenciarVideosScreen componentWillReceiveProps: ', nextProps)
   }
+  renderItem = ({item}) => {
+    console.log('renderItem: ', item);
+    return (
+      <View>
+        <Image source={{uri: item.thumbnail}} style={styles.itemImage} />
+      </View>
+    );
+   }
   renderVideos() {
     const {lista_videos} = this.props;
     if(this.props.loadin_upload){
@@ -43,10 +56,12 @@ class GerenciarVideosScreen extends React.Component {
             <ActivityIndicator size='large'/>
         );    
     }else{
-      for(var element in lista_videos) {
-        console.log("element: ", lista_videos[element])
-        
-      } 
+      return(
+        <FlatList  
+                      keyExtractor={(_, index) => index} 
+                      numColumns={numberGrid} data={lista_videos} 
+                      renderItem={this.renderItem} />
+      );
     }
   }
   render() {
@@ -87,7 +102,7 @@ class GerenciarVideosScreen extends React.Component {
                                       console.log('Response = ', response);
                                       
                                       
-                                        this.props.uploadVideos(response.origURL, this.props.usuario, this.props.select_type_video)
+                                        this.props.uploadVideos(response, this.props.usuario, this.props.select_type_video)
                                     
                                       
                                       
@@ -102,15 +117,15 @@ class GerenciarVideosScreen extends React.Component {
                               </TouchableHighlight>
                           </View>
                   </PopupDialog>
-
-                  {this.renderVideos()}
-
+                  <View style={{flex: 1, justifyContent: "space-between"}}>
+                    {this.renderVideos()}
+                  </View>
         </Content>
       </Container>
     );
   }
 }
-
+ 
 GerenciarVideosScreen.navigationOptions = ({ navigation }) => ({
   header: (
     <Header style={{ backgroundColor: '#fc5b07'}} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
@@ -156,6 +171,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     width: 250
+},
+itemImage:{
+  width: itemWidth,
+  height: itemWidth
 },
 btnText: {
     fontSize: 13,

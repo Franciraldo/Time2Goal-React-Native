@@ -5,11 +5,12 @@ import b64 from 'base-64';
 import _ from 'lodash';
 import { Platform, Alert } from 'react-native';
 import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO, LOADING_UPLOAD_VIDEO, LISTA_VIDEOS_FREE_MENTOR } from './types';
-
+import RNThumbnail from 'react-native-thumbnail';
 
 const fs = RNFetchBlob.fs
 const Blob = RNFetchBlob.polyfill.Blob
 const testVideoName = `time2goal-${Platform.OS}-${new Date()}.MOV`
+const testImageName = `time2goal-${Platform.OS}-${new Date()}.jpg`
 
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
@@ -42,15 +43,15 @@ export const getVideosMentorFree = (email) => {
     }
 }
 
-export const uploadVideos = (uri, usuario, type) => {
+export const uploadVideos = (dados, usuario, type) => {
     return (dispatch) => {
         dispatch({type: LOADING_UPLOAD_VIDEO, payload: true})
         var emailB64 = b64.encode(usuario.email);
         firebase.auth().onAuthStateChanged((user) => {
             console.log('onAuthStateChanged: ', user)
-            console.log('dados: ', { uri, usuario, type })
+            console.log('dados: ', { dados, usuario, type })
             
-            let rnfbURI = RNFetchBlob.wrap(uri)
+            let rnfbURI = RNFetchBlob.wrap(dados.origURL)
             // create Blob from file path
             Blob
                 .build(rnfbURI, { type : 'multipart/form-data;'})
@@ -66,26 +67,52 @@ export const uploadVideos = (uri, usuario, type) => {
                     
                 firebase.storage()
                     .ref('videos-mentor/' + testVideoName)
-                    .getDownloadURL().then((url) => {
-                                console.log('url: ', url)
-                                dispatch({type: LOADING_UPLOAD_VIDEO, payload: false})
-                                firebase.database().ref(`videos/${type}/${uidVideos}`).set({                                
-                                        email_mentor: usuario.email,
-                                        uri: url,
+                    .getDownloadURL().then((urlVideo) => {
+                                console.log('url: ', urlVideo)                        
+                                RNThumbnail.get(dados.uri).then((result) => {
+                                    console.log("thumbnail path", result); // thumbnail path                            
+                                        let imgUri = result.path;
+                                        let uploadBlob = null;
+                                        let mime = 'image/jpg';
+                                        const uploadUri = Platform.OS === 'ios' ? imgUri.replace('file://', '') : imgUri;
+                                        const { currentUser } = firebase.auth();
+                                        const imageRef = firebase.storage().ref('thumbnail-videos/' + testImageName)
+                                    
+                                        fs.readFile(uploadUri, 'base64')
+                                            .then(data => {
+                                            return Blob.build(data, { type: `${mime};BASE64` });
+                                            })
+                                            .then(blob => {
+                                            uploadBlob = blob;
+                                            return imageRef.put(blob, { contentType: mime, name: testImageName });
+                                            })
+                                            .then(() => {                            
+                                            imageRef.getDownloadURL().then((url) => {                                          
+                                                firebase.database().ref(`videos/${type}/${uidVideos}`).set({                                
+                                                    email_mentor: usuario.email,
+                                                    uri: urlVideo,
+                                                    thumbnail: url
+                                                })
+                                                firebase.database().ref(`videos_mentor/${emailB64}/${type}`).push().set({                                    
+                                                    uri: urlVideo,
+                                                    uidVideos,
+                                                    thumbnail: url
+                                                })
+                                                Alert.alert(
+                                                    'Sucesso',
+                                                    'O upload do video foi feito com sucesso.',
+                                                    [
+                                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                                    ],
+                                                    { cancelable: false }
+                                                  )
+                                                  uploadBlob.close()
+                                                  dispatch({type: LOADING_UPLOAD_VIDEO, payload: false})
+                                            }).catch((err) => {
+                                                console.log('Thumbnail erro: ', err)
+                                            })                                                                          
+                                        })                                                                       
                                 })
-                                firebase.database().ref(`videos_mentor/${emailB64}/${type}`).push().set({                                    
-                                    uri: url,
-                                    uidVideos,
-                                })
-
-                                Alert.alert(
-                                    'Sucesso',
-                                    'O upload do video foi feito com sucesso.',
-                                    [
-                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
-                                    ],
-                                    { cancelable: false }
-                                  )
 
                             }).catch((err) => {
                                 console.log('display storage filed', err)
