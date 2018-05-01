@@ -6,6 +6,18 @@ import {Actions} from 'react-native-router-flux';
 
 
 class Videos extends Component {
+
+    componentDidMount() {
+        console.log('Videos componentDidMount: ', this.props); 
+        
+      }
+      componentWillMount() {
+        console.log('Videos componentWillMount: ', this.props)
+            
+      }
+      componentWillReceiveProps(nextProps){
+        console.log('Videos componentWillReceiveProps: ', nextProps)
+      }
     
     render() {
         return (

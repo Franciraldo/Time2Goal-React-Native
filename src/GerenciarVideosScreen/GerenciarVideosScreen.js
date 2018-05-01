@@ -4,10 +4,11 @@ import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, I
 import { StackNavigator } from "react-navigation";
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import {connect} from 'react-redux';
-import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree } from '../actions/GerenciarVideosActions';
+import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium } from '../actions/GerenciarVideosActions';
 import RNFetchBlob from 'react-native-fetch-blob'
 import VideoPlayer from 'react-native-video-player';
 import _ from 'lodash';
+import {Actions} from 'react-native-router-flux';
 var ImagePicker = require('react-native-image-picker');
 // More info on all the options is below in the README...just some common use cases shown here
 var options = {
@@ -32,6 +33,7 @@ class GerenciarVideosScreen extends React.Component {
     console.log('GerenciarVideosScreen componentDidMount: ', this.props); 
     const { email } = this.props.usuario;
     this.props.getVideosMentorFree(email);
+    this.props.getVideosMentorPremium(email);
     
   }
   componentWillMount() {
@@ -44,24 +46,82 @@ class GerenciarVideosScreen extends React.Component {
   renderItem = ({item}) => {
     console.log('renderItem: ', item);
     return (
-      <View>
-        <Image source={{uri: item.thumbnail}} style={styles.itemImage} />
-      </View>
+      <TouchableHighlight onPress={() => {      
+        Actions.playerVideo({uri: item.uri, thumbnail: item.thumbnail})
+      }}>
+          <Image source={{uri: item.thumbnail}} style={styles.itemImage} />
+        </TouchableHighlight>
     );
    }
   renderVideos() {
-    const {lista_videos} = this.props;
+    const {lista_videos_free, lista_videos_premium} = this.props;
     if(this.props.loadin_upload){
         return (
+          <View style={{
+            flex: 1,
+            marginTop: 250,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
             <ActivityIndicator size='large'/>
+            <Text style={styles.mensagem_text}>carregando...</Text>
+          </View>
         );    
     }else{
-      return(
-        <FlatList  
-                      keyExtractor={(_, index) => index} 
-                      numColumns={numberGrid} data={lista_videos} 
-                      renderItem={this.renderItem} />
-      );
+      //Quando não possuir videos
+      if(lista_videos_free.length === 0 && lista_videos_premium.length === 0){
+        return(
+          <View>
+            <Text style={styles.mensagem_text}>Você não possui videos</Text>          
+          </View>
+        );
+      }
+      //Quando so possuir videos premium
+      if(lista_videos_free.length === 0 && lista_videos_premium.length !== 0){
+        return(
+          <View>
+            <Text style={styles.text}>Videos Free</Text>
+            <Text style={styles.mensagem_text}>Você não possui videos free</Text>
+            <Text style={styles.text}>Videos Premium</Text>
+            <FlatList  
+                        keyExtractor={(_, index) => index} 
+                        numColumns={numberGrid} data={lista_videos_premium} 
+                        renderItem={this.renderItem} />
+          </View>
+        );
+      }
+      //Quando so possuir videos free
+      if(lista_videos_free.length !== 0 && lista_videos_premium.length === 0){
+        return(
+        <View>
+            <Text style={styles.text}>Videos Free</Text>
+            <FlatList  
+                        keyExtractor={(_, index) => index} 
+                        numColumns={numberGrid} data={lista_videos_free} 
+                        renderItem={this.renderItem} />
+            <Text style={styles.text}>Videos Premium</Text>
+            <Text style={styles.mensagem_text}>Você não possui videos Premium</Text>
+          </View>
+        );
+      }
+      //Quando so possuir videos free e premium
+      if(lista_videos_free.length !== 0 && lista_videos_premium.length !== 0){
+        return(
+          <View>
+            <Text style={styles.text}>Videos Free</Text>
+            <FlatList  
+                        keyExtractor={(_, index) => index} 
+                        numColumns={numberGrid} data={lista_videos_free} 
+                        renderItem={this.renderItem} />
+            <Text style={styles.text}>Videos Premium</Text>
+            <FlatList  
+                        keyExtractor={(_, index) => index} 
+                        numColumns={numberGrid} data={lista_videos_premium} 
+                        renderItem={this.renderItem} />
+          </View>
+        );
+      }
     }
   }
   render() {
@@ -181,12 +241,6 @@ btnText: {
     color: '#fff',
     fontWeight: 'bold'
 },
-  text: {
-    textAlign: 'center',
-    borderColor: '#bbb',
-    padding: 10,
-    backgroundColor: '#eee'
-  },
   container: {
     flex: 1,
     padding: 10,
@@ -218,6 +272,13 @@ text: {
   fontSize: 15,
   color: '#fff',
 },
+mensagem_text:{
+  textAlign: 'center',
+  marginTop: 10,
+  marginBottom: 10,
+  fontSize: 12,
+  color: '#fff',
+}
 });
 
 const mapStateToProps = state => {
@@ -232,8 +293,9 @@ const mapStateToProps = state => {
       abrirPopUp: state.GerenciarVideosReducer.abrirPopUp,
       select_type_video: state.GerenciarVideosReducer.select_type_video,
       loadin_upload: state.GerenciarVideosReducer.loadin_upload,
-      lista_videos: state.GerenciarVideosReducer.lista_videos
+      lista_videos_free: state.GerenciarVideosReducer.lista_videos_free,
+      lista_videos_premium: state.GerenciarVideosReducer.lista_videos_premium,
     })
   }
 
-export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree})(GerenciarVideosScreen)
+export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium})(GerenciarVideosScreen)

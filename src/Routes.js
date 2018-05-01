@@ -13,6 +13,7 @@ import Profile from './ProfileScreen/Profile';
 import MarcarMentoring from './components/MarcarMentoring';
 import ProfileMentor from './components/ProfileMentor';
 import Avaliacao from './components/Avaliacao';
+import PlayerVideo from './components/PlayerVideo';
 
 export default props => (
     <Router navigationBarStyle={{ backgroundColor: '#fc5b07'}} barButtonIconStyle={{ tintColor: '#fff' }} titleStyle={{backgroundColor: 'transparent', color: '#fff'}}>
@@ -28,5 +29,6 @@ export default props => (
         <Scene key='profileMentor' component={ProfileMentor} tabTitle="profileMentor" hideNavBar={false} />
         <Scene key='marcarMentoring' component={MarcarMentoring} title="Marcar Mentoria" hideNavBar={false} />
         <Scene key='avaliacao' component={Avaliacao} tabTitle="Avaliação" hideNavBar={true} />
+        <Scene key='playerVideo' component={PlayerVideo} navigationBarStyle={{ backgroundColor: 'transparent'}} hideNavBar={false} />
     </Router>
 )

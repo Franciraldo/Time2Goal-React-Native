@@ -4,6 +4,7 @@ import {
     SELECTED_TYPE_VIDEO,
     LOADING_UPLOAD_VIDEO,
     LISTA_VIDEOS_FREE_MENTOR,
+    LISTA_VIDEOS_PREMIUM_MENTOR
    } from '../actions/types';
 
 const INITIAL_STATE = { 
@@ -11,7 +12,8 @@ const INITIAL_STATE = {
     abrirPopUp: false,
     select_type_video: '',
     loadin_upload: false,
-    lista_videos: ''
+    lista_videos_free: '',
+    lista_videos_premium: ''
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -26,8 +28,11 @@ switch(action.type) {
         return { ...state, loadin_upload: action.payload}
         break;
     case LISTA_VIDEOS_FREE_MENTOR:
-        return { ...state, lista_videos: action.payload}
-        break;     
+        return { ...state, lista_videos_free: action.payload}
+        break;
+    case LISTA_VIDEOS_PREMIUM_MENTOR:
+        return { ...state, lista_videos_premium: action.payload}
+        break;         
    default:
        return state;    
 }

@@ -4,7 +4,7 @@ import { Actions } from 'react-native-router-flux';
 import b64 from 'base-64';
 import _ from 'lodash';
 import { Platform, Alert } from 'react-native';
-import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO, LOADING_UPLOAD_VIDEO, LISTA_VIDEOS_FREE_MENTOR } from './types';
+import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO, LOADING_UPLOAD_VIDEO, LISTA_VIDEOS_FREE_MENTOR, LISTA_VIDEOS_PREMIUM_MENTOR } from './types';
 import RNThumbnail from 'react-native-thumbnail';
 
 const fs = RNFetchBlob.fs
@@ -37,8 +37,19 @@ export const getVideosMentorFree = (email) => {
         var emailB64 = b64.encode(email);
         firebase.database().ref(`videos_mentor/${emailB64}/free`)
         .on("value", snapshot => {
-            console.log("getVideosMentor: ", _.values(snapshot.val()))
+            console.log("getVideosMentorFree: ", _.values(snapshot.val()))
             dispatch({type: LISTA_VIDEOS_FREE_MENTOR, payload: _.values(snapshot.val())})
+        })
+    }
+}
+export const getVideosMentorPremium = (email) => {
+    return (dispatch) => {
+        console.log("getVideosMentorPremium email: ", email)
+        var emailB64 = b64.encode(email);
+        firebase.database().ref(`videos_mentor/${emailB64}/premium`)
+        .on("value", snapshot => {
+            console.log("getVideosMentorPremium: ", _.values(snapshot.val()))
+            dispatch({type: LISTA_VIDEOS_PREMIUM_MENTOR, payload: _.values(snapshot.val())})
         })
     }
 }
