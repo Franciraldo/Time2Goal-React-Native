@@ -1,4 +1,6 @@
-import { MODIFICA_ADICIONA_CONTATO_EMAIL, ADICIONAR_CONTATO_ERRO, ADICIONAR_CONTATO_SUCESSO, MODIFICA_MENSAGEM, ENVIA_MENSAGEM_SUCESSO, MODIFICAR_DATA, MODIFICAR_HORA, CHECK_CALL } from '../actions/types';
+import { MODIFICA_ADICIONA_CONTATO_EMAIL, ADICIONAR_CONTATO_ERRO, ADICIONAR_CONTATO_SUCESSO, MODIFICA_MENSAGEM, ENVIA_MENSAGEM_SUCESSO, MODIFICAR_DATA, MODIFICAR_HORA, CHECK_CALL, LISTA_VIDEOS_FREE_ALL,
+    LISTA_VIDEOS_PREMIUM_ALL,
+    LOADING_VIDEO_ALL, } from '../actions/types';
 
 const INITIAL_STATE = {
     adiciona_contato_email: '',
@@ -7,11 +9,23 @@ const INITIAL_STATE = {
     mensagem: '',
     data: '',
     hora: '',
+    lista_videos_free_all: '',
+    lista_videos_premium_all: '',
+    loading_video_all: false,
     booleanCall: false, 
  };
 
 export default (state = INITIAL_STATE, action) => {
     switch(action.type) {
+        case LOADING_VIDEO_ALL:
+            return { ...state, loading_video_all: action.payload}
+            break;
+        case LISTA_VIDEOS_PREMIUM_ALL:
+            return { ...state, lista_videos_premium_all: action.payload}
+            break;
+        case LISTA_VIDEOS_FREE_ALL:
+            return { ...state, lista_videos_free_all: action.payload}
+            break;
         case MODIFICA_ADICIONA_CONTATO_EMAIL:
             return { ...state, adiciona_contato_email: action.payload}
             break;

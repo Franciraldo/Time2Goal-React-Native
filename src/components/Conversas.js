@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { conversasUsuarioFetch } from '../actions/AppActions';
 import _ from 'lodash';
+import firebase from 'firebase';
 
 const imgAnonimo = require('../imgs/anonymous.jpg');
 class Conversas extends Component {
@@ -20,7 +21,8 @@ class Conversas extends Component {
             this.props.conversasUsuarioFetch(this.props.email)
             this.criaFonteDeDados(this.props.conversas);
         }else{
-            this.props.conversasUsuarioFetch(this.props.usuario.email)
+            var user = firebase.auth().currentUser;
+            this.props.conversasUsuarioFetch(user.email)
             this.criaFonteDeDados(this.props.conversas);
         }
         
@@ -148,7 +150,7 @@ mapStateToProps = state => {
         return { ...val, uid }
     })
 
-    const usuario = state.HomeReducer
+    const usuario = state.SideBarReducer
 
     //console.log('Conversas mapStateToProps conversas: ', state);
 

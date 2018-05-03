@@ -29,7 +29,11 @@ import { MODIFICA_ADICIONA_CONTATO_EMAIL,
          SET_VALOR_HORA,
          MODIFICAR_DATA,
          MODIFICAR_HORA,
-         CHECK_CALL, } from './types';
+         CHECK_CALL,
+         LISTA_VIDEOS_FREE_ALL,
+         LISTA_VIDEOS_PREMIUM_ALL,
+         LOADING_VIDEO_ALL,
+         } from './types';
 
 const setNomeMentor = (texto) => {
     return {
@@ -326,13 +330,33 @@ export const conversasUsuarioFetch = (email) => {
     return dispatch => {
         console.log('conversasUsuarioFetch: ', email)
         let usuarioEmailB64 = b64.encode(email);
+        console.log('usuarioEmailB64: ', usuarioEmailB64)
 
         firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}`)
             .on("value", snapshot => { 
-                console.log('conversasUsuarioFetch snapshot', snapshot.val())
-                dispatch({ type: LISTA_CONVERSAS_USUARIO, payload: snapshot.val() })
+                console.log('conversasUsuarioFetch snapshot', _.values(snapshot.val()))
+                dispatch({ type: LISTA_CONVERSAS_USUARIO, payload: _.values(snapshot.val()) })
             })
     }
+}
+
+export const getAllVideos = (email) => {
+    return (dispatch) => {
+        dispatch({type: LOADING_VIDEO_ALL, payload: true})
+        console.log("getVideosMentor email: ", email)
+        var emailB64 = b64.encode(email);
+        firebase.database().ref(`videos/${emailB64}/free`)
+        .on("value", snapshot => {
+            console.log("getVideosAllFree: ", _.values(snapshot.val()))
+            dispatch({type: LISTA_VIDEOS_FREE_ALL, payload: _.values(snapshot.val())})
+            firebase.database().ref(`videos/${emailB64}/premium`)
+            .on("value", snapshot => {
+                console.log("getVideosAllPremium: ", _.values(snapshot.val()))
+                dispatch({type: LISTA_VIDEOS_PREMIUM_ALL, payload: _.values(snapshot.val())})
+                dispatch({type: LOADING_VIDEO_ALL, payload: false})
+            })
+        })
+    }    
 }
 
 export const menotresFetch = () => {
@@ -383,4 +407,3 @@ export const signOut = ( ) => {
         })
     }
 }
-

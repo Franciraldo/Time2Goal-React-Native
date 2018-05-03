@@ -84,3 +84,6 @@ export const MODIFICAR_TOTAL_ALUNOS = 'modificar_total_alunos';
 export const LOADING_UPLOAD_VIDEO = 'loading_upload_video';
 export const LISTA_VIDEOS_FREE_MENTOR = 'lista_videos_free_mentor';
 export const LISTA_VIDEOS_PREMIUM_MENTOR = 'lista_videos_premium_mentor';
+export const LISTA_VIDEOS_FREE_ALL = 'lista_videos_free_all';
+export const LISTA_VIDEOS_PREMIUM_ALL = 'lista_videos_premium_all';
+export const LOADING_VIDEO_ALL = 'loading_video_all';
