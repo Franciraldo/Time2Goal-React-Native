@@ -29,6 +29,6 @@ export default props => (
         <Scene key='profileMentor' component={ProfileMentor} tabTitle="profileMentor" hideNavBar={false} />
         <Scene key='marcarMentoring' component={MarcarMentoring} title="Marcar Mentoria" hideNavBar={false} />
         <Scene key='avaliacao' component={Avaliacao} tabTitle="Avaliação" hideNavBar={true} />
-        <Scene key='playerVideo' component={PlayerVideo} navigationBarStyle={{ backgroundColor: 'transparent'}} hideNavBar={false} />
+        <Scene key='playerVideo' component={PlayerVideo} navigationBarStyle={{ backgroundColor: 'transparent'}} hideNavBar={true} />
     </Router>
 )
