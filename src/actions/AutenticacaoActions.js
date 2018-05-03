@@ -185,9 +185,8 @@ export const cadastraUsuario = ({nome, email, senha, descricao, img, bool, cpf, 
                         .catch((err) => {
                             console.log('firebase sigin failed', err)
                         })
-
-                        firebase.auth().onAuthStateChanged((user) => {
-                            if(img !== ""){
+                        
+                            if(img !== "" && img !== undefined){
                             return new Promise((resolve, reject) => {
                                 let imgUri = img; let uploadBlob = null;
                                 const uploadUri = Platform.OS === 'ios' ? imgUri.replace('file://', '') : imgUri;
@@ -205,7 +204,7 @@ export const cadastraUsuario = ({nome, email, senha, descricao, img, bool, cpf, 
                                     .then(() => {
                                     uploadBlob.close()
                                     imageRef.getDownloadURL().then((url) => {                                          
-                                        salvarDatavaseDados(dispatch, nome, email, descricao, url, false, cpf, titularCard, numeroCard, validadeCard, cvv, dataNascimento, cep, endereco, pais, true, '', emailB64)
+                                        salvarDatavaseDados(dispatch, nome, email, descricao, url, false, cpf, titularCard, numeroCard, validadeCard, cvv, dataNascimento, cep, endereco, pais, bool, '', emailB64)
                                     })                                        
                                     //return imageRef.getDownloadURL();
                                     })
@@ -220,9 +219,7 @@ export const cadastraUsuario = ({nome, email, senha, descricao, img, bool, cpf, 
                             } else {
                                 salvarDatavaseDados(dispatch, nome, email, descricao, '', false, '', '', '', '', '', '', '', '', '', false, '', emailB64)
                             }
-                            
                             //cadastraUsuarioSucesso(dispatch)
-                        })
             }) 
             .catch(erro => cadastraUsuarioErro(erro, dispatch));
         }
@@ -434,11 +431,27 @@ const loginUsuarioSucesso = (dispatch, emailB64) => {
             dispatch({ type: USER_PROFILE , payload: snapshot.val() })
             dispatch({ type: USER_FORM_MENTORING , payload: snapshot.val() })
             dispatch({ type: USER_HOME , payload: snapshot.val() })
-            //console.log('getUsuario snapshot: ',  snapshot)
+            console.log('getUsuario snapshot: ',  snapshot.val())
         })
 
     Actions.principal();
 }
+
+export const getUsuarioLogado = (email) => {
+    return (dispatch) => {
+        var emailB64 = b64.encode(email);
+        firebase.database().ref(`/usuarios/ ${emailB64}`)
+        .on("value", snapshot => { 
+           
+            dispatch({ type: USER_SIDEBAR , payload: snapshot.val() })
+            dispatch({ type: USER_PROFILE , payload: snapshot.val() })
+            dispatch({ type: USER_FORM_MENTORING , payload: snapshot.val() })
+            dispatch({ type: USER_HOME , payload: snapshot.val() })
+            console.log('getUsuarioLogado snapshot: ',  snapshot.val())
+        })
+    }
+}
+
 const loginUsuarioErro = (erro, dispatch) => {
     dispatch(
         {

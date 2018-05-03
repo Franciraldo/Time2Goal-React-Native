@@ -1,5 +1,5 @@
 import React from "react";
-import { AppRegistry, Image, StatusBar, View, Text, StyleSheet, TouchableHighlight, TouchableOpacity } from "react-native";
+import { Alert, AppRegistry, Image, StatusBar, View, Text, StyleSheet, TouchableHighlight, TouchableOpacity } from "react-native";
 import { Container, Content, List, ListItem, Icon, Button} from "native-base";
 import { Actions } from 'react-native-router-flux'; 
 import firebase from 'firebase';
@@ -7,12 +7,17 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 const routes = ["Home", "GerenciarAgendaScreen","GerenciarVideosScreen", "Profile"];
 import { signOut } from '../actions/AppActions';
-import { habilitarPremiumSideBar } from '../actions/AutenticacaoActions';
+import { habilitarPremiumSideBar, getUsuarioLogado } from '../actions/AutenticacaoActions';
 
+const imgAnonimo = require('../imgs/anonymous.jpg');
+const on = require('../imgs/TOOGLEON.png');
+const off = require('../imgs/TOOGLEOFF.png');
 class SideBar extends React.Component {
 
   componentDidMount(){
     console.log('SideBar componentDidMount: ', this.props)
+    var user = firebase.auth().currentUser;
+    this.props.getUsuarioLogado(user.email)
   }
 
   componentWillMount(){
@@ -33,9 +38,18 @@ _uploadImage() {
   }
   _onPress() {
     const { email, titularCartao, numeroCartao, validade, cvv, premium } = this.props.usuario
-   
+   console.log('Clocou aqui: ', { email, titularCartao, numeroCartao, validade, cvv, premium })
     if( titularCartao != '' && numeroCartao != '' && validade != '' && cvv != ''){
       this.props.habilitarPremiumSideBar(!premium, email.toString())
+    }else{
+      Alert.alert(
+        'Atenção!',
+        'Por Favor, Verifique no seu perfil se seus seus dados de cartão estão preenchidos!',
+        [
+          {text: 'OK', onPress: () => false},
+        ],
+        { cancelable: false }
+      )
     }
 
   }
@@ -53,7 +67,7 @@ _uploadImage() {
         return (
             <Image
             style={styles.uploadImage}
-            source={require('../imgs/anonymous.jpg')}
+            source={imgAnonimo}
             />
         );
     }  
@@ -66,6 +80,7 @@ _uploadImage() {
     const buttonBg = premium ? "whitesmoke" : "#e42125";
     const borderBg = premium ? "whitesmoke":"#e42125";
     const textColor = premium ? "black":"whitesmoke";
+    const imgToogle = premium ? on: off;
 
     return (
       <Container style={styles.container}>
@@ -139,12 +154,14 @@ _uploadImage() {
 
               <View style={{ marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
                     <Text style={{marginTop: 10, marginBottom: 30, backgroundColor: "transparent", fontSize: 16, color: '#fff', fontWeight: 'bold', marginRight: 15}}>Habilitar conta Premium </Text>
-                    <TouchableOpacity onPress={() => this._onPress()} style={{ width: 55, height: 25,
-                    borderWidth: 1, marginTop: 10,
-                    borderColor: borderBg , borderRadius: 18, 
-                    padding: 10, justifyContent: 'center',
-                    alignItems:'center', backgroundColor: buttonBg}} >
-                            <Text style={{backgroundColor: "transparent", fontSize: 16, color: textColor, fontWeight: 'bold'}}>{textValue}</Text>
+                    <TouchableOpacity onPress={() => this._onPress()} style={{
+                    justifyContent: 'center',
+                    marginBottom: 15,
+                    alignItems:'center'}} >
+                             <Image
+                                style={{width: 45, height: 15}}
+                                source={imgToogle}
+                                />
                     </TouchableOpacity>
                     
             </View>
@@ -218,4 +235,4 @@ const mapStateToProps = state => {
     })
   }
 
-export default connect(mapStateToProps, {signOut, habilitarPremiumSideBar})(SideBar)
+export default connect(mapStateToProps, {signOut, habilitarPremiumSideBar, getUsuarioLogado})(SideBar)

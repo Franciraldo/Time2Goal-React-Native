@@ -3,7 +3,8 @@ import { View, TextInput, Text, Button, StyleSheet, ScrollView, Image, ActivityI
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { modificaEmail, modificarBool,modificaScreenRequest, modificaSenha, modificaNome, modificaDescricao,  cadastraUsuario } from '../actions/AutenticacaoActions';
-
+const on = require('../imgs/TOOGLEON.png');
+const off = require('../imgs/TOOGLEOFF.png');
 class formCadastro extends Component { 
     componentDidMount(){
         //console.log('formCadastro componentDidMount')
@@ -24,8 +25,8 @@ class formCadastro extends Component {
     }
 
     _cadastraUsuario() {
-        const { nome, email, senha, descricao, img} = this.props;
-        //console.log({nome, email, senha, descricao, bool});
+        const { nome, email, senha, descricao, img, bool} = this.props;
+        console.log({nome, email, senha, descricao, bool});
         this.props.cadastraUsuario({nome, email, senha, descricao, img});
     }
     _uploadImage() {
@@ -85,7 +86,8 @@ class formCadastro extends Component {
         const textValue = bool ? "ON": "OFF";
         const buttonBg = bool ? "whitesmoke" : "#e42125";
         const borderBg = bool ? "whitesmoke":"#e42125";
-        const textColor = bool ? "black":"whitesmoke";        
+        const textColor = bool ? "black":"whitesmoke"; 
+        const imgToogle = bool ? on: off;       
         
         return(
         
@@ -154,13 +156,14 @@ class formCadastro extends Component {
                                 <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center'}}>
                                     <View style={{ flexDirection: 'row'}}>
                                             <Text style={{marginTop: 10, marginBottom: 50, backgroundColor: "transparent", fontSize: 13, color: '#fff', fontWeight: 'bold', marginRight: 15}}>Habilitar conta Premium </Text>
-                                            <TouchableOpacity onPress={() => this._onPress()} style={{ width: 45, height: 25,
-                                            borderWidth: 1,
-                                            borderColor: borderBg , borderRadius: 18, 
-                                            padding: 8, justifyContent: 'center',
-                                            marginTop: 5,
-                                            alignItems:'center', backgroundColor: buttonBg}} >
-                                                    <Text style={{backgroundColor: "transparent", fontSize: 12, color: textColor, fontWeight: 'bold'}}>{textValue}</Text>
+                                            <TouchableOpacity onPress={() => this._onPress()} style={{
+                                            justifyContent: 'center',
+                                            marginBottom: 40,
+                                            alignItems:'center'}} >
+                                                        <Image
+                                                        style={{width: 45, height: 15}}
+                                                        source={imgToogle}
+                                                        />
                                             </TouchableOpacity>
                                             
                                     </View>
