@@ -28,7 +28,7 @@ class Conversas extends Component {
         
     }
     componentWillReceiveProps(nextProps) {
-        console.log('Conversas componentWillReceiveProps: ', nextProps)
+        //console.log('Conversas componentWillReceiveProps: ', nextProps)
         //console.log('Conversas componentWillReceiveProps email: ', nextProps.usuario.email)
         //nextProps.conversasUsuarioFetch(nextProps.usuario.email);    
         this.criaFonteDeDados(nextProps.conversas);
@@ -39,17 +39,19 @@ class Conversas extends Component {
     }
     renderRow(conversa) {
         
-        console.log('conversa: ', { conversa});
+        //console.log('conversa: ', { conversa});
         if(conversa.img === ""){
             return (
                 <View>
                 <View style={{flex: 1, flexDirection: 'row'}}>
-                    <View>
+                    <TouchableHighlight onPress={
+                            () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email, contatoImg: conversa.img})
+                        }>
                         <Image
                             style={styles.uploadImage}
                             source={imgAnonimo}
                         />
-                    </View>
+                    </TouchableHighlight>
                     <View style={{marginLeft: 10, marginTop: 15, width: 230 , height: 60}}>
                         <TouchableHighlight onPress={
                             () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email, contatoImg: conversa.img})
@@ -72,12 +74,14 @@ class Conversas extends Component {
             return (
                 <View>
                     <View style={{flex: 1, flexDirection: 'row'}}>
-                        <View>
+                    <TouchableHighlight onPress={
+                            () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email, contatoImg: conversa.img})
+                        }>
                             <Image
                             style={styles.uploadImage}
                             source={{ uri: conversa.img}}
                             />
-                        </View>
+                        </TouchableHighlight>
                         <View style={{marginLeft: 10, marginTop: 15, width: 230 , height: 60}}>
                             <TouchableHighlight onPress={
                                 () => Actions.conversa({title: conversa.nome, contatoNome: conversa.nome, contatoEmail: conversa.email, contatoImg: conversa.img})

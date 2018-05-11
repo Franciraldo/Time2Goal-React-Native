@@ -282,7 +282,7 @@ const doTruncarStr = (str, size) => {
 
 export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, usuario, hora_atual, data_atual, link, avaliacaoAction) => {
     let shortText = doTruncarStr(mensagem, 28);
-    console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, shortText, hora_atual, data_atual, link, avaliacaoAction})
+    //console.log('dados enviarMensagem:', {mensagem, contatoNome, contatoEmail, contatoImg, usuario, shortText, hora_atual, data_atual, link, avaliacaoAction})
     return dispatch => {
 
         //conversão para base 64
@@ -291,10 +291,10 @@ export const enviarMensagem = (mensagem, contatoNome, contatoEmail, contatoImg, 
 
         firebase.auth().onAuthStateChanged((user) => {
             firebase.database().ref(`/mensagens/${usuarioEmailB64}/${contatoEmailB64}`)
-            .push({mensagem, tipo: 'e', hora_atual, data_atual, link, avaliacaoAction})
+            .push({mensagem, tipo: 'e', hora_atual, data_atual, link, avaliacaoAction, checkAvaliacao:false})
             .then(() => {
                 firebase.database().ref(`/mensagens/${contatoEmailB64}/${usuarioEmailB64}`)
-                .push({mensagem, tipo: 'r', hora_atual, data_atual, link, avaliacaoAction})
+                .push({mensagem, tipo: 'r', hora_atual, data_atual, link, avaliacaoAction, checkAvaliacao: false})
                 .then(() => {
                     // Armazenar o cabeçalho de conversa do usuário autenticado
                     firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}/${contatoEmailB64}`)
@@ -328,13 +328,13 @@ export const conversaUsuarioFetch = contatoEmail => {
 
 export const conversasUsuarioFetch = (email) => {
     return dispatch => {
-        console.log('conversasUsuarioFetch: ', email)
+        //console.log('conversasUsuarioFetch: ', email)
         let usuarioEmailB64 = b64.encode(email);
         console.log('usuarioEmailB64: ', usuarioEmailB64)
 
         firebase.database().ref(`/usuario_conversas/${usuarioEmailB64}`)
             .on("value", snapshot => { 
-                console.log('conversasUsuarioFetch snapshot', _.values(snapshot.val()))
+                //console.log('conversasUsuarioFetch snapshot', _.values(snapshot.val()))
                 dispatch({ type: LISTA_CONVERSAS_USUARIO, payload: _.values(snapshot.val()) })
             })
     }

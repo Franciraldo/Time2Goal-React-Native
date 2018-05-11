@@ -11,10 +11,12 @@ export const modificarRating = (rating) => {
     }
 }
 
-export const setAvaliacao = (email, nome, alunoNome, alunoEmail, rating) => {
+export const setAvaliacao = (email, nome, alunoNome, alunoEmail, rating, uidConversa) => {
     return dispatch => {
         let mentorEmailB64 = b64.encode(email);
-        let alunoEmailB64 = b64.encode(alunoEmail);        
+        let alunoEmailB64 = b64.encode(alunoEmail);     
+        
+        console.log()
         
         firebase.database().ref(`/mentores/ ${mentorEmailB64}`)
         .once('value', snapshot => { 
@@ -23,6 +25,7 @@ export const setAvaliacao = (email, nome, alunoNome, alunoEmail, rating) => {
         })
 
         firebase.database().ref(`/avaliacao/${mentorEmailB64}/${alunoEmailB64}`).child('nota').set(rating)
+        firebase.database().ref(`/mensagens/${alunoEmailB64}/${mentorEmailB64}/${uidConversa}`).child('checkAvaliacao').set(true)
 
 
         
@@ -35,7 +38,9 @@ export const setAvaliacao = (email, nome, alunoNome, alunoEmail, rating) => {
 
 export const getDadosMentor = (email) => {
     return dispatch => {
-        let mentorEmailB64 = b64.encode(email)        
+        let mentorEmailB64 = b64.encode(email)
+        console.log('getDadosMentor: ', email)
+        console.log('getDadosMentor: ', mentorEmailB64)        
         firebase.database().ref(`/mentores/ ${mentorEmailB64}`)
         .once('value', snapshot => { 
             console.log('Dados Mentor2: ', snapshot.val())

@@ -44,7 +44,7 @@ class GerenciarVideosScreen extends React.Component {
     console.log('GerenciarVideosScreen componentWillReceiveProps: ', nextProps)
   }
   renderItem = ({item}) => {
-    console.log('renderItem: ', item);
+    //console.log('renderItem: ', item);
     return (
       <TouchableHighlight onPress={() => {      
         Actions.playerVideo({uri: item.uri, thumbnail: item.thumbnail})
