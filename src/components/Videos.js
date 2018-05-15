@@ -29,7 +29,7 @@ class Videos extends Component {
       }
 
       renderItem = ({item}) => {
-        //console.log('renderItem: ', item);
+        console.log('Videos renderItem: ', item);
         return (
           <TouchableHighlight onPress={() => {      
             Actions.playerVideo({uri: item.uri, thumbnail: item.thumbnail})

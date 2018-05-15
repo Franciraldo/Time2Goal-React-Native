@@ -44,7 +44,7 @@ class GerenciarVideosScreen extends React.Component {
     console.log('GerenciarVideosScreen componentWillReceiveProps: ', nextProps)
   }
   renderItem = ({item}) => {
-    //console.log('renderItem: ', item);
+    console.log('renderItem: ', item);
     return (
       <TouchableHighlight onPress={() => {      
         Actions.playerVideo({uri: item.uri, thumbnail: item.thumbnail})
@@ -167,6 +167,8 @@ class GerenciarVideosScreen extends React.Component {
                                       
                                       
                                         this.props.uploadVideos(response, this.props.usuario, select_type_video, titulo)
+                                        this.props.modificarTitulo('');
+                                        this.props.modificarTypeVideo('free');
                                     }
                                   });
                                 }else{

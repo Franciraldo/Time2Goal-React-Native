@@ -260,13 +260,13 @@ export const autenticarUsuario = (email, senha) => {
 
 const salvarDatavaseDados = (dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64) => {
     
-    firebase.database().ref(`/contatos/ ${emailB64}`).set({
+    firebase.database().ref(`/contatos/${emailB64}`).set({
         nome,
         email,
         img
     })
     console.log('salvarDatabaseDados', {dispatch, nome, email, descricao, img, mentoring, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, id,  emailB64})   
-    let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
+    let usuario = firebase.database().ref(`/usuarios/${emailB64}` ).set({
         nome: nome !== undefined ? nome : '',
         email: email,
         descricao: descricao !== undefined ? descricao : '',
@@ -317,7 +317,7 @@ export const UpdateDados = (nome, email, descricao, img, cpf, titularCartao, num
         dispatch({type: UPDATE_DADOS_EM_ANDAMENTO})
         var emailB64 = b64.encode(email);
         console.log('UpdateDados: ', {nome, email, descricao, img, cpf, titularCartao, numeroCartao, validade, cvv, dataNascimento, cep, endereco, pais, premium, navigation})
-        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
+        let usuario = firebase.database().ref(`/usuarios/${emailB64}` ).set({
                 nome: nome ,
                 email: email,
                 descricao: descricao,
@@ -341,7 +341,7 @@ export const habilitarPremiumSideBar = (bool, email) => {
     return dispatch => {
         console.log('habilitarPremiumSideBar', {bool, email})
         var emailB64 = b64.encode(email);
-        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).child('premium').set(bool)
+        let usuario = firebase.database().ref(`/usuarios/${emailB64}` ).child('premium').set(bool)
     }
 }
 
@@ -366,7 +366,7 @@ export const UpdateImg = (img, email) => {
                     .getDownloadURL().then((url) => {
                         console.log('url: ', url)
                         
-                        let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` ).set({
+                        let usuario = firebase.database().ref(`/usuarios/${emailB64}` ).set({
                             img: url,
                         })
                         updateDadosSucesso(dispatch, navigation)
@@ -397,7 +397,7 @@ export const autenticarFacebook = (nome, email, id, url) => {
             console.log('autenticarFacebookMetod', {nome, email, id, url})
             var emailB64 = b64.encode(email);
         
-            let usuario = firebase.database().ref(`/usuarios/ ${emailB64}` )
+            let usuario = firebase.database().ref(`/usuarios/${emailB64}` )
             usuario.once('value', (snapshot) => {
                 console.log('USUARIO: ', snapshot.val())
                 if(snapshot.val() !== null){
@@ -423,7 +423,7 @@ const loginUsuarioSucesso = (dispatch, emailB64) => {
     );
     console.log('loginUsuarioSucesso: ', emailB64)
 
-    firebase.database().ref(`/usuarios/ ${emailB64}`)
+    firebase.database().ref(`/usuarios/${emailB64}`)
         .on("value", snapshot => { 
            
             dispatch({ type: USER_SIDEBAR , payload: snapshot.val() })
@@ -439,7 +439,7 @@ const loginUsuarioSucesso = (dispatch, emailB64) => {
 export const getUsuarioLogado = (email) => {
     return (dispatch) => {
         var emailB64 = b64.encode(email);
-        firebase.database().ref(`/usuarios/ ${emailB64}`)
+        firebase.database().ref(`/usuarios/${emailB64}`)
         .on("value", snapshot => { 
            
             dispatch({ type: USER_SIDEBAR , payload: snapshot.val() })

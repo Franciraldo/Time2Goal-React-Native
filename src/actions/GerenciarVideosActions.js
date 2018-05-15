@@ -9,8 +9,6 @@ import RNThumbnail from 'react-native-thumbnail';
 
 const fs = RNFetchBlob.fs
 const Blob = RNFetchBlob.polyfill.Blob
-const testVideoName = `time2goal-${Platform.OS}-${new Date()}.MOV`
-const testImageName = `time2goal-${Platform.OS}-${new Date()}.jpg`
 
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
@@ -65,9 +63,12 @@ export const uploadVideos = (dados, usuario, type, titulo) => {
     return (dispatch) => {
         dispatch({type: LOADING_UPLOAD_VIDEO, payload: true})
         var emailB64 = b64.encode(usuario.email);
+        let tituloB64 = b64.encode(titulo);
+        let testVideoName = `time2goal-${tituloB64}-${new Date()}.MP4`
+        let testImageName = `time2goal-${tituloB64}-${new Date()}.jpg`
         firebase.auth().onAuthStateChanged((user) => {
             console.log('onAuthStateChanged: ', user)
-            console.log('dados: ', { dados, usuario, type })
+            console.log('dados: ', { dados, usuario, type, titulo })
             
             let rnfbURI = RNFetchBlob.wrap(dados.origURL)
             // create Blob from file path
@@ -106,17 +107,16 @@ export const uploadVideos = (dados, usuario, type, titulo) => {
                                             })
                                             .then(() => {                            
                                             imageRef.getDownloadURL().then((url) => {                                          
-                                                firebase.database().ref(`videos/${type}/${uidVideos}`).set({                                
+                                                firebase.database().ref(`videos/${type}/${titulo}`).set({                                
                                                     email_mentor: usuario.email,
-                                                    uri: urlVideo,
                                                     thumbnail: url,
                                                     titulo,
                                                 })
                                                 firebase.database().ref(`videos_mentor/${emailB64}/${type}`).push().set({                                    
                                                     uri: urlVideo,
-                                                    uidVideos,
                                                     thumbnail: url,
                                                     titulo,
+                                                    type: type,
                                                 })
                                                 Alert.alert(
                                                     'Sucesso',

@@ -295,7 +295,7 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
                                             imageRef.getDownloadURL().then((url) => {                                          
                                                 var url2 = url;
                                                 console.log('url2: ', url)
-                                                let mentore = firebase.database().ref(`/mentores/ ${emailB64}` ).set({
+                                                let mentore = firebase.database().ref(`/mentores/${emailB64}` ).set({
                                                         img: img,
                                                         nome: nome,
                                                         email: email,
@@ -311,9 +311,17 @@ export const enviarFormMentoring = (nome, email, descricao_profissional, agencia
                                                         valor_hora: valor_mentor,
                                                         qtd_alunos: 0,
 
-                                                })  
+                                                })
                                                 
-                                                let usuario = firebase.database().ref(`/usuarios/ ${emailB64}`).child('mentoring').set(true)
+                                                let lista_mentores = firebase.database().ref(`/lista_mentores/${nome}` ).set({
+                                                        img: img,
+                                                        nome: nome,
+                                                        email: email,
+                                                        categoria_mentoria: categoria_mentoria,
+                                                        mentoring: false,
+                                                })
+                                                
+                                                let usuario = firebase.database().ref(`/usuarios/${emailB64}`).child('mentoring').set(true)
                                                 let day = formatDate()
                                                 console.log('enviarFormMentoring day: ', day)
                                                 let agendaMentor = firebase.database().ref(`/agenda_mentores/${emailB64}`).child('agenda').child(`${day}`).set({

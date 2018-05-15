@@ -116,7 +116,7 @@ export const adicionaContato = (email) => {
     
     return dispatch => {
         let emailB64 = b64.encode(email);
-        firebase.database().ref(`/contatos/ ${emailB64}` )
+        firebase.database().ref(`/contatos/${emailB64}` )
         .on('value')
         .then(snapshot => { 
             if(snapshot.val()){
@@ -129,7 +129,7 @@ export const adicionaContato = (email) => {
                 const { currentUser } = firebase.auth();
                 let emailUsuarioB64 = b64.encode(currentUser.email)
                 
-                firebase.database().ref(`/usuario_contatos/ ${emailUsuarioB64}` )
+                firebase.database().ref(`/usuario_contatos/${emailUsuarioB64}` )
                 .push({ email, nome: dadosUsuario[0].nome })
                 .then(() => adicionaContatoSucesso(dispatch))
                 .catch(erro => adicionaContatoErro(erro.message, dispatch))
