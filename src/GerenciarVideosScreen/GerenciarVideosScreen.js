@@ -1,10 +1,10 @@
 import React from "react";
-import { AppRegistry, Alert, StyleSheet, View, TouchableHighlight, Picker, ActivityIndicator, Image, FlatList, Dimensions } from "react-native";
+import { AppRegistry, Alert, StyleSheet, TextInput, View, TouchableHighlight, Picker, ActivityIndicator, Image, FlatList, Dimensions } from "react-native";
 import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, Icon, Button, Text } from "native-base";
 import { StackNavigator } from "react-navigation";
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import {connect} from 'react-redux';
-import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium } from '../actions/GerenciarVideosActions';
+import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium, modificarTitulo } from '../actions/GerenciarVideosActions';
 import RNFetchBlob from 'react-native-fetch-blob'
 import VideoPlayer from 'react-native-video-player';
 import _ from 'lodash';
@@ -128,9 +128,12 @@ class GerenciarVideosScreen extends React.Component {
     return (
       <Container>
         <Content padder style={styles.container}>
-              <PopupDialog height= {250} dialogTitle={<DialogTitle titleStyle={styles.DialogTitle} titleTextStyle={{color: 'white'}} title="Tipo de Video" />} dialogAnimation={this.slideAnimation}  dialogStyle={{backgroundColor: '#2b2a29'}} ref={(popupDialog) => { this.popupDialog = popupDialog; }}>          
-                          <View zIndex={1} style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', bottom: 10, top: 5}}>
-                              <View style={{ flex: 1, flexDirection: 'column' }}>
+              <PopupDialog height= {350} dialogTitle={<DialogTitle titleStyle={styles.DialogTitle} titleTextStyle={{color: 'white'}} title="Upload de Video" />} dialogAnimation={this.slideAnimation}  dialogStyle={{backgroundColor: '#2b2a29'}} ref={(popupDialog) => { this.popupDialog = popupDialog; }}>          
+                          <View zIndex={1} style={{ flex: 2, flexDirection: 'column', justifyContent: 'center', alignItems:'center'}}>
+                                <TextInput value={this.props.titulo} style={styles.textInput} placeholderTextColor='#fff' placeholder='Título do Video' onChangeText={texto => this.props.modificarTitulo(texto)}/>
+                                <View style={styles.linha}></View>
+                          </View>
+                          <View zIndex={0} style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', marginBottom: 50}}>
                                   <Picker
                                     selectedValue={ this.props.select_type_video }
                                     onValueChange={ type => this.props.modificarTypeVideo(type) }>
@@ -138,12 +141,13 @@ class GerenciarVideosScreen extends React.Component {
                                     <Picker.Item color='#fff' label="free" value="free" />
                                     <Picker.Item color='#fff' label="premium" value="premium" />
                                   </Picker>
-                              </View>
-                          </View>
+                            </View>
+
                           <View zIndex={2} style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
                               <TouchableHighlight style={styles.btn} onPress={() => {
-                                console.log('select_type_video: ', this.props.select_type_video);
-                                if(this.props.select_type_video != ''){
+                                let {select_type_video, titulo} = this.props;
+                                console.log('select_type_video: ', { select_type_video, titulo});
+                                if(select_type_video != '' && titulo != '' && titulo != undefined){
                                   ImagePicker.showImagePicker(options, (response) => {
                                     if (response.didCancel) {
                                       console.log('User cancelled image picker');
@@ -162,14 +166,18 @@ class GerenciarVideosScreen extends React.Component {
                                       console.log('Response = ', response);
                                       
                                       
-                                        this.props.uploadVideos(response, this.props.usuario, this.props.select_type_video)
-                                    
-                                      
-                                      
+                                        this.props.uploadVideos(response, this.props.usuario, select_type_video, titulo)
                                     }
                                   });
                                 }else{
-                                  alert('por favor selecione um tipo')
+                                  Alert.alert(
+                                    'Atenção',
+                                    'Os campos Titulo e Tipo de Video são obrigatorios. Por Favor informe os campos!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                    ],
+                                    { cancelable: false }
+                                  )
                                 }                                
                                 this.popupDialog.dismiss()
                               } }>
@@ -231,6 +239,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     width: 250
+},
+linha: {
+  backgroundColor: 'white',
+  width: 300,
+  height: 2
+},
+textInput: { 
+  color: '#fff', 
+  width: 300, 
+  backgroundColor: 'black',
+  opacity: 0.5, 
+  fontSize: 20, 
+  height: 45,
 },
 itemImage:{
   width: itemWidth,
@@ -295,7 +316,8 @@ const mapStateToProps = state => {
       loadin_upload: state.GerenciarVideosReducer.loadin_upload,
       lista_videos_free: state.GerenciarVideosReducer.lista_videos_free,
       lista_videos_premium: state.GerenciarVideosReducer.lista_videos_premium,
+      titulo: state.GerenciarVideosReducer.titulo,
     })
   }
 
-export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium})(GerenciarVideosScreen)
+export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium, modificarTitulo})(GerenciarVideosScreen)

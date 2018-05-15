@@ -4,7 +4,7 @@ import { Actions } from 'react-native-router-flux';
 import b64 from 'base-64';
 import _ from 'lodash';
 import { Platform, Alert } from 'react-native';
-import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO, LOADING_UPLOAD_VIDEO, LISTA_VIDEOS_FREE_MENTOR, LISTA_VIDEOS_PREMIUM_MENTOR } from './types';
+import { ABRIR_POPUP_GERENCIAR_VIDEOS, SELECTED_TYPE_VIDEO, LOADING_UPLOAD_VIDEO, LISTA_VIDEOS_FREE_MENTOR, LISTA_VIDEOS_PREMIUM_MENTOR, MODIFICAR_TITULO_VIDEO, } from './types';
 import RNThumbnail from 'react-native-thumbnail';
 
 const fs = RNFetchBlob.fs
@@ -14,6 +14,13 @@ const testImageName = `time2goal-${Platform.OS}-${new Date()}.jpg`
 
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
+
+export const modificarTitulo = (texto) => {
+    return {
+        type: MODIFICAR_TITULO_VIDEO, 
+        payload: texto,
+    }
+}
 
 export const checkpopup = (bool) => {
     console.log('checkpopup: ', bool)
@@ -54,7 +61,7 @@ export const getVideosMentorPremium = (email) => {
     }
 }
 
-export const uploadVideos = (dados, usuario, type) => {
+export const uploadVideos = (dados, usuario, type, titulo) => {
     return (dispatch) => {
         dispatch({type: LOADING_UPLOAD_VIDEO, payload: true})
         var emailB64 = b64.encode(usuario.email);
@@ -102,12 +109,14 @@ export const uploadVideos = (dados, usuario, type) => {
                                                 firebase.database().ref(`videos/${type}/${uidVideos}`).set({                                
                                                     email_mentor: usuario.email,
                                                     uri: urlVideo,
-                                                    thumbnail: url
+                                                    thumbnail: url,
+                                                    titulo,
                                                 })
                                                 firebase.database().ref(`videos_mentor/${emailB64}/${type}`).push().set({                                    
                                                     uri: urlVideo,
                                                     uidVideos,
-                                                    thumbnail: url
+                                                    thumbnail: url,
+                                                    titulo,
                                                 })
                                                 Alert.alert(
                                                     'Sucesso',
