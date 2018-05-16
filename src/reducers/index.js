@@ -12,9 +12,11 @@ import MentoringReducer from './MentoringReducer';
 import ProfileMentorReducer from './ProfileMentorReducer';
 import GerenciarVideosReducer from './GerenciarVideosReducer';
 import AvaliacaoReducer from './AvaliacaoReducer';
+import BuscaReducer from './BuscaReducer.js'
 
 
 export default combineReducers({
+    BuscaReducer,
     AuthenticacaoReducer,
     AvaliacaoReducer,
     AppReducer,

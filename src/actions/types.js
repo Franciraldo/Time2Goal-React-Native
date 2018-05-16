@@ -88,3 +88,6 @@ export const LISTA_VIDEOS_FREE_ALL = 'lista_videos_free_all';
 export const LISTA_VIDEOS_PREMIUM_ALL = 'lista_videos_premium_all';
 export const LOADING_VIDEO_ALL = 'loading_video_all';
 export const MODIFICAR_TITULO_VIDEO = 'modificar_titulo_video';
+export const LISTA_BUSCA = 'lista_busca';
+export const MODIFICAR_FILTROS_PESQUISA = 'modificar_filtros_pesquisa';
+export const MODIFICAR_TEXTO_PESQUISA = 'modificar_texto_pesquisa';

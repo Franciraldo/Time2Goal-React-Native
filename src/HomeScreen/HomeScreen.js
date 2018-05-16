@@ -63,7 +63,7 @@ class HomeScreen extends React.Component {
           </Body>
           <Right>
             <Button transparent
-              onPress={() => Actions.adicionarContato() }  underlayColor="transparent">
+              onPress={() => Actions.busca() }  underlayColor="transparent">
               <Icon style={styles.icon} name="ios-search" />
             </Button>
           </Right>

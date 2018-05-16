@@ -4,7 +4,7 @@ import { Router, Scene } from 'react-native-router-flux';
 import HomeScreen from "./HomeScreen/index.js";
 import FormLogin from './components/FormLogin';
 import FormCadastro from './components/FormCadastro';
-import AdicionarContato from './components/AdicionarContato';
+import Busca from './components/Busca';
 import Conversa from './components/Conversa';
 import CameraView from './components/CameraView';
 import formComplement from './components/FormComplement';
@@ -20,7 +20,7 @@ export default props => (
         <Scene key='formLogin' component={FormLogin} tabTitle="Login" hideNavBar={true} initial/>
         <Scene key='formCadastro' component={FormCadastro} title="Cadastro" hideNavBar={false}/>
         <Scene key='principal' component={HomeScreen} tabTitle="Principal" hideNavBar={true} />
-        <Scene key='adicionarContato' component={AdicionarContato} tabTitle="Adicionar Contato" hideNavBar={false} />
+        <Scene key='busca' component={Busca} tabTitle="Pesquisa" hideNavBar={false} />
         <Scene key='conversa' component={Conversa} tabTitle="Conversa" hideNavBar={false} />
         <Scene key='formComplement' component={formComplement} tabTitle="Cadastro(Completo)" hideNavBar={false}/>
         <Scene key='camera' component={CameraView} tabTitle="Cam" hideNavBar={true} />
