@@ -4,12 +4,13 @@ import { LISTA_BUSCA, MODIFICAR_FILTROS_PESQUISA, MODIFICAR_TEXTO_PESQUISA } fro
 const INITIAL_STATE = { 
     texto_pesquisa: '',
     tipo_pesquisa: '',
+    lista_busca: '',
 }
 
 export default (state = INITIAL_STATE, action) => {
     switch(action.type) { 
         case LISTA_BUSCA:
-            return action.payload  
+            return { ...state, lista_busca: action.payload }    
         case MODIFICAR_TEXTO_PESQUISA:
             return { ...state, texto_pesquisa: action.payload }  
         case MODIFICAR_FILTROS_PESQUISA:

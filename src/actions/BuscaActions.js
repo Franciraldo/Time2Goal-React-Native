@@ -13,28 +13,33 @@ export const modificarTextoPesquisa = (texto, tipo_pesquisa) => {
         if(texto !== ''){
             switch(tipo_pesquisa) {
                 case 'mentor':
-                    db.ref('lista_mentores').orderByChild("nome").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
+                    db.ref('mentores').orderByChild("nome").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
                         console.log('snapshot: ', snapshot.val())
+                        dispatch({ type: LISTA_BUSCA, payload: snapshot.val()});
                     })
                     break;
                 case 'videos_free':
                     db.ref('videos/free').orderByChild("titulo").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
                         console.log('snapshot: ', snapshot.val())
+                        dispatch({ type: LISTA_BUSCA, payload: snapshot.val()});
                     })
                     break;
                 case 'videos_premium':                
                     db.ref('videos/premium').orderByChild("titulo").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
                         console.log('snapshot: ', snapshot.val())
+                        dispatch({ type: LISTA_BUSCA, payload: snapshot.val()});
                     })
                     break;
                 case 'categorias':
-                    db.ref('lista_mentores').orderByChild("categoria_mentoria").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
+                    db.ref('mentores').orderByChild("categoria_mentoria").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
                         console.log('snapshot: ', snapshot.val())
+                        dispatch({ type: LISTA_BUSCA, payload: snapshot.val()});    
                     })
                     break;
                 default:
-                    db.ref('lista_mentores').orderByChild("nome").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
+                    db.ref('mentores').orderByChild("nome").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
                         console.log('snapshot: ', snapshot.val())
+                        dispatch({ type: LISTA_BUSCA, payload: snapshot.val()});
                     })
                 break;
             }
