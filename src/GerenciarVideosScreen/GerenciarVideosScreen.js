@@ -4,7 +4,7 @@ import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, I
 import { StackNavigator } from "react-navigation";
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import {connect} from 'react-redux';
-import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium, modificarTitulo } from '../actions/GerenciarVideosActions';
+import { checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium, modificarTitulo, deleteVideo } from '../actions/GerenciarVideosActions';
 import RNFetchBlob from 'react-native-fetch-blob'
 import VideoPlayer from 'react-native-video-player';
 import _ from 'lodash';
@@ -31,13 +31,12 @@ class GerenciarVideosScreen extends React.Component {
   componentDidMount() {
     this.props.navigation.setParams({ popupDialog: this.popupDialog });
     console.log('GerenciarVideosScreen componentDidMount: ', this.props); 
-    const { email } = this.props.usuario;
-    this.props.getVideosMentorFree(email);
-    this.props.getVideosMentorPremium(email);
-    
   }
   componentWillMount() {
     console.log('GerenciarVideosScreen componentWillMount: ', this.props)
+    const { email } = this.props.usuario;
+    this.props.getVideosMentorFree(email);
+    this.props.getVideosMentorPremium(email);
         
   }
   componentWillReceiveProps(nextProps){
@@ -48,6 +47,17 @@ class GerenciarVideosScreen extends React.Component {
     return (
       <TouchableHighlight onPress={() => {      
         Actions.playerVideo({uri: item.uri, thumbnail: item.thumbnail})
+      }} onLongPress={() => {
+        Alert.alert(
+          'Atenção',
+          'Você tem certeza que gostaria de excluir o video ?',
+          [
+            {text: 'Sim', onPress: () => this.props.deleteVideo(item)},
+            {text: 'Não', onPress: () => false, style: 'cancel'},
+          ],
+          { cancelable: false }
+        )
+        
       }}>
           <Image source={{uri: item.thumbnail}} style={styles.itemImage} />
         </TouchableHighlight>
@@ -322,4 +332,4 @@ const mapStateToProps = state => {
     })
   }
 
-export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium, modificarTitulo})(GerenciarVideosScreen)
+export default connect(mapStateToProps, {checkpopup, modificarTypeVideo, uploadVideos, getVideosMentorFree, getVideosMentorPremium, modificarTitulo, deleteVideo})(GerenciarVideosScreen)
