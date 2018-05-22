@@ -149,6 +149,7 @@ export const uploadVideos = (dados, usuario, type, titulo) => {
                                                 videos.push().set({                                
                                                     email_mentor: usuario.email,
                                                     thumbnail: url,
+                                                    uri: urlVideo,
                                                     titulo,
                                                 }).then(() => {
                                                     videos.once('child_added', function(data) {
