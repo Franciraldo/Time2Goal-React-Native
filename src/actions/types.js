@@ -91,3 +91,7 @@ export const MODIFICAR_TITULO_VIDEO = 'modificar_titulo_video';
 export const LISTA_BUSCA = 'lista_busca';
 export const MODIFICAR_FILTROS_PESQUISA = 'modificar_filtros_pesquisa';
 export const MODIFICAR_TEXTO_PESQUISA = 'modificar_texto_pesquisa';
+export const BACKGROUND_COLOR_MENTORES = 'background_color_mentores';
+export const BACKGROUND_COLOR_FREE_VIDEOS = 'background_color_free_videos';
+export const BACKGROUND_COLOR_PREMIUM_VIDEOS = 'background_color_premium_videos';
+export const BACKGROUND_COLOR_CATEGORIAS = 'background_color_categorias';

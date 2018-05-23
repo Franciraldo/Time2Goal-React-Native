@@ -20,7 +20,7 @@ export default props => (
         <Scene key='formLogin' component={FormLogin} tabTitle="Login" hideNavBar={true} initial/>
         <Scene key='formCadastro' component={FormCadastro} title="Cadastro" hideNavBar={false}/>
         <Scene key='principal' component={HomeScreen} tabTitle="Principal" hideNavBar={true} />
-        <Scene key='busca' component={Busca} tabTitle="Pesquisa" hideNavBar={false} />
+        <Scene key='busca' component={Busca} title="Busca" hideNavBar={false} />
         <Scene key='conversa' component={Conversa} tabTitle="Conversa" hideNavBar={false} />
         <Scene key='formComplement' component={formComplement} tabTitle="Cadastro(Completo)" hideNavBar={false}/>
         <Scene key='camera' component={CameraView} tabTitle="Cam" hideNavBar={true} />

@@ -3,7 +3,7 @@ import { Actions } from 'react-native-router-flux';
 import b64 from 'base-64';
 import _ from 'lodash';
 
-import { LISTA_BUSCA, MODIFICAR_FILTROS_PESQUISA, MODIFICAR_TEXTO_PESQUISA } from './types';
+import { LISTA_BUSCA, MODIFICAR_FILTROS_PESQUISA, MODIFICAR_TEXTO_PESQUISA, BACKGROUND_COLOR_MENTORES, BACKGROUND_COLOR_FREE_VIDEOS, BACKGROUND_COLOR_PREMIUM_VIDEOS, BACKGROUND_COLOR_CATEGORIAS } from './types';
 
 export const modificarTextoPesquisa = (texto, tipo_pesquisa) => {
     return (dispatch) => {
@@ -32,8 +32,7 @@ export const modificarTextoPesquisa = (texto, tipo_pesquisa) => {
                     break;
                 case 'categorias':
                     db.ref('mentores').orderByChild("categoria_mentoria").startAt(`${texto}`).endAt(`${texto}\uf8ff`).on('value', function(snapshot){
-                        console.log('snapshot: ', snapshot.val())
-                        dispatch({ type: LISTA_BUSCA, payload: snapshot.val()});    
+                        console.log('snapshot: ', snapshot.val())   
                     })
                     break;
                 default:
@@ -48,8 +47,37 @@ export const modificarTextoPesquisa = (texto, tipo_pesquisa) => {
     };
 }
 export const modificarFiltrosPesquisa = (texto) => {
-    return {
-        type: MODIFICAR_FILTROS_PESQUISA,
-        payload: texto
+    return (dispatch) => {
+        dispatch({ type: MODIFICAR_FILTROS_PESQUISA, payload: texto});
+        switch(texto) {
+            case 'mentor':
+                dispatch({ type: BACKGROUND_COLOR_MENTORES, payload: '#fc7220'});
+                dispatch({ type: BACKGROUND_COLOR_FREE_VIDEOS, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_PREMIUM_VIDEOS, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_CATEGORIAS, payload: 'transparent'});
+                break;
+            case 'videos_free':
+                dispatch({ type: BACKGROUND_COLOR_MENTORES, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_FREE_VIDEOS, payload: '#fc7220'});
+                dispatch({ type: BACKGROUND_COLOR_PREMIUM_VIDEOS, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_CATEGORIAS, payload: 'transparent'});
+                break;
+            case 'videos_premium':                
+                dispatch({ type: BACKGROUND_COLOR_MENTORES, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_FREE_VIDEOS, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_PREMIUM_VIDEOS, payload: '#fc7220'});
+                dispatch({ type: BACKGROUND_COLOR_CATEGORIAS, payload: 'transparent'});
+                break;
+            case 'categorias':
+                dispatch({ type: BACKGROUND_COLOR_MENTORES, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_FREE_VIDEOS, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_PREMIUM_VIDEOS, payload: 'transparent'});
+                dispatch({ type: BACKGROUND_COLOR_CATEGORIAS, payload: '#fc7220'});   
+                break;
+            default:
+                
+            break;
+        }
+        
     }
 }

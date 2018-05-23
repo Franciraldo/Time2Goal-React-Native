@@ -112,6 +112,7 @@ class Busca  extends Component {
     }
 
     render() {
+        const {backgroundColorMentores, backgroundColorFreeVideos, backgroundColorPremiumVideos, backgroundColorCategoria } = this.props;
         return (
             <View style={styles.container}>
                 <View style={{flex: 2}}>
@@ -127,21 +128,21 @@ class Busca  extends Component {
                         </View> 
                     </View>
                     <View zIndex={0} style={{marginTop: 65, height: 45, flexDirection: 'row', backgroundColor: 'black'}}>
-                        <Button transparent
+                        <Button transparent 
                             onPress={() => this.props.modificarFiltrosPesquisa('mentor') }  underlayColor="transparent">
-                            <Text style={{padding: 10, color: '#fff', fontSize: 12}}>Mentores</Text>
+                            <Text style={{padding: 10, color: '#fff', fontSize: 12, backgroundColor: backgroundColorMentores}}>Mentores</Text>
                         </Button>
                         <Button transparent
                             onPress={() => this.props.modificarFiltrosPesquisa('videos_free') }  underlayColor="transparent">
-                            <Text style={{padding: 10, color: '#fff', fontSize: 12}}>Videos Free</Text>
+                            <Text style={{padding: 10, color: '#fff', fontSize: 12, backgroundColor: backgroundColorFreeVideos}}>Videos Free</Text>
                         </Button>
                         <Button transparent
                             onPress={() => this.props.modificarFiltrosPesquisa('videos_premium') }  underlayColor="transparent">
-                            <Text style={{padding: 10, color: '#fff', fontSize: 12}}>Videos Premium</Text>
+                            <Text style={{padding: 10, color: '#fff', fontSize: 12, backgroundColor: backgroundColorPremiumVideos}}>Videos Premium</Text>
                         </Button>
                         <Button transparent
                             onPress={() => this.props.modificarFiltrosPesquisa('categorias') }  underlayColor="transparent">
-                            <Text style={{padding: 10, color: '#fff', fontSize: 12}}>Categorias</Text>
+                            <Text style={{padding: 10, color: '#fff', fontSize: 12, backgroundColor: backgroundColorCategoria}}>Categorias</Text>
                         </Button>
                     </View>
                     {this.renderListViewOrFlatList()}
@@ -190,6 +191,12 @@ const styles = StyleSheet.create({
         height: 80,
         borderRadius: 40  
     },
+    btn_select: {
+        padding: 10, color: '#fff', fontSize: 12, backgroundColor: '#fc7220'
+    },
+    btn_deselect: {
+        padding: 10, color: '#fff', fontSize: 12, backgroundColor: 'transparent'
+    },
     btn:{
         width: 40,
         height: 40,
@@ -204,6 +211,10 @@ const mapStateToProps = state => (
         texto_pesquisa: state.BuscaReducer.texto_pesquisa,
         tipo_pesquisa: state.BuscaReducer.tipo_pesquisa,
         lista_busca: state.BuscaReducer.lista_busca,
+        backgroundColorMentores: state.BuscaReducer.backgroundColorMentores,
+        backgroundColorFreeVideos: state.BuscaReducer.backgroundColorFreeVideos,
+        backgroundColorPremiumVideos: state.BuscaReducer.backgroundColorPremiumVideos,
+        backgroundColorCategoria: state.BuscaReducer.backgroundColorCategoria
     }
 );
 
