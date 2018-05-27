@@ -43,7 +43,7 @@ class GerenciarVideosScreen extends React.Component {
     console.log('GerenciarVideosScreen componentWillReceiveProps: ', nextProps)
   }
   renderItem = ({item}) => {
-    console.log('renderItem: ', item);
+    //console.log('renderItem: ', item);
     return (
       <TouchableHighlight onPress={() => {      
         Actions.playerVideo({uri: item.uri, thumbnail: item.thumbnail})
@@ -140,7 +140,13 @@ class GerenciarVideosScreen extends React.Component {
         <Content padder style={styles.container}>
               <PopupDialog height= {350} dialogTitle={<DialogTitle titleStyle={styles.DialogTitle} titleTextStyle={{color: 'white'}} title="Upload de Video" />} dialogAnimation={this.slideAnimation}  dialogStyle={{backgroundColor: '#2b2a29'}} ref={(popupDialog) => { this.popupDialog = popupDialog; }}>          
                           <View zIndex={1} style={{ flex: 2, flexDirection: 'column', justifyContent: 'center', alignItems:'center'}}>
-                                <TextInput value={this.props.titulo} style={styles.textInput} placeholderTextColor='#fff' placeholder='Título do Video' onChangeText={texto => this.props.modificarTitulo(texto)}/>
+                                <TextInput value={this.props.titulo}
+                                 style={styles.textInput} placeholderTextColor='#fff' placeholder='Título do Video'
+                                 onEndEditing={(e) => 
+                                  {
+                                    this.props.modificarTitulo(e.nativeEvent.text)
+                                  }}
+                                 onChangeText={texto => this.props.modificarTitulo(texto)}/>
                                 <View style={styles.linha}></View>
                           </View>
                           <View zIndex={0} style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', marginBottom: 50}}>
@@ -156,8 +162,9 @@ class GerenciarVideosScreen extends React.Component {
                           <View zIndex={2} style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
                               <TouchableHighlight style={styles.btn} onPress={() => {
                                 let {select_type_video, titulo} = this.props;
-                                console.log('select_type_video: ', { select_type_video, titulo});
-                                if(select_type_video != '' && titulo != '' && titulo != undefined){
+                                this.popupDialog.dismiss()
+                                console.log('dados button confirm: ',{select_type_video, titulo} )
+                                if(select_type_video !== '' && (titulo !== '' || titulo !== undefined)){
                                   ImagePicker.showImagePicker(options, (response) => {
                                     if (response.didCancel) {
                                       console.log('User cancelled image picker');
@@ -191,7 +198,7 @@ class GerenciarVideosScreen extends React.Component {
                                     { cancelable: false }
                                   )
                                 }                                
-                                this.popupDialog.dismiss()
+                                
                               } }>
                                   <Text style={styles.btnText}>Confirmar</Text>
                               </TouchableHighlight>

@@ -78,7 +78,7 @@ export const getVideosMentorFree = (email) => {
         var emailB64 = b64.encode(email);
         firebase.database().ref(`videos_mentor/${emailB64}/free`)
         .on("value", snapshot => {
-            console.log("getVideosMentorFree: ", _.map(snapshot.val()))
+            //console.log("getVideosMentorFree: ", _.map(snapshot.val()))
             dispatch({type: LISTA_VIDEOS_FREE_MENTOR, payload: _.values(snapshot.val())})
         })
     }
@@ -89,7 +89,7 @@ export const getVideosMentorPremium = (email) => {
         var emailB64 = b64.encode(email);
         firebase.database().ref(`videos_mentor/${emailB64}/premium`)
         .on("value", snapshot => {
-            console.log("getVideosMentorPremium: ", _.values(snapshot.val()))
+            //console.log("getVideosMentorPremium: ", _.values(snapshot.val()))
             dispatch({type: LISTA_VIDEOS_PREMIUM_MENTOR, payload: _.values(snapshot.val())})
         })
     }

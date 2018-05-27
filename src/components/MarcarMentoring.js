@@ -11,6 +11,15 @@ import _ from 'lodash';
 const today = new Date()
 const checkout_off = require('../imgs/checked_off.png')
 const checkout_on = require('../imgs/checked_on.png')
+
+LocaleConfig.locales['pt'] = {
+  monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+  monthNamesShort: ['Jan.','Fev.','Mar.','Abr.','Mai.','Jun.','Jul.','Agos.','Set.','Out.','Nov.','Dec.'],
+  dayNames: ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],
+  dayNamesShort: ['Seg.','Ter.','Qua.','Qui.','Sex.','Sab.','Dom.']
+};
+LocaleConfig.defaultLocale = 'pt';
+
 class MarcarMentoring extends React.Component {
   componentDidMount(){
     console.log('MarcarMentoring componentDidMount: ', this.props) 
@@ -76,12 +85,29 @@ class MarcarMentoring extends React.Component {
     
   }
   onDaySelect(day) {
-    console.log('onDaySelect', day)
     const {emailMentor, lista_agenda_horarios} = this.props
     console.log('onDaySelect', { day, emailMentor, lista_agenda_horarios})
-    this.props.modificarSelectDay(day)
-    this.props.getHorarios(emailMentor, day.dateString)
-    this.criaFonteDeDados(lista_agenda_horarios);
+    var mesAtual = new Date().getMonth() + 1;
+    var diaAtual = new Date().getDate();
+    var daySelected = day.day;
+    var mesSelected = day.month;
+
+    if((daySelected >= diaAtual) || (daySelected <  diaAtual && mesSelected > mesAtual)){  
+        this.props.modificarSelectDay(day)
+        this.props.getHorarios(emailMentor, day.dateString)
+        this.criaFonteDeDados(lista_agenda_horarios);
+    }else{
+      Alert.alert(
+        'Atenção',
+        'você não pode selecionar uma data passada.',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+      )
+    }
+      
+    
   }
 
     criaFonteDeDados( lista_agenda_horarios ) {
@@ -147,7 +173,7 @@ class MarcarMentoring extends React.Component {
         return (
               <FlatList
                 data={[
-                  {key: 'Não exisate Horario disponivel para hoje'}
+                  {key: 'Não exisate horário disponivel para hoje'}
                 ]}
                 renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
               />

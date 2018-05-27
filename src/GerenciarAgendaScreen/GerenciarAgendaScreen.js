@@ -2,8 +2,7 @@ import React from "react";
 import { AppRegistry, Alert, View, StyleSheet, TouchableHighlight, Picker, ListView, FlatList, Image } from "react-native";
 import { Container, Header, Left, Body, Title, Card, CardItem, Content, Right, Icon, Button, Text } from "native-base";
 import { StackNavigator } from "react-navigation";
-import {LocaleConfig} from 'react-native-calendars';
-import {Calendar} from 'react-native-calendars';
+import {LocaleConfig, Calendar} from 'react-native-calendars';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
@@ -11,6 +10,14 @@ import { getDaysAgendados, salvarHorario, modificarSelectDay, modificarHoraInici
 const checkout_off = require('../imgs/checked_off.png')
 const checkout_on = require('../imgs/checked_on.png')
 const chat = require('../imgs/chat-icon.png');
+
+LocaleConfig.locales['pt'] = {
+  monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+  monthNamesShort: ['Jan.','Fev.','Mar.','Abr.','Mai.','Jun.','Jul.','Agos.','Set.','Out.','Nov.','Dec.'],
+  dayNames: ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],
+  dayNamesShort: ['Seg.','Ter.','Qua.','Qui.','Sex.','Sab.','Dom.']
+};
+LocaleConfig.defaultLocale = 'pt';
 class GerenciarAgendaScreen extends React.Component {
 
   componentDidMount(){
@@ -50,37 +57,72 @@ class GerenciarAgendaScreen extends React.Component {
   }
   
   _salvarHorario() {
+    var horaAtual = new Date().getHours();
+    var minutoAtual = new Date().getMinutes();
     const { hora_inicial, minuto_inicial, hora_final, minuto_final } = this.props
     const { email } = this.props.usuario
     const day = this.props.selected_day
     
-
-    console.log('_salvarHorario: ', { day, hora_inicial, minuto_inicial, hora_final, minuto_final, email })
+    console.log('_salvarHorario: ', { day, horaAtual, minutoAtual, hora_inicial, minuto_inicial, hora_final, minuto_final, email })
     
     if( hora_inicial != '' && minuto_inicial != ''  && hora_final != '' && minuto_final != ''){
       
-      salvarHorario(day, hora_inicial, hora_final, minuto_inicial, minuto_final, email)
-      this.props.modificarHoraInicial('')
-      this.props.modificarHoraFinal('')
-      this.props.modificarMinutoInicial('')
-      this.props.modificarMinutoFinal('')
+      if(parseInt(hora_inicial) >= horaAtual && parseInt(minuto_inicial) >= minutoAtual && (minuto_inicial != minuto_final) && (hora_inicial < hora_final)){
+        salvarHorario(day, hora_inicial, hora_final, minuto_inicial, minuto_final, email)
+        this.props.modificarHoraInicial('')
+        this.props.modificarHoraFinal('')
+        this.props.modificarMinutoInicial('')
+        this.props.modificarMinutoFinal('')
 
-      this.popupDialog.dismiss()
+        this.popupDialog.dismiss()
+      }else{
+        Alert.alert(
+          'Atenção',
+          'Por favor insira um horário valido.',
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          { cancelable: false }
+        )
+      }
     } else {
-      alert('Por favor informe Horario inicial e horario final')
+      Alert.alert(
+        'Atenção',
+        'Por favor informe Horario inicial e horario final.',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+      )
     }
   }
 
 
 
   onDaySelect(day) {
-
     const {emailMentor, lista_agenda_horarios, usuario} = this.props
-    console.log('onDaySelect', { day, emailMentor, lista_agenda_horarios})
-    this.props.modificarSelectDay(day.dateString)
-    this.props.getHorarios(usuario.email, day.dateString)
-    this.criaFonteDeDados(lista_agenda_horarios);
-    
+      console.log('onDaySelect', { day, emailMentor, lista_agenda_horarios})
+    var mesAtual = new Date().getMonth() + 1;
+    var diaAtual = new Date().getDate();
+    var daySelected = day.day;
+    var mesSelected = day.month;
+    console.log('datas: ', {mesAtual, diaAtual, daySelected, mesSelected})
+
+    if((daySelected >= diaAtual) || (daySelected <  diaAtual && mesSelected > mesAtual)){
+        this.props.modificarSelectDay(day.dateString)
+        this.props.getHorarios(usuario.email, day.dateString)
+        this.criaFonteDeDados(lista_agenda_horarios);
+    }else{
+      Alert.alert(
+        'Atenção',
+        'você não pode selecionar uma data passada.',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+      )
+    }
+
   }
 
     criaFonteDeDados( lista_agenda_horarios ) {
@@ -149,7 +191,7 @@ class GerenciarAgendaScreen extends React.Component {
         return (
               <FlatList
                 data={[
-                  {key: 'você não selecionou horarios para hoje.'}
+                  {key: 'você não selecionou horários para hoje.'}
                 ]}
                 renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
               />
@@ -163,6 +205,7 @@ class GerenciarAgendaScreen extends React.Component {
     const vacation = {key:'vacation', color: 'red', selectedColor: 'blue'};
     const massage = {key:'massage', color: 'blue', selectedColor: 'blue'};
     const workout = {key:'workout', color: 'green'};
+
     return (
       <Container>
         <Content padder style={styles.container}>
