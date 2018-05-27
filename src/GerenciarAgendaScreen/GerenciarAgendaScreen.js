@@ -6,7 +6,7 @@ import {LocaleConfig, Calendar} from 'react-native-calendars';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import PopupDialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
-import { getDaysAgendados, salvarHorario, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios} from '../actions/FormMentoringActions';
+import { getDaysAgendados, salvarHorario, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios, deleteHorarios} from '../actions/FormMentoringActions';
 const checkout_off = require('../imgs/checked_off.png')
 const checkout_on = require('../imgs/checked_on.png')
 const chat = require('../imgs/chat-icon.png');
@@ -131,6 +131,7 @@ class GerenciarAgendaScreen extends React.Component {
   }
 
   renderRow(lista_agenda_horarios, emailMentor) {
+    let {selected_day} = this.props; 
     console.log('lista_agenda_horarios: ', lista_agenda_horarios)
     const day = this.formatDate()
       if(lista_agenda_horarios.bool){
@@ -161,7 +162,19 @@ class GerenciarAgendaScreen extends React.Component {
       }else{
           return (
             <TouchableHighlight onPress={
-                () =>  false}>
+                () =>  false}
+                onLongPress={() => {
+                  Alert.alert(
+                    'Atenção',
+                    'Você tem certeza que gostaria de excluir o horário ?',
+                    [
+                      {text: 'Sim', onPress: () => this.props.deleteHorarios(selected_day, lista_agenda_horarios.uid)},
+                      {text: 'Não', onPress: () => false, style: 'cancel'},
+                    ],
+                    { cancelable: false }
+                  )
+                  
+                }}>
                 <View style={{ flex: 1, flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderColor: "#ccc"}}>
                         <View style={{ flexDirection: 'column', width: 285}}>
                           <Text style={{ fontSize: 16, color: "#fff", backgroundColor: 'transparent'}}>Horario vago</Text>
@@ -465,4 +478,4 @@ const mapStateToProps = state => {
     })
   }
 
-export default connect(mapStateToProps, {salvarHorario, getDaysAgendados, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios})(GerenciarAgendaScreen)
+export default connect(mapStateToProps, {salvarHorario, getDaysAgendados, modificarSelectDay, modificarHoraInicial, modificarHoraFinal, modificarMinutoInicial, modificarMinutoFinal, getHorarios, deleteHorarios})(GerenciarAgendaScreen)

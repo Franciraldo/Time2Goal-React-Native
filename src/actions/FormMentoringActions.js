@@ -135,6 +135,15 @@ export const getDaysAgendados = (email) => {
         }
 }
 
+export const deleteHorarios = (day, uid) => {
+        return (dispatch) => {
+                const { currentUser } = firebase.auth();
+                var emailB64 = b64.encode(currentUser.email);
+                console.log({emailB64, day, uid})
+                firebase.database().ref(`/agenda_horarios_mentores/${emailB64}/${day}`).child(`${uid}`).remove()
+        }
+}
+
 export const getHorarios = (email, day) => {
         return (dispatch) => {
                 var emailB64 = b64.encode(email);
