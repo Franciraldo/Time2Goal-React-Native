@@ -67,7 +67,7 @@ class GerenciarAgendaScreen extends React.Component {
     
     if( hora_inicial != '' && minuto_inicial != ''  && hora_final != '' && minuto_final != ''){
       
-      if(parseInt(hora_inicial) >= horaAtual && parseInt(minuto_inicial) >= minutoAtual && (minuto_inicial != minuto_final) && (hora_inicial < hora_final)){
+      if(parseInt(hora_inicial) >= horaAtual && parseInt(minuto_inicial) >= minutoAtual && parseInt(hora_final) >= parseInt(hora_inicial) && parseInt(minuto_inicial) < parseInt(minuto_final)){
         salvarHorario(day, hora_inicial, hora_final, minuto_inicial, minuto_final, email)
         this.props.modificarHoraInicial('')
         this.props.modificarHoraFinal('')
