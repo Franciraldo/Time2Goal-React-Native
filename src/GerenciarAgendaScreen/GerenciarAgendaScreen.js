@@ -67,7 +67,7 @@ class GerenciarAgendaScreen extends React.Component {
     
     if( hora_inicial != '' && minuto_inicial != ''  && hora_final != '' && minuto_final != ''){
       
-      if(parseInt(hora_inicial) >= horaAtual && parseInt(minuto_inicial) >= minutoAtual && parseInt(hora_final) >= parseInt(hora_inicial) && parseInt(minuto_inicial) < parseInt(minuto_final)){
+      if(parseInt(hora_inicial) >= horaAtual && parseInt(minuto_inicial) >= minutoAtual && parseInt(hora_final) >= parseInt(hora_inicial) && parseInt(minuto_inicial) < parseInt(minuto_final) || (parseInt(hora_inicial) > horaAtual && parseInt(minuto_inicial) <= minutoAtual) || (parseInt(hora_final) >= parseInt(hora_inicial) && parseInt(minuto_inicial) > parseInt(minuto_final))){
         salvarHorario(day, hora_inicial, hora_final, minuto_inicial, minuto_final, email)
         this.props.modificarHoraInicial('')
         this.props.modificarHoraFinal('')
@@ -132,7 +132,7 @@ class GerenciarAgendaScreen extends React.Component {
 
   renderRow(lista_agenda_horarios, emailMentor) {
     let {selected_day} = this.props; 
-    console.log('lista_agenda_horarios: ', lista_agenda_horarios)
+    //console.log('lista_agenda_horarios: ', lista_agenda_horarios)
     const day = this.formatDate()
       if(lista_agenda_horarios.bool){
           return (
@@ -325,7 +325,8 @@ class GerenciarAgendaScreen extends React.Component {
               </PopupDialog>
               <View>
                 <Calendar
-                    onDayPress={ this.onDaySelect.bind(this) }                   
+                    onDayPress={ this.onDaySelect.bind(this) }
+                    markedDates={this.props.lista_agenda_day}                   
                     current={this.props.lista_agenda_day}
                     markingType={'multi-dot'}
                     theme={{
@@ -333,7 +334,7 @@ class GerenciarAgendaScreen extends React.Component {
                       calendarBackground: '#2b2a29',
                       textSectionTitleColor: '#b6c1cd',
                       selectedDayBackgroundColor: '#fc5b07',
-                      selectedDayTextColor: '#fc5b07',
+                      selectedDayTextColor: '#ffffff',
                       todayTextColor: '#fc5b03',
                       dayTextColor: '#ffffff',
                       textDisabledColor: '#d9e1e8',

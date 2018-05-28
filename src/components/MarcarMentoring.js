@@ -312,7 +312,8 @@ class MarcarMentoring extends React.Component {
               </PopupDialog>
               <View>
               <Calendar
-                    onDayPress={ this.onDaySelect.bind(this) }                   
+                    onDayPress={ this.onDaySelect.bind(this) }
+                    markedDates={this.props.lista_agenda_day}                    
                     current={this.props.lista_agenda_day}
                     markingType={'multi-dot'}
                     theme={{
@@ -320,7 +321,7 @@ class MarcarMentoring extends React.Component {
                       calendarBackground: '#2b2a29',
                       textSectionTitleColor: '#b6c1cd',
                       selectedDayBackgroundColor: '#fc5b07',
-                      selectedDayTextColor: '#fc5b07',
+                      selectedDayTextColor: '#ffffff',
                       todayTextColor: '#fc5b03',
                       dayTextColor: '#ffffff',
                       textDisabledColor: '#d9e1e8',
@@ -331,7 +332,7 @@ class MarcarMentoring extends React.Component {
                       textDayFontSize: 16,
                       textMonthFontSize: 16,
                       textDayHeaderFontSize: 16
-                    }}            
+                    }}             
                     hideArrows={false}
                   />
 

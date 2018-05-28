@@ -129,7 +129,7 @@ export const getDaysAgendados = (email) => {
                 //console.log('getDaysAgendados', {email, emailB64})
                 let mentore = firebase.database().ref(`/agenda_mentores/${emailB64}/agenda`)
                 mentore.on('value', function(snapshot) {
-                        console.log('item-lista-agenda', snapshot.val())
+                        console.log('item-lista-agenda', snapshot.val().toString())
                         dispatch({ type: LISTA_AGENDA_DAYS, payload: snapshot.val() })
                 });
         }
@@ -140,7 +140,14 @@ export const deleteHorarios = (day, uid) => {
                 const { currentUser } = firebase.auth();
                 var emailB64 = b64.encode(currentUser.email);
                 console.log({emailB64, day, uid})
-                firebase.database().ref(`/agenda_horarios_mentores/${emailB64}/${day}`).child(`${uid}`).remove()
+                let agenda_horarios_mentores = firebase.database().ref(`/agenda_horarios_mentores/${emailB64}/${day}`);
+                agenda_horarios_mentores.child(`${uid}`).remove()
+                agenda_horarios_mentores.on('value', snapshot => {
+                        console.log('deleteHorarios once: ', snapshot.val())
+                        if(snapshot.val() === null){
+                                firebase.database().ref(`/agenda_mentores/${emailB64}`).child('agenda').child(`${day}`).remove()
+                        }
+                })
         }
 }
 

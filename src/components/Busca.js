@@ -9,6 +9,7 @@ import {Actions} from 'react-native-router-flux';
 let {width} = Dimensions.get('window')
 let numberGrid = 3
 let itemWidth = width / numberGrid
+const imgAnonimo = require('../imgs/anonymous.jpg');
 class Busca  extends Component {
 
     componentDidMount(){
